@@ -1,0 +1,10 @@
+
+<% services.forEach(service => { %>
+    <div>
+    <h4><%= service.name %></h4>
+    <h4><%= service.phone %></h4>
+    <h5><%= service.email %></h5>
+    <a href="/docs/<%=service._id%>"><button type="submit">View documents</button></a>
+    
+    </div>
+<% }) %>

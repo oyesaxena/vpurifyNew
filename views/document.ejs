@@ -1,0 +1,12 @@
+<% for(var i=0; i<proofs.length;i++){ %> 
+    <%  var proofs_array = proofs[i]; %>
+    
+  
+      <img src="/uploads/<%= proofs_array.filename %>"> 
+      <br>
+     <br> 
+     <% } %>
+
+     <form method="POST">
+     <a><button type="submit">Accept</button></a>
+     </form>

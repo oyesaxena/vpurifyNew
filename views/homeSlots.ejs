@@ -1,0 +1,12 @@
+
+    <% for(var i=0; i< slots.length;i++){ %>  
+        <% var slots_array=slots[i]; %> 
+        <h2><%=  slots_array.date %></h2>
+        <a href="/homeBooking/<%= service.name %>/<%= slots_array.time %>"> <%=  slots_array.time %> </a>
+        
+        <br>
+     <br>
+     <% } %>
+     
+    
+    

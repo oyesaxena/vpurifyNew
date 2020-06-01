@@ -1,0 +1,157 @@
+<html>
+    <link type="text/css" id="dark-mode" rel="stylesheet" href=""><style type="text/css" id="dark-mode-custom-style"></style>
+    <head>
+        
+        
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Title Here</title>
+
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="/css/styles.css" rel="stylesheet" type="text/css" media="all">
+    <link rel="stylesheet" href="/css/sidebar.css">
+
+    <script src="https://kit.fontawesome.com/42e954c897.js" crossorigin="anonymous"></script>
+    <link href="//fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap" rel="stylesheet">
+    </head>
+
+    <body>
+        <div class="w3-sidebar w3-bar-block" style="display:none" id="mySidebar">
+    
+            <button onclick="w3_close()" class="w3-bar-item w3-button w3-large">Close &times;</button>
+            <a href="/search/<%= user._id %> " class="w3-bar-item w3-button">Search Station</a>
+            <a href="#" class="w3-bar-item w3-button">Dashboard</a>
+            <a href="/subscription/qrCode/<%= user._id %> " class="w3-bar-item w3-button">Your QR code</a>
+        </div>
+        <script>
+                        function w3_open() {
+                          document.getElementById("mySidebar").style.width = "25%";
+                          document.getElementById("mySidebar").style.display = "block";
+                        }
+                        
+                        function w3_close() {
+                          document.getElementById("mySidebar").style.display = "none";
+                        }
+        </script>
+                      
+        <button style="position: relative;" class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰ Menu</button>
+        <img src="/images/logo_t.png" alt="red" style="max-width: 33%; top: 0px; margin-right:auto;  margin-left: auto; display: block;
+    position: relative;
+    
+        
+        min-width:30%;z-index: 1;"
+        >
+        <img src="/images/blue.png" alt="blue" style="position: fixed;
+        bottom: 0px;
+        left: 0px;
+        
+        z-index: -1;
+        padding: 0px;
+        margin: 0px;"> 
+    <img src="/images/red_car.png" alt="red" style="position: fixed;
+    top: 0px;
+    right: 0px;
+    max-width: 90%;
+    max-height: 90%;
+    z-index: -1;
+    padding: 0px;
+    margin: 0px;"> 
+        
+	<div id="page" class="page">
+
+    
+    <div class="two-grids">
+        <div class="mid-class">
+            
+            <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
+                
+                    <% coins.forEach(function(coin){ %>
+                        
+                            <h1 class="editContent"><option  value="<%= coin.coins[0].range %>" id="range"><%= coin.coins[0].range %></option></h1>
+                            
+                           
+                                <option  value="<%= coin.coins[0].price %>" id="price"><%= coin.coins[0].price %></option>
+                                <button class="btn btn-primary shop-item-button" onclick="adddata()" type="button">ADD TO CART</button>
+                            
+                        
+                        
+                    <% }) %>
+            </div>        
+                
+                <script>
+                    function adddata(){
+                        var c=document.getElementsByTagName("option");
+                        var price=document.getElementById("option");
+                        document.getElementById("coins").value=c[0].innerText;
+                        document.getElementById("amt").value=c[1].innerText;
+                    }
+                </script>
+            </div>
+            <br>
+            <br>
+                <div style="margin-left: 27rem;" class="two-grids">
+                    <div class="mid-class">
+                    <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
+
+                <form action="/charge" method="POST">
+                    
+                    <h1 class="editContent">Buy Coins</h1>
+
+        <div class="form-left-to editContent">
+                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                        <input type="email" name="userEmail" value="<%= user.email %> " required="">
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-left-to editContent">
+                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                        <input type="number" id="coins" name="coinsRange" placeholder="Number Of Coins" required="">
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-left-to editContent">
+                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                        <input  value="" id="amt" name="chargeAmount" required="">
+
+                        <div class="clear"></div>
+                    </div>
+                    <script
+           src="https://checkout.stripe.com/checkout.js"
+           class="stripe-button"
+           data-key="pk_test_Ph9ES1qhoLRtdcCG1DW7vWi100OtWOW5dR"
+            
+           data-name="coin"
+           data-description="booking your selected slot"
+           data-locale="auto"
+           data-currency="inr"
+        >
+        
+            
+        </script>
+                   
+                    
+                </form>
+                
+                
+            </div>
+        </div>
+</div>
+</div>
+    
+    <footer class="example-class">
+        <p>
+            Sample Reg Form for 
+            <a href="http://www.vpurify.in" target="_blank">V-Purify</a>
+        </p>
+    </footer>
+      </div></div>
+      
+      
+     
+
+
+
+
