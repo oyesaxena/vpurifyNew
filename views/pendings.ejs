@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>DashBoard</title>
+	<link rel="stylesheet" href="/css/style-starter.css">
+	<link href="/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/sidebar.css">
+    <link href="/css/style.css" rel="stylesheet" type="text/css" media="all">
+    <link href="//fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,600,700&display=swap" rel="stylesheet">
+</head>
+<body id="home">
+	  
+	<!-- SideBar -->
+	<div class="w3-sidebar w3-bar-block" style="display:none" id="mySidebar">
+		<button onclick="w3_close()" class="w3-bar-item w3-button w3-large">Close &times;</button>
+		<a href="#" class="w3-bar-item w3-button">Link 1</a>
+		<a href="#" class="w3-bar-item w3-button">Link 2</a>
+		<a href="#" class="w3-bar-item w3-button">Link 3</a>
+	</div>
+	<script>
+		function w3_open() {
+			document.getElementById("mySidebar").style.width = "25%";
+			document.getElementById("mySidebar").style.display = "block";
+			}
+		   
+		function w3_close() {
+			document.getElementById("mySidebar").style.display = "none";
+			}
+	</script>
+	<button style="position: absolute;z-index:0; border:none" class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰ Menu</button>
+	<!--/SideBar -->
+
+	<!-- Logout Button -->
+	<div class="topnav" style="position:static; z-index:2;">
+		<div class="topnav-right" style="text-align: right;">  
+			<a href="#admin">Logout</a>	
+		</div>
+	</div>
+	<!-- /Logout Button -->
+
+	<!-- Background Images and Logo -->
+	<img src="/images/logo_t.png" alt="red" 
+		style="max-width: 33%; top: 0px; 
+		margin-right:auto;  margin-left: auto; 
+		display: block;position: relative;
+		min-width:30%;z-index: 1;">
+	<img src="/images/blue.png" alt="blue" 
+		style="position: fixed; bottom: 0px;
+    	left: 0px;z-index: -1;
+        padding: 0px;margin: 0px;">
+	<img src="/images/red_car.png" alt="red" 
+		style="position: fixed;top: 0px;
+    	right: 0px;max-width: 90%;
+    	max-height: 90%;z-index: -1;
+    	padding: 0px;margin: 0px;">
+    <!--/Background Images and Logo -->
+
+    <section class="w3l-team-main-6">
+		<div class="container">
+            <div class="main-titles-head text-center">
+                <h3 class="header-name">
+					Pending Bookings
+                </h3> 
+            </div>
+			<div class="row grid-col-4 text-center">
+                <% for(var i=0;i<employee.pendings.length;i++){ %>
+                <div class="team-colomn col-lg-3 col-md-6 col-sm-6">	
+					<div class="team-main-6">
+						<div class="right-team-9">
+							
+							<h4 class="sm-text-32">Customer Name: <%= employee.pendings[i].name %></h4>
+                            <p class="sm-text-32">Customer Email: <%= employee.pendings[i].email %> </p>
+                            <p class="sm-text-32">Customer Contact: <%= employee.pendings[i].phone %> </p>
+                            <p class="sm-text-32">Customer Vehicle Number: <%= employee.pendings[i].vehicleNo %> </p>
+                            <p class="sm-text-32">Date: <%= employee.pendings[i].date %> </p>
+                        	<p class="sm-text-32">Time Slot: <%= employee.pendings[i].slot %> </p>
+                        </div>
+                        <br>						
+						    <div class="two-grids">
+								<div class="mid-class">
+									
+									<div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
+										<h2 class="editContent"> Complete Booking </h2>
+										<form enctype="multipart/form-data" method="POST">
+											
+											
+											<input type="hidden" name="name" value="<%= employee.pendings[i].name %>">
+											<input type="hidden" name="phone" value="<%= employee.pendings[i].phone %>">
+											<input type="hidden" name="email" value="<%= employee.pendings[i].email %>">
+											<input type="hidden" name="slot" value="<%= employee.pendings[i].slot %>">
+											<input type="hidden" name="date" value="<%= employee.pendings[i].date %>">
+											<input type="hidden" name="vehicleNo" value="<%= employee.pendings[i].vehicleNo %>">
+											<div class="form-left-to editContent">
+                                                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Date</span>
+                                                <input type="text" name="serviceName" placeholder="Firm Name" required="">
+                        
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="form-left-to editContent">
+                                                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Start Time</span>
+                                                <input type="time" name="startTime" placeholder="Start Time" required="">
+                        
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="form-left-to editContent">
+                                                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">End Time</span>
+                                                <input type="time" name="endTime" placeholder="End Time" required="">
+                        
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="form-left-to editContent">
+                                                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                                                <input type="date" name="date" placeholder="Date" required="">
+                        
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="form-left-to editContent">
+                                                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                                                <input type="date" name="date" placeholder="Date" required="">
+                        
+                                                <div class="clear"></div>
+                                            </div>
+
+											
+
+											
+											
+										   
+											<div class="btnn">
+												<button type="submit" style="color: violet;" class=" btn" style="outline: none; cursor: inherit;">Assign</button>
+											</div>
+										</form>
+										
+										
+									</div>
+								</div>
+							
+						</div>	
+					</div>
+                </div>
+                 <% } %> 
+			</div>
+		</div>
+	
+	</section>
+    		
+		
+    
+
+				</div>
+			</div>
+		</div>
+	</section>

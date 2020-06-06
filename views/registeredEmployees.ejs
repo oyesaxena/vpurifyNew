@@ -65,16 +65,19 @@
             <!-- Candidates -->
             
 			<div class="row grid-col-4 text-center">
-                <% services.forEach(service => { %>
+                <% employees.forEach(employee => { %>
 			<!-- Candidate1-->
             <div class="team-colomn col-lg-3 col-md-6 col-sm-6" style="border: rgba(256, 256, 256,0.01) solid 5px;">
 				<div class="team-main-6"style="border-bottom: 30px;">
 					<div class="right-team-9">
 						
-                        <h6><a href="#page" class="title-team-32"><%= service.name %></a></h6>
-                        <h6><a href="#page" class="title-team-32"><%= service.phone %></a></h6>
-						<h6><a href="#page" class="title-team-32"><%= service.email %></a></h6>
-						<a href="/docs/<%=service._id%>"><p  class="sm-text-32">Documents</p></a>
+                        <h6><a href="#page" class="title-team-32"><%= employee.name %></a></h6>
+                        <h6><a href="#page" class="title-team-32"><%= employee.phone %></a></h6>
+						<h6><a href="#page" class="title-team-32"><%= employee.email %></a></h6>
+                        <a href="/cv/<%=employee._id%>"><p  class="sm-text-32">CV</p></a>
+                        <a href="/officeApprove/<%=employee._id%>"><p  class="sm-text-32">Approve as on slot employee</p></a>
+                        <a href="/homeApprove/<%=employee._id%>"><p  class="sm-text-32">Approve as a home employee</p></a>
+
 					</div>
                 </div>
 			</div>

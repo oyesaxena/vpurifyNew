@@ -46,7 +46,7 @@
             
             <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
                 <h2 class="editContent"> Sign Up Here </h2>
-                <form action="/register" method="POST">
+                <form action="/register" method="POST" enctype="multipart/form-data">
                     <div class="form-left-to editContent">
                         <span class="fa fa-user-o" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                         <input type="email" name="username" placeholder="Email" required="">
@@ -62,6 +62,12 @@
                     <div class="form-left-to editContent">
                         <span class="fa fa-envelope-o" aria-hidden="true"></span>
                         <input type="text" name="phone" placeholder="Contact Number" required="">
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-left-to editContent">
+                        <span class="fa fa-envelope-o"></span>
+                        <input type="file" name="img" accept="image/*" placeholder="Profile">
 
                         <div class="clear"></div>
                     </div>
@@ -118,22 +124,14 @@
             <input type="text" name="passingYear" placeholder="Passing Year" required="">
             <div class="clear"></div>
         </div>
-                    <div class="main-two">
-                        <div class="left-side-forget">
-                            <input type="checkbox" class="checked">
-                            <span class="remenber-me editContent" style="outline: none; cursor: inherit;">Remember me </span>
-                        </div>
-                        <div class="right-side-forget">
-                            <a href="#" class="for editContent" style="outline: none; cursor: inherit;">Forgot password?</a>
-                        </div>
-                    </div>
+                    
                     <div class="btnn">
                         <button type="submit" class=" btn" style="outline: none; cursor: inherit;">Sign Up </button>
                     </div>
                 </form>
                 <div class="more-buttn">
-                    <h3 class=" editContent" style="outline: none; cursor: inherit;">Have an account?
-                        <a href="#" class=" editContent" style="outline: none; cursor: inherit;">Login Here
+                    <h3 class=" editContent" style="outline: none; cursor: inherit;">Alredy Have an account?
+                        <a href="/userLogin" class=" editContent" style="outline: none; cursor: inherit;">Login Here
                         </a>
                     </h3>
                 </div>

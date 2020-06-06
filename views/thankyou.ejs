@@ -8,9 +8,9 @@
 	<title>Title Here</title>
 
     <link href="/css/font-awesome.min.css" rel="stylesheet">
-    <!-- <script src="/script1.js"></script> -->
+
     <link href="/css/styles.css" rel="stylesheet" type="text/css" media="all">
-    <script src="https://kit.fontawesome.com/42e954c897.js" crossorigin="anonymous"></script>
+
     <link href="//fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap" rel="stylesheet">
@@ -40,36 +40,20 @@
         
 	<div id="page" class="page">
 
-        
-        <% var a=new Date().toISOString().split('T')[0]; %> 
     
-
     <div class="two-grids">
         <div class="mid-class">
             
             <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
+                <h3 class="editContent"> Thankyou for registering  </h3>
+                <br>
+                <br>
+                <h2 class="editContent"> We will update you through call and email after verification then you can login to you portal</h2>
                 
-
-                <% for(var i=0; i< slots.length;i++){ %>  
-                    <% var slots_array=slots[i]; %> 
-                    <br>
-                     <% if(slots_array.date===a){ %> 
-                    <h2 class="editContent"><%=  slots_array.date %></h2>
-                    <% for(var j=0;j<slots_array.time.length;j++){ %> 
-                    <div class="btnn">
-                        <a href="/homeBooking/<%= service.name %>/<%= slots_array.date %>/<%= slots_array.time[j] %>"> <%=  slots_array.time[j] %> </a>
-                      
-
-                    </div>
-                <% } %>   
-                <% } %>
-                
-              
-                
-                    <% } %>
                    
                    
-             
+                    
+                
                 
                 
             </div>
@@ -81,7 +65,7 @@
             <a href="http://www.vpurify.in" target="_blank">V-Purify</a>
         </p>
     </footer>
-      </div></div>
-      
-        </body>    
-    
+	  </div></div>
+
+
+

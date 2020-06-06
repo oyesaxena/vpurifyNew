@@ -46,7 +46,7 @@
             
             <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
                 <h2 class="editContent"> Sign Up Here </h2>
-                <form action="/reg" method="POST">
+                <form action="/empreg" method="POST" enctype="multipart/form-data">
                     <div class="form-left-to editContent">
                         <span class="fa fa-user-o" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                         <input type="email" name="username" placeholder="Email" required="">
@@ -71,31 +71,21 @@
                         <input type="password" name="password" placeholder="Password" required="">
                         <div class="clear"></div>
                     </div>
-                    <div class="form-left-to editContent">
-
-                      <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-                      <input type="text" name="firm" placeholder="Firm Name" required="">
-                      <div class="clear"></div>
-                  </div> 
+                    
                   <div class="form-left-to editContent">
 
                     <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-                    <input type="text" name="Address" placeholder="Address" required="">
+                    <input type="text" name="education" placeholder="Your Education" required="">
                     <div class="clear"></div>
                 </div>
-                   
-                    <div class="form-left-to editContent">
-
-                      <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-                      <input type="text" name="number" placeholder="Vehicle Number" required="">
-                      <div class="clear"></div>
-                  </div>
-                  <div class="form-left-to editContent">
+                <div class="form-left-to editContent">
 
                     <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-                    <input type="text" name="gst" placeholder="Gst Number" required="">
+                    <input type="text" name="experience" placeholder="Experience" required="">
                     <div class="clear"></div>
                 </div>
+                    
+                  
                 <div class="form-left-to editContent">
 
                   <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
@@ -105,15 +95,17 @@
               <div class="form-left-to editContent">
 
                 <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-                <input type="text" name="pin" placeholder="Tunnel Area Pin Code" required="">
+                <input type="text" name="pin" placeholder="Pin Code" required="">
                 <div class="clear"></div>
             </div>
             <div class="form-left-to editContent">
+                <span style="margin-right: 10%;"  aria-hidden="true" style="outline: none; cursor: inherit;">Resume Images</span>
+                
+                <input type="file" name="files" placeholder="Photo" required="" multiple>
 
-              <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-              <input type="text" name="state" placeholder="State" required="">
-              <div class="clear"></div>
-          </div>
+                <div class="clear"></div>
+            </div>
+            
           
                     
                     <div class="btnn">
@@ -122,7 +114,7 @@
                 </form>
                 <div class="more-buttn">
                     <h3 class=" editContent" style="outline: none; cursor: inherit;"> Have a verified station account?
-                        <a href="/serviceLogin" class=" editContent" style="outline: none; cursor: inherit;">Login Here
+                        <a href="/empLogin" class=" editContent" style="outline: none; cursor: inherit;">Login Here
                         </a>
                     </h3>
                 </div>

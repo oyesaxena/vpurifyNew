@@ -18,9 +18,9 @@
 	<!-- SideBar -->
 	<div class="w3-sidebar w3-bar-block" style="display:none" id="mySidebar">
 		<button onclick="w3_close()" class="w3-bar-item w3-button w3-large">Close &times;</button>
-		<a href="/upcomingBookings/<%= service._id %> " class="w3-bar-item w3-button">Upcoming Home Bookings</a>
-		<a href="/upcomingBookings1/<%= service._id %> " class="w3-bar-item w3-button">Upcoming Office Bookings</a>
-		<a href="/homeEmployees/<%= service._id %> " class="w3-bar-item w3-button">Home Employees</a>
+		<a href="/pendings/<%= employee._id %> " class="w3-bar-item w3-button">Upcoming Bookings</a>
+		<a href="/completed/<%= employee._id %> " class="w3-bar-item w3-button">Upcoming Office Bookings</a>
+		
 	</div>
 	<script>
 		function w3_open() {
@@ -73,9 +73,9 @@
 					<div class="team-main-6">
 						<div class="right-team-9">
 							<a href="#page"><img class="img-responsive" src="https://vpurify.s3.us-east-2.amazonaws.com/" alt=" "></a>
-							<h4 class="sm-text-32">Name: <%= service.name %></h4>
-                            <p class="sm-text-32">Email: <%= service.email %> </p>
-                            <p class="sm-text-32">Phone Number: <%= service.phone %> </p>
+							<h4 class="sm-text-32">Name: <%= employee.name %></h4>
+                            <p class="sm-text-32">Email: <%= employee.email %> </p>
+                            <p class="sm-text-32">Phone Number: <%= employee.phone %> </p>
                         	
 						</div>	
 					</div>

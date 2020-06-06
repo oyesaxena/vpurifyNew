@@ -39,28 +39,27 @@
     margin: 0px;"> 
         
 	<div id="page" class="page">
-
+        
     
     <div class="two-grids">
         <div class="mid-class">
-            
+            <% stations.forEach( function (station){ %>
             <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
-                <% stations.forEach( function (station){ %>
+                
                     <h2 class="editContent"><%= station.name %></h2>
+                    <h2 class="editContent"><%= station.city %></h2>
+                    <h2 class="editContent"><%= station.phone %></h2>
+                    <h2 class="editContent"><%= station.email %></h2>
                     <div class="btnn">
                         <a href="/homeService/<%= station.name %>" ><button type="submit" class=" btn" style="outline: none; cursor: inherit;">Home Sanitisation</button></a>
 
                     </div>
                     <div class="btnn">
                         <a href="/officeService/<%= station.name %>"><button type="submit" class=" btn" style="outline: none; cursor: inherit;">Station Sanitisation</button>
-                    </div>
-                <% } )%>
-                   
-                   
-             
-                
+                    </div>   
                 
             </div>
+            <% } )%>
         </div>
     
     <footer class="example-class">

@@ -11,7 +11,7 @@
 
     <link href="/css/styles.css" rel="stylesheet" type="text/css" media="all">
     <link rel="stylesheet" href="/css/sidebar.css">
-
+    <script src="/script2.js"></script>
     <script src="https://kit.fontawesome.com/42e954c897.js" crossorigin="anonymous"></script>
     <link href="//fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
@@ -68,27 +68,41 @@
             
             <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
                 
-                    <% coins.forEach(function(coin){ %>
-                        
-                            <h1 class="editContent"><option  value="<%= coin.coins[0].range %>" id="range"><%= coin.coins[0].range %></option></h1>
-                            
-                           
-                                <option  value="<%= coin.coins[0].price %>" id="price"><%= coin.coins[0].price %></option>
-                                <button class="btn btn-primary shop-item-button" onclick="adddata()" type="button">ADD TO CART</button>
-                            
-                        
-                        
+     <% coins.forEach(function(coin){ %>
+        <form action="/charge" method="POST">
+            <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+            <input type="email" name="userEmail" value="<%= user.email %> " required="" readonly>
+            <div class="form-left-to editContent">
+                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                <input type="number" id="coins" name="coinsRange" value="<%= coin._doc.range %>" readonly placeholder="Number Of Coins" required="">
+
+                <div class="clear"></div>
+            </div>
+            <div class="form-left-to editContent">
+                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                <input  value="<%= coin._doc.price %>" id="amt" name="chargeAmount" required="" readonly>
+
+                <div class="clear"></div>
+            </div>
+            <script
+           src="https://checkout.stripe.com/checkout.js"
+           class="stripe-button"
+           data-key="pk_test_Ph9ES1qhoLRtdcCG1DW7vWi100OtWOW5dR"
+            
+           data-name="coin"
+           data-description="booking your selected slot"
+           data-locale="auto"
+           data-currency="inr"
+        >
+        
+            
+        </script>
+        
+            </form>
                     <% }) %>
             </div>        
                 
-                <script>
-                    function adddata(){
-                        var c=document.getElementsByTagName("option");
-                        var price=document.getElementById("option");
-                        document.getElementById("coins").value=c[0].innerText;
-                        document.getElementById("amt").value=c[1].innerText;
-                    }
-                </script>
+                
             </div>
             <br>
             <br>
@@ -148,7 +162,8 @@
         </p>
     </footer>
       </div></div>
-      
+      <script src="/script2.js"></script>
+      </body>
       
      
 

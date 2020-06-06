@@ -11,7 +11,8 @@
 
     <link href="/css/styles.css" rel="stylesheet" type="text/css" media="all">
     <script src="https://kit.fontawesome.com/42e954c897.js" crossorigin="anonymous"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/script.js"></script>
     <link href="//fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap" rel="stylesheet">
@@ -48,12 +49,19 @@
             <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
                 <h2 class="editContent"> Add available Home slots </h2>
                 <form method="POST">
+                    <ul id="fieldList">
+                     <li>
                     <div class="form-left-to editContent">
                         <span class="fas fa-clock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                         <input type="text" name="newTime" placeholder="Time" required="">
 
+
                         <div class="clear"></div>
                     </div>
+                    </li>
+                    </ul>
+                    <button id="addMore">Add more time slots</button>
+                    
                     <div class="form-left-to editContent">
                         <span class="fas fa-calendar-day" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                         <input type="date" name="newDate" placeholder="Date" required="">
