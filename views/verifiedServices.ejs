@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin Panel</title>
+	<link rel="stylesheet" href="/css/style-starter.css">
+	<link href="/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/sidebar.css">
+    <link href="/css/style.css" rel="stylesheet" type="text/css" media="all">
+    <link href="//fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,600,700&display=swap" rel="stylesheet">
+  </head>
+  <body id="home">
+	<!-- SideBar -->
+        <div class="w3-sidebar w3-bar-block" style="display:none" id="mySidebar">
+            <button onclick="w3_close()" class="w3-bar-item w3-button w3-large">Close &times;</button>
+            <a href="#" class="w3-bar-item w3-button">Add Home Slots</a>
+            <a href="#" class="w3-bar-item w3-button">Add Office Slots</a>
+            <a href="#" class="w3-bar-item w3-button">Update Home Rates</a>
+            
+        </div>
+        <script>
+            function w3_open() {
+                document.getElementById("mySidebar").style.width = "25%";
+                document.getElementById("mySidebar").style.display = "block";
+                }
+               
+            function w3_close() {
+                document.getElementById("mySidebar").style.display = "none";
+                }
+		</script>
+		<button style="position: absolute;z-index:0; border:none" class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰ Menu</button>
+		<!-- Logout Button -->
+		<div class="topnav" style="position:static; z-index:2;">
+			<div class="topnav-right" style=	"text-align: right;">  
+				<a href="#admin">Logout</a>	
+			</div>
+		</div> 
+		<!-- 2 Background Images -->
+		<img src="/images/logo_t.png" alt="red" style="max-width: 33%; top: 0px; margin-right:auto;  margin-left: auto; display: block;position: relative;min-width:30%;z-index: 1;"><img src="/images/blue.png" alt="blue" style="position: fixed; bottom: 0px;
+        left: 0px;  
+        z-index: -1;
+        padding: 0px;
+		margin: 0px;">
+		<img src="/images/red_car.png" alt="red" style="position: fixed;
+    	top: 0px;
+    	right: 0px;
+    	max-width: 90%;
+    	max-height: 90%;
+    	z-index: -1;
+    	padding: 0px;
+		margin: 0px;">
+		<!--Page Body --> 
+		<section class="w3l-team-main-6">
+		<!-- team-grids -->
+		<div class="team-content">
+			<div class="container">
+            <div class="main-titles-head text-center">
+                <h3 class="header-name">
+					Service Providers
+                </h3> 
+			</div>
+            <!-- Candidates -->
+            
+			<div class="row grid-col-4 text-center">
+                <% services.forEach(service => { %>
+			<!-- Candidate1-->
+            <div class="team-colomn col-lg-3 col-md-6 col-sm-6" style="border: rgba(256, 256, 256,0.01) solid 5px;">
+				<div class="team-main-6"style="border-bottom: 30px;">
+					<div class="right-team-9">
+						
+                        <h6><a href="#page" class="title-team-32"><%= service.name %></a></h6>
+                        <h6><a href="#page" class="title-team-32"><%= service.phone %></a></h6>
+						<h6><a href="#page" class="title-team-32"><%= service.email %></a></h6>
+                        <a href="/documents/<%=service._id%>"><p  class="sm-text-32">Documents</p></a>
+                        <a href="/homeStation/<%=service._id%>"><p  class="sm-text-32">Add Home Slots</p></a>
+                        <a href="/officeStation/<%=service._id%>"><p  class="sm-text-32">Add Office Slots</p></a>
+                        <a href="/homeRates/<%=service._id%>"><p  class="sm-text-32">Update Home Rates</p></a>
+                        <a href="/officeRates/<%=service._id%>"><p  class="sm-text-32">Update Office Rates</p></a>
+
+                    </div>
+                </div>
+			</div>
+			
+			
+			
+		
+    
+            <% }) %>
+            </div>
+   
+		</div>
+	</div>
+	<!-- /team-grids -->
+	</section>
+
+</body>
+
+</html>
+            
+
+
+

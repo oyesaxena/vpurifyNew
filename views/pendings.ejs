@@ -88,19 +88,16 @@
 										<h2 class="editContent"> Complete Booking </h2>
 										<form enctype="multipart/form-data" method="POST">
 											
-											
+                                            <input type="hidden" name="id" value="<%= employee._id %>">
 											<input type="hidden" name="name" value="<%= employee.pendings[i].name %>">
 											<input type="hidden" name="phone" value="<%= employee.pendings[i].phone %>">
 											<input type="hidden" name="email" value="<%= employee.pendings[i].email %>">
 											<input type="hidden" name="slot" value="<%= employee.pendings[i].slot %>">
 											<input type="hidden" name="date" value="<%= employee.pendings[i].date %>">
 											<input type="hidden" name="vehicleNo" value="<%= employee.pendings[i].vehicleNo %>">
-											<div class="form-left-to editContent">
-                                                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Date</span>
-                                                <input type="text" name="serviceName" placeholder="Firm Name" required="">
+										    <input type="hidden" name="serviceName" value="<%= employee.company %>" placeholder="Firm Name" required="">
                         
-                                                <div class="clear"></div>
-                                            </div>
+                                                
                                             <div class="form-left-to editContent">
                                                 <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Start Time</span>
                                                 <input type="time" name="startTime" placeholder="Start Time" required="">
@@ -115,14 +112,17 @@
                                             </div>
                                             <div class="form-left-to editContent">
                                                 <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-                                                <input type="date" name="date" placeholder="Date" required="">
+                                                <select name="location">
+                                                    <option value="Home">Home</option>
+                                                    <option value="On Site">On Site</option>
+                                                </select>
                         
                                                 <div class="clear"></div>
                                             </div>
                                             <div class="form-left-to editContent">
-                                                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-                                                <input type="date" name="date" placeholder="Date" required="">
-                        
+                                                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Upload both front and back image of vehicle</span>
+                                                <input type="file" name="files" placeholder="Images" required="" multiple>
+                                           
                                                 <div class="clear"></div>
                                             </div>
 
@@ -132,7 +132,7 @@
 											
 										   
 											<div class="btnn">
-												<button type="submit" style="color: violet;" class=" btn" style="outline: none; cursor: inherit;">Assign</button>
+												<button type="submit" style="color: violet;" class=" btn" style="outline: none; cursor: inherit;">Complete</button>
 											</div>
 										</form>
 										

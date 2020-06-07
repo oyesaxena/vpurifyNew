@@ -1,0 +1,162 @@
+<html>
+    <link type="text/css" id="dark-mode" rel="stylesheet" href=""><style type="text/css" id="dark-mode-custom-style"></style>
+    <head>
+        
+        
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Title Here</title>
+
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="/css/styles.css" rel="stylesheet" type="text/css" media="all">
+    <link rel="stylesheet" href="/css/sidebar.css">
+
+    <script src="https://kit.fontawesome.com/42e954c897.js" crossorigin="anonymous"></script>
+    <link href="//fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap" rel="stylesheet">
+    </head>
+
+    <body>
+        <img src="/images/logo_t.png" alt="red" style="max-width: 33%; top: 0px; margin-right:auto;  margin-left: auto; display: block;
+    position: relative;
+    
+        
+        min-width:30%;z-index: 1;"
+        >
+        <img src="/images/blue.png" alt="blue" style="position: fixed;
+        bottom: 0px;
+        left: 0px;
+        
+        z-index: -1;
+        padding: 0px;
+        margin: 0px;"> 
+    <img src="/images/red_car.png" alt="red" style="position: fixed;
+    top: 0px;
+    right: 0px;
+    max-width: 90%;
+    max-height: 90%;
+    z-index: -1;
+    padding: 0px;
+    margin: 0px;"> 
+        
+	<div id="page" class="page">
+
+    
+    <div class="two-grids">
+        <div class="mid-class">
+            
+            <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
+                <h2 class="editContent"> Update Rates at home </h2>
+                <form action="/homeRate" method="POST">
+                    <input name="id" value="<%= service._id %>" type="hidden" readonly>
+                    <div class="form-left-to editContent">
+                        
+                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Sedan</span>
+                        <input type="number" name="sedan" placeholder="Sedan rate" required="">
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-left-to editContent">
+                        
+                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Auto Rikshaw</span>
+                        <input type="number" name="auto" placeholder="Auto rate" required="">
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-left-to editContent">
+                        
+                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Sedan</span>
+                        <input type="number" name="small" placeholder="Small Commercial rate" required="">
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-left-to editContent">
+                        
+                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Sedan</span>
+                        <input type="number" name="hatchback" placeholder="Hatchback rate" required="">
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-left-to editContent">
+                        
+                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Sedan</span>
+                        <input type="number" name="bus" placeholder="Bus rate" required="">
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-left-to editContent">
+                        
+                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Sedan</span>
+                        <input type="number" name="suv" placeholder="SUV rate" required="">
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-left-to editContent">
+                        
+                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Sedan</span>
+                        <input type="number" name="tempo" placeholder="Tempo rate" required="">
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-left-to editContent">
+                        
+                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Sedan</span>
+                        <input type="number" name="maxi" placeholder="Maxi rate" required="">
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-left-to editContent">
+                        
+                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Sedan</span>
+                        <input type="number" name="twoWheeler" placeholder="Two Wheeler rate" required="">
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-left-to editContent">
+                        
+                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Sedan</span>
+                        <input type="number" name="multi" placeholder="Multi Axel rate" required="">
+
+                        <div class="clear"></div>
+                    </div>
+                    <div class="form-left-to editContent">
+                        
+                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Sedan</span>
+                        <input type="number" name="others" placeholder="Other Vehicles rate" required="">
+
+                        <div class="clear"></div>
+                    </div>
+
+                    
+                    
+                   
+                    <div class="btnn">
+                        <button type="submit" class=" btn" style="outline: none; cursor: inherit;">Update Rates</button>
+                    </div>
+                </form>
+                
+                
+            </div>
+            
+        </div>
+    
+    <footer class="example-class">
+        <p>
+            Sample Reg Form for 
+            <a href="http://www.vpurify.in" target="_blank">V-Purify</a>
+        </p>
+    </footer>
+	  </div></div>
+
+
+
+
+
+
+
+
+
+
+

@@ -28,11 +28,11 @@ app.set('view engine','ejs');
 app.use(bodyParser.urlencoded({extended:true}));
 
 
-mongoose.connect('mongodb://localhost:27017/vpurifyDB',{useNewUrlParser:true, useUnifiedTopology:true });
+mongoose.connect('mongodb://localhost:27017/vpurifyDB',{useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:true });
 
 aws.config.update({
-    secretAccessKey: 'g9C6dqiszpGc5j676WJ6LyeBI3MTPRmrc0TWQkyG',
-    accessKeyId: 'AKIAWKOAX5BSIYE2WQRW',
+    secretAccessKey: '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',
+    accessKeyId: 'AKIAWKOAX5BSAYMBYWII',
     region: 'us-east-2'
 });
 s3 = new aws.S3();
@@ -67,7 +67,8 @@ const userSchema=new mongoose.Schema({
     },
     homeBookings:[{name:String,email:String,phone:{type:String,trim:true},address:String,city:String}],
     officeBookings:[{name:String,email:String,phone:{type:String,trim:true},address:String,city:String}],
-    completedBookings:[]
+    completed:[{date:String,startTime:String,endTime:String,pics:[],name:String,location:String}]
+
 })
 
 const coinsSchema =new mongoose.Schema({
@@ -115,7 +116,11 @@ const ServiceSchema= new mongoose.Schema({
     homePendings:[{name:String,phone:String,email:String,slot:String,vehicleNo:String,date:String,userQR:String}],
     officePendings:[{name:String,phone:String,email:String,slot:String,vehicleNo:String,date:String,userQR:String}],
     homeEmployees:[{name:String,phone:String,email:String,pin:String,city:String}],
-    officeEmployees:[{name:String,phone:String,email:String,pin:String,city:String}]
+    officeEmployees:[{name:String,phone:String,email:String,pin:String,city:String}],
+    completedBookings:[{date:String,startTime:String,endTime:String,vehicleNo:String,customer:String,location:String}],
+    homeMulti:Number,homeMaxi:Number,homeAuto:Number,homeSUV:Number,homeHatchback:Number,homeSmall:Number,homeSedan:Number,homeTwoWheeler:Number,homeTempo:Number,homeBus:Number,homeOthers:Number,
+    officeMulti:Number,officeMaxi:Number,officeAuto:Number,officeSUV:Number,officeHatchback:Number,officeSmall:Number,officeSedan:Number,officeTwoWheeler:Number,officeTempo:Number,officeBus:Number,officeOthers:Number
+
 })
 
 const registeredEmployeeSchema= new mongoose.Schema({
@@ -145,7 +150,7 @@ const EmployeeSchema= new mongoose.Schema({
     resume:[],
     company:String,
     pendings:[{name:String,phone:String,email:String,slot:String,vehicleNo:String,date:String}],
-    completed:[{name:String,phone:String,email:String,slot:String,vehicleNo:String,date:String}],
+    completedWork:[{date:String,startTime:String,endTime:String,phone:String,customer:String}]
 
 })
 
@@ -195,6 +200,23 @@ app.get("/qrCode/:userId",function(req,res){
         temp.push(name)
         var phone=user.phone
         temp.push(phone)
+        var email=user.email
+        temp.push(email)
+        var vehicleType=user.vehicleType
+        temp.push(vehicleType)
+        var vehicleCompany=user.vehicleCompany
+        temp.push(vehicleCompany)
+        var vehicleModel=user.model
+        temp.push(vehicleModel)
+        var vehicleNo=user.number
+        temp.push(vehicleNo)
+        var passingYear=user.year
+        temp.push(passingYear)
+        
+        // var lastTime=user.completed[-1].endTime
+        // temp.push(lastTime)
+        // var firstPic=user.completed[-1].pics[0].location
+        // temp.push(firstPic)
         
         QRCode.toDataURL(temp,function (err, url){
             console.log(url)
@@ -207,9 +229,10 @@ app.get("/qrCode/:userId",function(req,res){
 app.get("/search/qrCode/:userId",function(req,res){
     requestedQR=req.params.userId;
     User.findOne({_id:requestedQR},function(err,user){
-        var temp=[{}]
+        var temp=[{ }]
         var name=user.name
         temp.push(name)
+        temp.push("_")
         var phone=user.phone
         temp.push(phone)
         var email=user.email
@@ -224,6 +247,14 @@ app.get("/search/qrCode/:userId",function(req,res){
         temp.push(vehicleNo)
         var passingYear=user.year
         temp.push(passingYear)
+
+        
+        // var lastDate=user.completed[-1].date
+        // temp.push(lastDate)
+        // var lastTime=user.completed[-1].endTime
+        // temp.push(lastTime)
+        // var firstPic=user.completed[-1].pics[0].location
+        // temp.push(firstPic)
         
         QRCode.toDataURL(temp,function (err, url){
             console.log(url)
@@ -360,6 +391,110 @@ app.get("/search",function(req,res){
 
 app.get("/result",function(req,res){
     res.render("result")
+})
+
+app.route("/homeRates/:serviceId")
+
+.get(function(req,res){
+    requestedService=req.params.serviceId
+    Service.findOne({_id:requestedService},function(err,service){
+        res.render("homeRate",{
+            service:service
+        })
+    })
+})
+
+app.post("/homeRate",async (req,res)=>{
+    await Service.updateOne({_id:req.body.id},{
+        $set:{
+            homeSedan:req.body.sedan,
+            homeAuto:req.body.auto,
+            homeBus:req.body.bus,
+            homeTwoWheeler:req.body.twoWheeler,
+            homeHatchback:req.body.hatchback,
+            homeMaxi:req.body.maxi,
+            homeMulti:req.body.multi,
+            homeOthers:req.body.others,
+            homeSUV:req.body.suv,
+            homeTempo:req.body.tempo,
+            homeSmall:req.body.small
+
+        }
+    }
+
+    
+    )
+})
+
+app.post("/homeAuto",async (req,res)=>{
+    await Service.updateOne({_id:req.body.id},{
+        $set:{
+            homeAuto:req.body.rate
+        }
+    })
+})
+app.post("/homeTwoWheeler",async (req,res)=>{
+    await Service.updateOne({_id:req.body.id},{
+        $set:{
+            homeTwoWheeler:req.body.rate
+        }
+    })
+})
+app.post("/homeSUV",async (req,res)=>{
+    await Service.updateOne({_id:req.body.id},{
+        $set:{
+            homeSUV:req.body.rate
+        }
+    })
+})
+app.post("/homeMaxi",async (req,res)=>{
+    await Service.updateOne({_id:req.body.id},{
+        $set:{
+            homeMaxi:req.body.rate
+        }
+    })
+})
+app.post("/homeTempo",async (req,res)=>{
+    await Service.updateOne({_id:req.body.id},{
+        $set:{
+            homeTempo:req.body.rate
+        }
+    })
+})
+app.post("/homeSmall",async (req,res)=>{
+    await Service.updateOne({_id:req.body.id},{
+        $set:{
+            homeSmall:req.body.rate
+        }
+    })
+})
+app.post("/homeOthers",async (req,res)=>{
+    await Service.updateOne({_id:req.body.id},{
+        $set:{
+            homeOthers:req.body.rate
+        }
+    })
+})
+app.post("/homeBus",async (req,res)=>{
+    await Service.updateOne({_id:req.body.id},{
+        $set:{
+            homeBus:req.body.rate
+        }
+    })
+})
+app.post("/homeHatchback",async (req,res)=>{
+    await Service.updateOne({_id:req.body.id},{
+        $set:{
+            homeHatchback:req.body.rate
+        }
+    })
+})
+app.post("/homeMulti",async (req,res)=>{
+    await Service.updateOne({_id:req.body.id},{
+        $set:{
+            homeMulti:req.body.rate
+        }
+    })
 })
 
 
@@ -722,6 +857,7 @@ app.route("/subscription/:userId")
 // })
 
 app.post("/charge",function(req,res){
+    
     requestedUser=req.body.userEmail
     User.updateOne({email:requestedUser},{
         $inc:{
@@ -789,6 +925,210 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
 })
 
 .post(upload.single('img'),async (req,res) => {
+    const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
+        const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
+    
+    if(model=="Two Wheeler"){
+        Service.findOne({name:requiredName}, (err,service)=>{
+            User.updateOne({email:userEmail},{
+               $inc:{
+                   coins:-(service.homeTwoWheeler)
+               }
+           },{
+               overwrite:true
+           },
+           function(err){
+               if(err){
+                   console.log(err)
+               }else{
+                   console.log("coin removed")
+               }
+           }
+
+           )
+       })
+   }else if(model=="Sedan"){
+        Service.findOne({name:requiredName}, (err,service)=>{
+            User.updateOne({email:userEmail},{
+               $inc:{
+                   coins:-(service.homeSedan)
+               }
+           },{
+               overwrite:true
+           },
+           function(err){
+               if(err){
+                   console.log(err)
+               }else{
+                   console.log("coin removed")
+               }
+           }
+           )
+       })
+
+   }else if(model=="Hatchback"){
+        Service.findOne({name:requiredName}, (err,service)=>{
+            User.updateOne({email:userEmail},{
+               $inc:{
+                   coins:-(service.homeHatchback)
+               }
+           },{
+               overwrite:true
+           },
+           function(err){
+               if(err){
+                   console.log(err)
+               }else{
+                   console.log("coin removed")
+               }
+           })
+       })
+
+   }else if(model=="Auto Rikshaw"){
+       Service.findOne({name:requiredName}, (err,service)=>{
+           User.updateOne({email:userEmail},{
+               $inc:{
+                   coins:-(service.homeAuto)
+               }
+           },{
+               overwrite:true
+           },
+           function(err){
+               if(err){
+                   console.log(err)
+               }else{
+                   console.log("coin removed")
+               }
+           })
+       })
+
+   }else if(model=="small"){
+       Service.findOne({name:requiredName}, (err,service)=>{
+           User.updateOne({email:userEmail},{
+               $inc:{
+                   coins:-(service.homeSmall)
+               }
+           },{
+               overwrite:true
+           },
+           function(err){
+               if(err){
+                   console.log(err)
+               }else{
+                   console.log("coin removed")
+               }
+           })
+       })
+
+   }else if(model=="SUV"){
+       Service.findOne({name:requiredName}, (err,service)=>{
+           User.updateOne({email:userEmail},{
+               $inc:{
+                   coins:-(service.homeSUV)
+               }
+           },{
+               overwrite:true
+           },
+           function(err){
+               if(err){
+                   console.log(err)
+               }else{
+                   console.log("coin removed")
+               }
+           })
+       })
+
+   }else if(model=="Maxi"){
+       Service.findOne({name:requiredName},(err,service)=>{
+           User.updateOne({email:userEmail},{
+               $inc:{
+                   coins:-(service.homeMaxi)
+               }
+           },{
+               overwrite:true
+           },
+           function(err){
+               if(err){
+                   console.log(err)
+               }else{
+                   console.log("coin removed")
+               }
+           })
+       })
+
+   }else if(model=="Tempo"){
+      Service.findOne({name:requiredName}, (err,service)=>{
+           User.updateOne({email:userEmail},{
+               $inc:{
+                   coins:-(service.homeTempo)
+               }
+           },{
+               overwrite:true
+           },
+           function(err){
+               if(err){
+                   console.log(err)
+               }else{
+                   console.log("coin removed")
+               }
+           })
+       })
+
+   }else if(model=="Bus"){
+       Service.findOne({name:requiredName},  (err,service)=>{
+           User.updateOne({email:userEmail},{
+               $inc:{
+                   coins:-(service.homeBus)
+               }
+           },{
+               overwrite:true
+           },
+           function(err){
+               if(err){
+                   console.log(err)
+               }else{
+                   console.log("coin removed")
+               }
+           })
+       })
+
+   }else if(model=="Multi Axel"){
+       Service.findOne({name:requiredName}, (err,service)=>{
+           User.updateOne({email:userEmail},{
+               $inc:{
+                   coins:-(service.homeMulti)
+               }
+           },{
+               overwrite:true
+           },
+           function(err){
+               if(err){
+                   console.log(err)
+               }else{
+                   console.log("coin removed")
+               }
+           })
+       })
+
+   }else if(model=="others"){
+        Service.findOne({name:requiredName}, (err,service)=>{
+            User.updateOne({email:userEmail},{
+                $inc:{
+                    coins:-(service.homeOthers)
+                }
+            },{
+               overwrite:true
+           },
+           function(err){
+               if(err){
+                   console.log(err)
+               }else{
+                   console.log("coin removed")
+               }
+           })
+        })
+
+    }
     try {
 
         // Guidlines
@@ -800,7 +1140,7 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
         // This is known as object destructuring
 
         // Good Practice
-        const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity } = req.body;
+        const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
         const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
 
         // Bad Practice
@@ -817,11 +1157,11 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                                email:detailsEmail,
                                phone:detailsPhone
                 }
-            },
-            $inc: {
-                coins: -2,
             }
         });
+
+        
+        
 
         // This is known as object destructuring
         const { homeSlots = [], homePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
@@ -853,6 +1193,22 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
     }
 })
 
+app.get("/verifiedServices",(req,res)=>{
+    Service.find({},function(err,services){
+        res.render("verifiedServices",{
+            services:services
+        })
+    })
+})
+
+
+app.get("/documents/:serviceId",function(req,res){
+    Service.findOne({_id:req.params.serviceId},function(err,service){
+        res.render("document",{
+            proofs:service.proofs
+        })
+    })
+})
 
 
 app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
@@ -1004,7 +1360,7 @@ app.post("/empLogin",function(req,res){
 
 app.route("/pendings/:empId")
 
-.get(function(req,res){
+.get( function(req,res){
     requestedEmployee=req.params.empId
     Employee.findOne({_id:requestedEmployee},function(err,employee){
         res.render("pendings",{
@@ -1012,22 +1368,24 @@ app.route("/pendings/:empId")
         })
     })
 })
+// completedWork:[{date:String,startTime:String,endTime:String,phone:String,customer:String}]
 
-.post(upload.array("img",4),function(req,res){
-    requestedEmployee=req.params.empId
-    Employee.findOneAndUpdate({id:requestedEmployee},{
+.post(upload.array("files",4),async (req,res)=>{
+    
+    Employee.findOneAndUpdate({_id:req.body.id},{
        $push:{
-           completed:{
-               name:req.body.name,
-               email:req.body.email,
+           completedWork:{
+               customer:req.body.name,
                phone:req.body.phone,
-               slot:req.body.slot,
+               startTime:req.body.startTime,
+               endTime:req.body.endTime,
                date:req.body.date,
-               vehicleNo:req.body.vehicleNo,
+               
            }
        } 
-    },{
-        overwrite:true
+    },
+    {
+        overwrite:false
     },
     function(err){
         if(err){
@@ -1035,6 +1393,7 @@ app.route("/pendings/:empId")
         }
         else{
             console.log("work done")
+            res.send("Work Completed")
         }
     }
     )
@@ -1046,14 +1405,14 @@ app.route("/pendings/:empId")
                 endTime:req.body.endTime,
                 date:req.body.date,
                 location:req.body.location,
-                pics:req.file
+                pics:req.files
             }
 
         }
         
     },
     {
-        overwrite:true
+        overwrite:false
     },
     function(err){
         if(err){
@@ -1069,7 +1428,7 @@ app.route("/pendings/:empId")
 
     Service.findOneAndUpdate({firm:req.body.serviceName},{
         $push:{
-            $completedBookings:{
+            completedBookings:{
                 date:req.body.date,
                 startTime:req.body.startTime,
                 endTime:req.body.endTime,
@@ -1081,14 +1440,14 @@ app.route("/pendings/:empId")
 
         }
     },{
-        overwrite:true
+        overwrite:false
     },
     function(err){
         if(err){
             console.log(err)
         }
         else{
-            console.log("done")
+            console.log("done Work")
         }
     }
     
