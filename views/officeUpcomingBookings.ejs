@@ -65,7 +65,7 @@
         
 		<div class="main-titles-head text-center">
 			<h3 class="header-name">
-				Pending Home Bookings
+				Pending Office Bookings
 			</h3> 
 		</div>
     
@@ -74,56 +74,56 @@
             
             
             <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
-				<% for(var i=0 ; i<service.homePendings.length ; i++){ %>
+				<% for(var i=0;i<service.officePendings.length;i++){ %>
                 
-					<a href="#page"><img class="img-responsive" src="https://vpurify.s3.us-east-2.amazonaws.com/<%= service.homePendings[i].userQR %>" alt=" "></a>
+					<a href="#page"><img class="img-responsive" src="https://vpurify.s3.us-east-2.amazonaws.com/<%= service.officePendings[i].userQR %>" alt=" "></a>
 
                 <table class="table-fill">
                     <thead>
                     <tr>
                     <th class="text-left">Time</th>
-                    <th class="text-left"><%= service.homePendings[i].slot %></th>
+                    <th class="text-left"><%= service.officePendings[i].slot %></th>
                     </tr>
                     </thead>
                     <tbody class="table-hover">
                     <tr>
                     <td class="text-left">Date</td>
-                    <td class="text-left"><%= service.homePendings[i].date %></td>
+                    <td class="text-left"><%= service.officePendings[i].date %></td>
                     </tr>
                     <tr>
                     <td class="text-left">Customer Name</td>
-                    <td class="text-left"><%= service.homePendings[i].name %></td>
+                    <td class="text-left"><%= service.officePendings[i].name %></td>
                     </tr>
                     <tr>
                     <td class="text-left">Customer Email</td>
-                    <td class="text-left"><%= service.homePendings[i].email %></td>
+                    <td class="text-left"><%= service.officePendings[i].email %></td>
                     </tr>
                     <tr>
                     <td class="text-left">Contact</td>
-                    <td class="text-left"><%= service.homePendings[i].phone %></td>
+                    <td class="text-left"><%= service.officePendings[i].phone %></td>
                     </tr>
                     <tr>
                     <td class="text-left">Vehicle Number</td>
-                    <td class="text-left"><%= service.homePendings[i].vehicleNo %></td>
+                    <td class="text-left"><%= service.officePendings[i].vehicleNo %></td>
                     </tr>
                     </tbody>
                     </table>
                     <br>
             <br>
                 <form method="post">
-					<input type="hidden" name="name" value="<%= service.homePendings[i].name %>">
-				    <input type="hidden" name="phone" value="<%= service.homePendings[i].phone %>">
-					<input type="hidden" name="email" value="<%= service.homePendings[i].email %>">
-					<input type="hidden" name="slot" value="<%= service.homePendings[i].slot %>">
-					<input type="hidden" name="date" value="<%= service.homePendings[i].date %>">
-					<input type="hidden" name="vehicleNo" value="<%= service.homePendings[i].vehicleNo %>">
+					<input type="hidden" name="name" value="<%= service.officePendings[i].name %>">
+				    <input type="hidden" name="phone" value="<%= service.officePendings[i].phone %>">
+					<input type="hidden" name="email" value="<%= service.officePendings[i].email %>">
+					<input type="hidden" name="slot" value="<%= service.officePendings[i].slot %>">
+					<input type="hidden" name="date" value="<%= service.officePendings[i].date %>">
+					<input type="hidden" name="vehicleNo" value="<%= service.officePendings[i].vehicleNo %>">
 											
                     <div class="form-left-to editContent">
 						
                         <span class="fa fa-user-o" aria-hidden="true" style="outline: none; cursor: inherit;">Select</span>
                         <select type="text" name="employee"  required="">
-							<% for(var j=0;j<service.homeEmployees.length;j++){ %>
-							<option value="<%= service.homeEmployees[j].name %>"><%= service.homeEmployees[j].name %> </option>
+							<% for(var j=0;j<service.officeEmployees.length;j++){ %>
+							<option value="<%= service.officeEmployees[j].name %>"><%= service.homeEmployees[j].name %> </option>
 							<% } %> 
 							</select>
 						

@@ -23,7 +23,7 @@
     
             <button onclick="w3_close()" class="w3-bar-item w3-button w3-large">Close &times;</button>
             <a href="/search/<%= user._id %> " class="w3-bar-item w3-button">Search Station</a>
-            <a href="#" class="w3-bar-item w3-button">Dashboard</a>
+            <a href="/userDashboard/<%= user._id %>" class="w3-bar-item w3-button">Dashboard</a>
             <a href="/subscription/qrCode/<%= user._id %> " class="w3-bar-item w3-button">Your QR code</a>
         </div>
         <script>
@@ -66,20 +66,25 @@
     <div class="two-grids">
         <div class="mid-class">
             
-            <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
                 
      <% coins.forEach(function(coin){ %>
+        <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
+            <h2 class="editContent"> Buy <%= coin._doc.range %> coins  </h2>
         <form action="/charge" method="POST">
-            <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-            <input type="email" name="userEmail" value="<%= user.email %> " required="" readonly>
             <div class="form-left-to editContent">
                 <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                <input type="email"  name="userEmail" value="<%= user.email %>" readonly required="">
+
+                <div class="clear"></div>
+            </div>
+            <div class="form-left-to editContent">
+                <span class="fas fa-coins" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                 <input type="number" id="coins" name="coinsRange" value="<%= coin._doc.range %>" readonly placeholder="Number Of Coins" required="">
 
                 <div class="clear"></div>
             </div>
             <div class="form-left-to editContent">
-                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                <span class="fas fa-money-bill-wave" aria-hidden="true" style="outline: none; cursor: inherit;">INR</span>
                 <input  value="<%= coin._doc.price %>" id="amt" name="chargeAmount" required="" readonly>
 
                 <div class="clear"></div>
@@ -99,61 +104,21 @@
         </script>
         
             </form>
-                    <% }) %>
+                    
             </div>        
-                
+            <% }) %>
                 
             </div>
-            <br>
-            <br>
-                <div style="margin-left: 27rem;" class="two-grids">
-                    <div class="mid-class">
-                    <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
-
-                <form action="/charge" method="POST">
-                    
-                    <h1 class="editContent">Buy Coins</h1>
-
-        <div class="form-left-to editContent">
-                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-                        <input type="email" name="userEmail" value="<%= user.email %> " required="">
-
-                        <div class="clear"></div>
-                    </div>
-                    <div class="form-left-to editContent">
-                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-                        <input type="number" id="coins" name="coinsRange" placeholder="Number Of Coins" required="">
-
-                        <div class="clear"></div>
-                    </div>
-                    <div class="form-left-to editContent">
-                        <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-                        <input  value="" id="amt" name="chargeAmount" required="">
-
-                        <div class="clear"></div>
-                    </div>
-                    <script
-           src="https://checkout.stripe.com/checkout.js"
-           class="stripe-button"
-           data-key="pk_test_Ph9ES1qhoLRtdcCG1DW7vWi100OtWOW5dR"
             
-           data-name="coin"
-           data-description="booking your selected slot"
-           data-locale="auto"
-           data-currency="inr"
-        >
-        
-            
-        </script>
                    
                     
-                </form>
+                
                 
                 
             </div>
         </div>
 </div>
-</div>
+
     
     <footer class="example-class">
         <p>

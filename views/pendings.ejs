@@ -78,7 +78,8 @@
                             <p class="sm-text-32">Customer Contact: <%= employee.pendings[i].phone %> </p>
                             <p class="sm-text-32">Customer Vehicle Number: <%= employee.pendings[i].vehicleNo %> </p>
                             <p class="sm-text-32">Date: <%= employee.pendings[i].date %> </p>
-                        	<p class="sm-text-32">Time Slot: <%= employee.pendings[i].slot %> </p>
+							<p class="sm-text-32">Time Slot: <%= employee.pendings[i].slot %> </p>
+							
                         </div>
                         <br>						
 						    <div class="two-grids">
@@ -88,14 +89,15 @@
 										<h2 class="editContent"> Complete Booking </h2>
 										<form enctype="multipart/form-data" method="POST">
 											
-                                            <input type="hidden" name="id" value="<%= employee._id %>">
-											<input type="hidden" name="name" value="<%= employee.pendings[i].name %>">
-											<input type="hidden" name="phone" value="<%= employee.pendings[i].phone %>">
-											<input type="hidden" name="email" value="<%= employee.pendings[i].email %>">
-											<input type="hidden" name="slot" value="<%= employee.pendings[i].slot %>">
-											<input type="hidden" name="date" value="<%= employee.pendings[i].date %>">
-											<input type="hidden" name="vehicleNo" value="<%= employee.pendings[i].vehicleNo %>">
-										    <input type="hidden" name="serviceName" value="<%= employee.company %>" placeholder="Firm Name" required="">
+											<input type="hidden" name="id" readonly value="<%= employee._id %>">
+											<input type="hidden" name="_id" readonly value="<%= employee.pendings[i]._id %>">
+											<input type="hidden" name="name" readonly value="<%= employee.pendings[i].name %>">
+											<input type="hidden" name="phone" readonly value="<%= employee.pendings[i].phone %>">
+											<input type="hidden" name="email" readonly value="<%= employee.pendings[i].email %>">
+											<input type="hidden" name="slot" readonly value="<%= employee.pendings[i].slot %>">
+											<input type="hidden" name="date" readonly value="<%= employee.pendings[i].date %>">
+											<input type="hidden" name="vehicleNo" readonly value="<%= employee.pendings[i].vehicleNo %>">
+										    <input type="hidden" name="serviceName" readonly value="<%= employee.company %>" placeholder="Firm Name" required="">
                         
                                                 
                                             <div class="form-left-to editContent">

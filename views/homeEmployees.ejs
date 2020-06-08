@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Documents</title>
-	<link rel="stylesheet" href="/css/style.css">
+    <title>Admin Panel</title>
+	<link rel="stylesheet" href="/css/style-starter.css">
 	<link href="/css/font-awesome.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="/css/sidebar.css">
     <link href="/css/style.css" rel="stylesheet" type="text/css" media="all">
@@ -32,19 +32,19 @@
                 }
 		</script>
 		<button style="position: absolute;z-index:0; border:none" class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰ Menu</button>
-		<!-- Back Button -->
+		<!-- Logout Button -->
 		<div class="topnav" style="position:static; z-index:2;">
 			<div class="topnav-right" style=	"text-align: right;">  
-				<a href="#">Back</a>	
+				<a href="#admin">Logout</a>	
 			</div>
 		</div> 
 		<!-- 2 Background Images -->
-		<img src="\images\blue.png" alt="blue" style="position: fixed; bottom: 0px;
+		<img src="/images/logo_t.png" alt="red" style="max-width: 33%; top: 0px; margin-right:auto;  margin-left: auto; display: block;position: relative;min-width:30%;z-index: 1;"><img src="/images/blue.png" alt="blue" style="position: fixed; bottom: 0px;
         left: 0px;  
         z-index: -1;
         padding: 0px;
 		margin: 0px;">
-		<img src="\images\red_car.png" alt="red" style="position: fixed;
+		<img src="/images/red_car.png" alt="red" style="position: fixed;
     	top: 0px;
     	right: 0px;
     	max-width: 90%;
@@ -59,36 +59,36 @@
 			<div class="container">
             <div class="main-titles-head text-center">
                 <h3 class="header-name">
-					Documents
+					Candidates
                 </h3> 
 			</div>
-			<!-- Documents -->
+            <!-- Candidates -->
+            
 			<div class="row grid-col-4 text-center">
-        <% for(var i=0; i<proofs.length;i++){ %> 
-          <%  var proofs_array = proofs[i]; %>
-			<!-- Document1-->
+                <% for(var j=0;j<service.homeEmployees.length;j++){ %>
+			<!-- Candidate1-->
             <div class="team-colomn col-lg-3 col-md-6 col-sm-6" style="border: rgba(256, 256, 256,0.01) solid 5px;">
 				<div class="team-main-6"style="border-bottom: 30px;">
 					<div class="right-team-9">
-						<img class="img-responsive" src="<%= proofs_array.location %>">
 						
-						<a href="<%= proofs_array.location %>"><p  class="sm-text-32">Download</p></a>
+                        <h6><a href="#page" class="title-team-32"><%= service.homeEmployees[j].name %></a></h6>
+                        <h6><a href="#page" class="title-team-32"><%= service.homeEmployees[j].phone %></a></h6>
+						<h6><a href="#page" class="title-team-32"><%= service.homeEmployees[j].email %></a></h6>
+                        <h6><a href="#page" class="title-team-32"><%= service.homeEmployees[j].pin %></a></h6>
+						<h6><a href="#page" class="title-team-32"><%= service.homeEmployees[j].city %></a></h6>
+
 					</div>
                 </div>
 			</div>
 			
 			
 			
-			
-			
-      <% } %>
+		
     
-
-			</div>
-    </div>
-    <form method="POST">
-      <a><button type="submit">Accept</button></a>
-      </form>
+            <% } %>
+            </div>
+   
+		</div>
 	</div>
 	<!-- /team-grids -->
 	</section>
@@ -96,7 +96,7 @@
 </body>
 
 </html>
-
+            
 
 
 

@@ -45,29 +45,90 @@
         <div class="mid-class">
             <% stations.forEach( function (station){ %>
             <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
-                
-                    <h2 class="editContent"><%= station.name %></h2>
+                    <label>Firm Name</label>
+                    <h2 class="editContent"><%= station.firm %></h2>
                     <h2 class="editContent"><%= station.city %></h2>
                     <h2 class="editContent"><%= station.phone %></h2>
                     <h2 class="editContent"><%= station.email %></h2>
                     <div class="btnn">
-                        <a href="/homeService/<%= station.name %>" ><button type="submit" class=" btn" style="outline: none; cursor: inherit;">Home Sanitisation</button></a>
+                        <a href="/homeService/<%= station.firm %>" ><button type="submit" class=" btn" style="outline: none; cursor: inherit;">Home Sanitisation</button></a>
 
                     </div>
                     <div class="btnn">
-                        <a href="/officeService/<%= station.name %>"><button type="submit" class=" btn" style="outline: none; cursor: inherit;">Station Sanitisation</button>
+                        <a href="/officeService/<%= station.firm %>"><button type="submit" class=" btn" style="outline: none; cursor: inherit;">Station Sanitisation</button></a>
                     </div>   
-                
+                    
             </div>
             <% } )%>
         </div>
+        
+        <!-- 
+              -->
+        
     
+       
+    
+        
+    
+        
+    <br>
+    <div class="mid-class">
+    <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
+                
+        <h2 class="editContent">Can't find suitable station?</h2>
+        <h4>Try City Name</h4>
+        <form action="/citySearch" method="POST">
+            <div class="form-left-to editContent">
+                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                <input type="text" name="city" placeholder="City Name" >
+
+                <div class="clear"></div>
+            </div>
+            
+           
+            <div class="btnn">
+                <button type="submit" class=" btn" style="outline: none; cursor: inherit;">Search</button>
+            </div>
+        </form>
+        
+    </div>
+</div>
+<br>
+<div class="mid-class">
+    <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
+                
+        <h2 class="editContent">Can't find suitable station?</h2>
+        <h4>Try Another PinCode</h4>
+        <form action="/search" method="POST">
+            <div class="form-left-to editContent">
+                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                <input type="text" name="pin" placeholder="Pin Code" >
+
+                <div class="clear"></div>
+            </div>
+            
+           
+            <div class="btnn">
+                <button type="submit" class=" btn" style="outline: none; cursor: inherit;">Search</button>
+            </div>
+        </form>
+        
+    </div>
+    </div>
+
+
+        </div>
+
+
+
+   
     <footer class="example-class">
         <p>
             Sample Reg Form for 
             <a href="http://www.vpurify.in" target="_blank">V-Purify</a>
         </p>
     </footer>
-	  </div></div>
+    </div></div>
+      </body>
+      </html>
             
-

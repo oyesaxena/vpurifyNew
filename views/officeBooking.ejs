@@ -1,25 +1,172 @@
-<h1><%= service.name %> </h1>
-<h1><%= service.phone %> </h1>
-<h1><%= service.email %> </h1>
-<h1><%= service.city %> </h1>
-<h1><%= slotDate %> </h1>
-<h1><%= slotTime %> </h1>
+<html>
+    <link type="text/css" id="dark-mode" rel="stylesheet" href=""><style type="text/css" id="dark-mode-custom-style"></style>
+    <head>
+        
+        
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Title Here</title>
 
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
 
+    <link href="/css/styles.css" rel="stylesheet" type="text/css" media="all">
+    <script src="https://kit.fontawesome.com/42e954c897.js" crossorigin="anonymous"></script>
+    <link href="//fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap" rel="stylesheet">
+    </head>
 
-
-<form method="POST" enctype="multipart/form-data">
-    <input type="email" name="yourEmail" placeholder="Please enter your email">
-    <input type="hidden" value="<%= service.name %>" name="detailsName">
-    <input type="hidden" value="<%= service.phone %>" name="detailsPhone">
-    <input type="hidden" value="<%= service.email %>" name="detailsEmail">
-    <input type="hidden" value="<%= service.city %>" name="detailsCity">
-    <input type="text" name="userName" placeholder="Please enter your name">
-    <input type="text" name="phone" placeholder="Please enter your number">
-    <input type="text" name="vehicleNo" placeholder="Please enter your Vehicle Number">
-    <label>Attach you personalize QR code</label>
-    <input type="file" name="img" accept="image/*">
-
+    <body><img src="/images/logo_t.png" alt="red" style="max-width: 33%; top: 0px; margin-right:auto;  margin-left: auto; display: block;
+    position: relative;
     
-    <button type="submit" value="submit">Book</button>
-</form>
+        
+        min-width:30%;z-index: 1;"
+        >
+        <img src="/images/blue.png" alt="blue" style="position: fixed;
+        bottom: 0px;
+        left: 0px;
+        
+        z-index: -1;
+        padding: 0px;
+        margin: 0px;"> 
+    <img src="/images/red_car.png" alt="red" style="position: fixed;
+    top: 0px;
+    right: 0px;
+    max-width: 90%;
+    max-height: 90%;
+    z-index: -1;
+    padding: 0px;
+    margin: 0px;"> 
+        
+	<div id="page" class="page">
+        
+    
+    <div class="two-grids">
+        <div class="mid-class">
+            
+            <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
+                    
+                    <h2 class="editContent"><%= service.firm %></h2>
+                    <h2 class="editContent"><%= service.city %></h2>
+                    <h2 class="editContent"><%= service.phone %></h2>
+                    <h2 class="editContent"><%= service.email %></h2>
+                    <h2 class="editContent"><%= slotDate %></h2>
+                    <h2 class="editContent"><%= slotTime %></h2>
+                     
+                    
+            </div>
+            
+        </div>
+        
+        <!-- 
+              -->
+        
+    
+       
+    
+        
+    
+        
+    <br>
+    
+<br>
+<div class="mid-class">
+    <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
+                
+        <h2 class="editContent">Make Booking</h2>
+        
+        <form method="POST" enctype="multipart/form-data">
+            <input type="hidden" value="<%= service.firm %>" readonly name="detailsName">
+    <input type="hidden" value="<%= service.phone %>" readonly name="detailsPhone">
+    <input type="hidden" value="<%= service.email %>" readonly name="detailsEmail">
+    <input type="hidden" value="<%= slotDate %>" readonly name="detailsDate">
+    <input type="hidden" value="<%= slotTime %>" readonly name="detailsSlot">
+    <input type="hidden" value="<%= service.city %>" readonly name="detailsCity">
+            <div class="form-left-to editContent">
+                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                <input type="email" name="yourEmail" placeholder="Please enter registered email id">
+
+                <div class="clear"></div>
+            </div>
+            <div class="form-left-to editContent">
+                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                <input type="text" name="userName" placeholder="Please enter registered Name">
+
+                <div class="clear"></div>
+            </div>
+            <div class="form-left-to editContent">
+                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                <input type="text" name="phone" placeholder="Please enter registered contact number">
+
+                <div class="clear"></div>
+            </div>
+            <div class="form-left-to editContent">
+                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                <input type="text" name="vehicleNo" placeholder="Please enter registered Vehicle Number">
+
+                <div class="clear"></div>
+            </div>
+            <div class="form-left-to editContent">
+                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                <select type="text" name="model" placeholder="Please enter registered Vehicle Model">
+                    <option value="Two Wheeler">Two Wheeler</option>
+                    <option value="Sedan">Sedan</option>
+                    <option value="Hatchback">Hatchback</option>
+                    <option value="Auto Rikshaw">Auto Rikshaw</option>
+                    <option value="small">Small Commercial</option>
+                    <option value="Multi Axel">Multi Axel</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Maxi">Maxi</option>
+                    <option value="Tempo">Tempo</option>
+                    <option value="Bus">Bus</option>
+                    <option value="others">Others</option>
+                    </select>
+
+                <div class="clear"></div>
+            </div>
+            <div class="form-left-to editContent">
+                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Your QR code</span>
+                
+                <input type="file" name="img" accept="image/*" placeholder="Please enter registered Vehicle Number">
+
+                <div class="clear"></div>
+            </div>
+            
+           
+            <div class="btnn">
+                <button type="submit" class=" btn" style="outline: none; cursor: inherit;">Book Slot</button>
+            </div>
+        </form>
+        
+    </div>
+    </div>
+
+
+        </div>
+
+
+
+   
+    <footer class="example-class">
+        <p>
+            Sample Reg Form for 
+            <a href="http://www.vpurify.in" target="_blank">V-Purify</a>
+        </p>
+    </footer>
+    </div></div>
+      </body>
+      </html>
+            
+
+
+
+
+
+
+
+
+
+
+
+
+

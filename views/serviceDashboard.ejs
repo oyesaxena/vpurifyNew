@@ -18,9 +18,10 @@
 	<!-- SideBar -->
 	<div class="w3-sidebar w3-bar-block" style="display:none" id="mySidebar">
 		<button onclick="w3_close()" class="w3-bar-item w3-button w3-large">Close &times;</button>
-		<a href="/upcomingBookings/<%= service._id %> " class="w3-bar-item w3-button">Upcoming Home Bookings</a>
-		<a href="/upcomingBookings1/<%= service._id %> " class="w3-bar-item w3-button">Upcoming Office Bookings</a>
+		<a href="/homeUpcomingBookings/<%= service._id %> " class="w3-bar-item w3-button">Upcoming Home Bookings</a>
+		<a href="/officeUpcomingBookings/<%= service._id %> " class="w3-bar-item w3-button">Upcoming Office Bookings</a>
 		<a href="/homeEmployees/<%= service._id %> " class="w3-bar-item w3-button">Home Employees</a>
+		<a href="/officeEmployees/<%= service._id %> " class="w3-bar-item w3-button">Office Employees</a>
 	</div>
 	<script>
 		function w3_open() {
