@@ -68,8 +68,8 @@ const userSchema=new mongoose.Schema({
     },
     homeBookings:[{name:{type:String,trim:true},email:{type:String,trim:true},phone:{type:String,trim:true},address:{type:String,trim:true},city:{type:String,trim:true},slot:{type:String,trim:true},date:{type:String,trim:true}}],
     officeBookings:[{name:{type:String,trim:true},email:{type:String,trim:true},phone:{type:String,trim:true},address:{type:String,trim:true},city:{type:String,trim:true},slot:{type:String,trim:true},date:{type:String,trim:true}}],
-    completed:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},pics:[],name:{type:String,trim:true},location:{type:String,trim:true}}]
-
+    completed:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},pics:[],name:{type:String,trim:true},location:{type:String,trim:true}}],
+    lastDate:{type:String,trim:true,default:" "},lastStartTime:{type:String,trim:true,default:" "},lastEndTime:{type:String,trim:true,default:" "}
 })
 
 const coinsSchema =new mongoose.Schema({
@@ -199,23 +199,51 @@ app.get("/users",function(req,res){
 app.get("/qrCode/:userId",function(req,res){
     requestedQR=req.params.userId;
     User.findOne({_id:requestedQR},function(err,user){
-        var temp=[{}]
+        var temp=[ ]
         var name=user.name
+        temp.push("Name: ")
         temp.push(name)
+        temp.push(" ")
         var phone=user.phone
+        temp.push(" Contact: ")
         temp.push(phone)
+        temp.push(" ")
         var email=user.email
+        temp.push(" Email: ")
         temp.push(email)
+        temp.push(" ")
         var vehicleType=user.vehicleType
+        temp.push(" Vehicl Make: ")
         temp.push(vehicleType)
+        temp.push(" ")
         var vehicleCompany=user.vehicleCompany
+        temp.push(" Vehicle Company: ")
         temp.push(vehicleCompany)
+        temp.push(" ")
         var vehicleModel=user.model
+        temp.push(" Model: ")
         temp.push(vehicleModel)
+        temp.push(" ")
         var vehicleNo=user.number
+        temp.push(" Vehicle Number: ")
         temp.push(vehicleNo)
+        temp.push(" ")
         var passingYear=user.year
+        temp.push(" Passing Year: ")
         temp.push(passingYear)
+        temp.push(" ")
+        var lastDate=user.lastDate
+        temp.push(" Last Date of sanitisation: ")
+        temp.push(lastDate)
+        temp.push(" ")
+        var lastStartTime=user.lastStartTime
+        temp.push(" Start Time: ")
+        temp.push(lastStartTime)
+        temp.push(" ")
+        var lastEndTime=user.lastEndTime
+        temp.push(" End Time: ")
+        temp.push(lastEndTime)
+        temp.push(" ")
         
         // var lastTime=user.completed[-1].endTime
         // temp.push(lastTime)
@@ -233,24 +261,51 @@ app.get("/qrCode/:userId",function(req,res){
 app.get("/search/qrCode/:userId",function(req,res){
     requestedQR=req.params.userId;
     User.findOne({_id:requestedQR},function(err,user){
-        var temp=[{ }]
+        var temp=[ ]
         var name=user.name
+        temp.push("Name: ")
         temp.push(name)
-        temp.push("_")
+        temp.push(" ")
         var phone=user.phone
+        temp.push(" Contact: ")
         temp.push(phone)
+        temp.push(" ")
         var email=user.email
+        temp.push(" Email: ")
         temp.push(email)
+        temp.push(" ")
         var vehicleType=user.vehicleType
+        temp.push(" Vehicl Make: ")
         temp.push(vehicleType)
+        temp.push(" ")
         var vehicleCompany=user.vehicleCompany
+        temp.push(" Vehicle Company: ")
         temp.push(vehicleCompany)
+        temp.push(" ")
         var vehicleModel=user.model
+        temp.push(" Model: ")
         temp.push(vehicleModel)
+        temp.push(" ")
         var vehicleNo=user.number
+        temp.push(" Vehicle Number: ")
         temp.push(vehicleNo)
+        temp.push(" ")
         var passingYear=user.year
+        temp.push(" Passing Year: ")
         temp.push(passingYear)
+        temp.push(" ")
+        var lastDate=user.lastDate
+        temp.push(" Last Date of sanitisation: ")
+        temp.push(lastDate)
+        temp.push(" ")
+        var lastStartTime=user.lastStartTime
+        temp.push(" Start Time: ")
+        temp.push(lastStartTime)
+        temp.push(" ")
+        var lastEndTime=user.lastEndTime
+        temp.push(" End Time: ")
+        temp.push(lastEndTime)
+        temp.push(" ")
 
         
         // var lastDate=user.completed[-1].date
@@ -2871,6 +2926,29 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
     
 })
 
+app.get("/completedEmployee/:empId",function(req,res){
+    Employee.findOne({_id:req.params.empId},function(err,employee){
+        res.render("completedEmployee",{
+            employee:employee
+        })
+    })
+})
+
+app.get("/completedUser/:userId",function(req,res){
+    User.findOne({_id:req.params.userId},function(err,user){
+        res.render("completedUser",{
+            user:user
+        })
+    })
+})
+app.get("/completedService/:serviceId",function(req,res){
+    Service.findOne({_id:req.params.serviceId},function(err,service){
+        res.render("completedService",{
+            service:service
+        })
+    })
+})
+
 
 app.get("/homeEmployees/:serviceId",function(req,res){
     Service.findOne({_id:req.params.serviceId},function(err,service){
@@ -2996,6 +3074,52 @@ app.route("/pendings/:empId")
         }
     }
     )
+    if(req.body.location=="Home"){
+        User.findOneAndUpdate({email:req.body.email},{
+            $pull:{
+                homeBookings:{
+                    slot:req.body.slot
+                }
+            }
+        },{
+            overwrite:true,
+            multi:true
+        },
+        function (err,docs) {
+            if(err){
+                console.log(err)
+            }else if(docs==null){
+                console.log(docs)
+            }else{
+                console.log("ok")
+            }
+            
+        }
+        )
+    }else if(req.body.location=="On Site"){
+        User.findOneAndUpdate({email:req.body.email},{
+            $pull:{
+                officeBookings:{
+                    slot:req.body.slot
+                }
+            }
+        },{
+            overwrite:true,
+            multi:true
+        },
+        function (err,docs) {
+            if(err){
+                console.log(err)
+            }else if(docs==null){
+                console.log(docs)
+            }else{
+                console.log("ok")
+            }
+            
+        }
+        )
+    }
+
     User.findOneAndUpdate({email:req.body.email},{
         $push:{
             completed:{
@@ -3008,10 +3132,10 @@ app.route("/pendings/:empId")
             }
 
         },
-        $pull:{
-            homePendings:{
-                slot:req.body.slot
-            }
+        $set:{
+            lastDate:req.body.date,
+            lastStartTime:req.body.startTime,
+            lastEndTime:req.body.endTime
         }
         
     },

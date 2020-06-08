@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>DashBoard</title>
 	<link rel="stylesheet" href="/css/style-starter.css">
+	<link rel="stylesheet" href="/css/table.css">
 	<link href="/css/font-awesome.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="/css/sidebar.css">
     <link href="/css/style.css" rel="stylesheet" type="text/css" media="all">
@@ -18,9 +19,9 @@
 	<!-- SideBar -->
 	<div class="w3-sidebar w3-bar-block" style="display:none" id="mySidebar">
 		<button onclick="w3_close()" class="w3-bar-item w3-button w3-large">Close &times;</button>
-		<a href="/pendings/<%= employee._id %> " class="w3-bar-item w3-button">Upcoming Bookings</a>
-		<a href="/completedEmployee/<%= employee._id %> " class="w3-bar-item w3-button">Completed Bookings</a>
-		
+		<a href="/subscription/<%= user._id %>" class="w3-bar-item w3-button">Buy Coins</a>
+		<a href="/search/<%= user._id %>" class="w3-bar-item w3-button">Search Stations</a>
+		<a href="/qrCode/<%= user._id %>" class="w3-bar-item w3-button">Your QR code</a>
 	</div>
 	<script>
 		function w3_open() {
@@ -38,7 +39,7 @@
 	<!-- Logout Button -->
 	<div class="topnav" style="position:static; z-index:2;">
 		<div class="topnav-right" style="text-align: right;">  
-			<a href="#admin">Logout</a>	
+			<a href="/">Logout</a>	
 		</div>
 	</div>
 	<!-- /Logout Button -->
@@ -58,30 +59,56 @@
     	right: 0px;max-width: 90%;
     	max-height: 90%;z-index: -1;
     	padding: 0px;margin: 0px;">
-	<!--/Background Images and Logo -->
-	
-	<!-- Profile -->
-	<section class="w3l-team-main-6">
-		<div class="container">
-            <div class="main-titles-head text-center">
-                <h3 class="header-name">
-					My Profile
-                </h3> 
-            </div>
-			<div class="row grid-col-4 text-center">
-                <div class="team-colomn col-lg-3 col-md-6 col-sm-6">	
-					<div class="team-main-6">
-						<div class="right-team-9">
-							<h4 class="sm-text-32">Name: <%= employee.name %></h4>
-                            <p class="sm-text-32">Email: <%= employee.email %> </p>
-                            <p class="sm-text-32">Phone Number: <%= employee.phone %> </p>
-                        	
-						</div>	
-					</div>
+    <!--/Background Images and Logo -->
+    
+    <section class="w3l-recent-work-hobbies">
+		<div class="recent-work ">
+			<div class="container">
+				<div class="main-titles-head">
+						<h3 class="header-name">Upcoming Home Bookings
+						</h3>			  
 				</div>
-			</div>
-		</div>
-	
+				<div class="row about-about">
+					<% for(var i=0;i<employee.completedWork.length;i++){ %>
+					<div class="col-lg-4 col-md-6"style="border: rgba(256, 256, 256,0.01) solid 5.5px;">
+						<div class="about-grids">
+							
+							<div class="mt-3 about-list">
+								<table class="table-fill">
+									<thead>
+										<tr>
+											<th class="text-left">Customer Name</th>
+											<th class="text-left"><%= employee.completedWork[i].customer %></th>
+										</tr>
+									</thead>
+									<tbody class="table-hover">
+										<tr>
+											<td class="text-left">Customer Contact</td>
+											<td class="text-left"><%= employee.completedWork[i].phone %></td>
+										</tr>
+										<tr>
+											<td class="text-left">Start Time</td>
+											<td class="text-left"><%= employee.completedWork[i].startTime %></td>
+										</tr>
+										<tr>
+											<td class="text-left">End Time</td>
+											<td class="text-left"><%= employee.completedWork[i].endTime %></td>
+										</tr>
+										<tr>
+											<td class="text-left">Date</td>
+											<td class="text-left"><%= employee.completedWork[i].date %></td>
+										</tr>
+										<tr>
+											<td class="text-left">Station City</td>
+											<td class="text-left"><%= employee.completedWork[i].city %></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				<% } %> 
+					</div>
+					</div>
+					</div>
 	</section>
-    <!-- /Profile -->
-    </body>
