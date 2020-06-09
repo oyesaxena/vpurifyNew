@@ -1,12 +1,12 @@
 //jshint esversion:6
 require('dotenv').load()
-const StripeSecretKey=process.env.STRIPE_SECRET_KEY
+const StripeSecretKey = process.env.STRIPE_SECRET_KEY
 
 const express =require("express");
 const ejs = require("ejs");
 const path = require("path");
 const fs = require('fs')
-var stripe=require("stripe")("StripeSecretKey")
+var stripe=require("stripe")(StripeSecretKey)
 const bodyParser = require("body-parser");
 const mongoose=require("mongoose")
 const app=express();
@@ -1133,99 +1133,83 @@ app.route("/subscription/:userId")
 //     res.render("slotBooked")
 // })
 
-app.post("/charge",(req,res)=>{
-    
-    requestedUser=req.body.email
-    // try {
-    //     stripe.customers
-    //       .create({
-    //         name: req.body.name,
-    //         email: req.body.email,
-    //         source: req.body.stripeToken
-    //       })
-    //       .then(customer =>
-    //         stripe.charges.create({
-    //           amount: req.body.amount * 100,
-    //           currency: "inr",
-    //           customer: customer.id
-    //         })
-    //       )
-    //       .then(() => User.updateOne({email:requestedUser},{
-    //         $inc:{
-    //             coins:req.body.coinsRange        
-    //         }
-            
-    //     },
-    //     {
-    //         overwrite:true
-    //     },
-    //         function (err) {
-    //             if(err){
-    //                 console.log(err)
-    //             }
-    //             else{
-    //                 console.log("updated")
-    //             }
+app.post("/charge", async (req,res)=>{
+    try {
+        requestedUser=req.body.email
+        // try {
+        //     stripe.customers
+        //       .create({
+        //         name: req.body.name,
+        //         email: req.body.email,
+        //         source: req.body.stripeToken
+        //       })
+        //       .then(customer =>
+        //         stripe.charges.create({
+        //           amount: req.body.amount * 100,
+        //           currency: "inr",
+        //           customer: customer.id
+        //         })
+        //       )
+        //       .then(() => User.updateOne({email:requestedUser},{
+        //         $inc:{
+        //             coins:req.body.coinsRange        
+        //         }
                 
-    //         }
-        
-    //     ))
-    //       .catch(err => console.log(err));
-    //   } catch (err) {
-    //     res.send(err);
-    //   }
-    
-    
-
-    var token=req.body.stripeToken;
-    var chargeAmount=req.body.amount * 100;
-    var charge=stripe.charges.create({
-        amount:chargeAmount,
-        currency:"inr",
-        source:token,
-
-    },
-    function(err,charge){
-        if(err){
-            console.log(err)
-            console.log("Your card was declined")
-            User.findOne({email:requestedUser},function(err,user){
-                res.render("paymentFailed",{
-                    user:user
-                })
-            })
-        }else{
-            console.log("Your payment was successful")
-            User.updateOne({email:requestedUser},{
-                $inc:{
-                    coins:req.body.coinsRange        
-                }
-                
-            },
-            {
-                overwrite:true
-            },
-                function (err) {
-                    if(err){
-                        console.log(err)
-                    }
-                    else{
-                        console.log("updated")
-                        User.findOne({email:requestedUser},function(err,user){
-                            res.render("slotBooked",{
-                                user:user
-                            })
-                        })
-                    }
+        //     },
+        //     {
+        //         overwrite:true
+        //     },
+        //         function (err) {
+        //             if(err){
+        //                 console.log(err)
+        //             }
+        //             else{
+        //                 console.log("updated")
+        //             }
                     
-                }
+        //         }
             
-            )
-   
-        }
+        //     ))
+        //       .catch(err => console.log(err));
+        //   } catch (err) {
+        //     res.send(err);
+        //   }
+        
+        
 
+        var token=req.body.stripeToken;
+        var chargeAmount=req.body.amount * 100;
+
+        const charge = await stripe.charges.create({
+            amount:chargeAmount,
+            currency:"inr",
+            source:token,
+        });
+
+        console.log("Your payment was successful")
+        await User.updateOne({email:requestedUser},{
+            $inc:{
+                coins:req.body.coinsRange        
+            }
+            
+        },
+        {
+            overwrite:true
+        });
+        
+        console.log("Updated");
+        const user = await User.findOne({email:requestedUser});
+        res.render("slotBooked",{ user });
+    } catch (err) {
+        console.log(err)
+        console.log("Your card was declined")
+        User.findOne({email:requestedUser},function(err,user){
+            res.render("paymentFailed",{
+                user:user
+            })
+        });
     }
-   );
+});
     
     
 
@@ -3094,7 +3078,7 @@ app.post("/addCoins",function(req,res){
 })
 
 
-app.post("/register",upload.single('img'),function(req,res){
+app.post("/register",upload.single('img'),async (req,res) => {
     try {
         await User.create({
             email:req.body.username,
@@ -3138,10 +3122,10 @@ app.post("/removeCoin",function(req,res){
     })
 })
 
-app.post("/empreg", upload.array("files",10) ,function(req,res){
+app.post("/empreg", upload.array("files",10) , async (req,res) => {
     try {
         const { city = "" } = req.body;
-        const regCity = city.charAt(0).toUpperCase() + city.slice(1)
+        const regCity = city.charAt(0).toUpperCase() + city.slice(1);
         await regEmployee.create({
             email:req.body.username,
             name:req.body.name,
@@ -3160,10 +3144,10 @@ app.post("/empreg", upload.array("files",10) ,function(req,res){
     }
 })
 
-app.post("/reg",function(req,res){
+app.post("/reg",async (req,res) => {
     try {
         const { city = "" } = req.body;
-        const regCity = city.charAt(0).toUpperCase() + city.slice(1)
+        const regCity = city.charAt(0).toUpperCase() + city.slice(1);
         await regService.create({
             email:req.body.username,
             name:req.body.name,
