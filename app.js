@@ -1209,11 +1209,6 @@ app.post("/charge", async (req,res)=>{
             })
         });
     }
-});
-    
-    
-
-
 })
 
 app.get("/slotBooked",function(req,res){
