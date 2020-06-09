@@ -1,0 +1,219 @@
+<html>
+    <link type="text/css" id="dark-mode" rel="stylesheet" href=""><style type="text/css" id="dark-mode-custom-style"></style>
+    <head>
+        
+        
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Title Here</title>
+
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/style-starter.css">
+
+    <link href="/css/style.css" rel="stylesheet" type="text/css" media="all">
+	<link href="/css/styles.css" rel="stylesheet" type="text/css" media="all">
+	<script src="https://kit.fontawesome.com/42e954c897.js" crossorigin="anonymous"></script>
+
+    <link href="//fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap" rel="stylesheet">
+    <link href="/css/table.css" rel="stylesheet">
+    </head>
+    
+
+    <body>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/sidebar.css">
+            <div class="w3-sidebar w3-bar-block" style="display:none" id="mySidebar">
+    
+                <button onclick="w3_close()" class="w3-bar-item w3-button w3-large">Close &times;</button>
+                <a href="/serviceDashboard/<%= service._id %> " class="w3-bar-item w3-button">Dashboard</a>
+              </div>
+              <script>
+                function w3_open() {
+                  document.getElementById("mySidebar").style.width = "25%";
+                  document.getElementById("mySidebar").style.display = "block";
+                }
+                
+                function w3_close() {
+                  document.getElementById("mySidebar").style.display = "none";
+                }
+                </script>
+              
+            <button style="position: relative;" class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰ Menu</button>
+        <img src="\images\logo_t.png" alt="red" style="max-width: 33%; top: 0px; margin-right:auto;  margin-left: auto; display: block;
+    position: relative;min-width:30%;z-index: 1;"><img src="\images\blue.png" alt="blue" style="position: fixed;
+        bottom: 0px;
+        left: 0px;
+        
+        z-index: -1;
+        padding: 0px;
+        margin: 0px;"> 
+    <img src="\images\red_car.png" alt="red" style="position: fixed;
+    top: 0px;
+    right: 0px;
+    max-width: 90%;
+    max-height: 90%;
+    z-index: -1;
+    padding: 0px;
+    margin: 0px;">
+   
+   <section class="w3l-recent-work-hobbies">
+	<div class="recent-work ">
+		<div class="container">
+
+			<!-- Time Slot Head -->
+			<div class="main-titles-head">
+					<h3 class="header-name">Rates
+					</h3>			  
+			</div>
+			<!-- /Time Slot Head -->
+
+
+
+			<div class="row about-about">
+				<!-- Time Slot1 -->	
+				
+				<div class="col-lg-4 col-md-6"style="border: rgba(256, 256, 256,0.01) solid 5.5px;">
+					<div class="about-grids">
+						
+						<div class="mt-3 about-list">
+                            <h3>Home Rates</h3>
+							<table class="table-fill">
+								
+								<thead>
+									<tr>
+										<th class="text-left">Car Make</th>
+										<th class="text-left">Coins</th>
+									</tr>
+								</thead>
+								<tbody class="table-hover">
+                                    <tr>
+										<th class="text-left">Sedan</th>
+										<th class="text-left"><%= service.homeSedan %> Coins</th>
+									</tr>
+									<tr>
+										<td class="text-left">Auto Rikshaw</td>
+										<td class="text-left"><%= service.homeAuto %> Coins</td>
+									</tr>
+									<tr>
+										<td class="text-left">Two Wheeler</td>
+										<td class="text-left"><%= service.homeTwoWheeler %> Coins</td>
+									</tr>
+									<tr>
+										<td class="text-left">Maxi</td>
+										<td class="text-left"><%= service.homeMaxi %> Coins</td>
+									</tr>
+									<tr>
+										<td class="text-left">Multi Axel</td>
+										<td class="text-left"><%= service.homeMulti %> Coins</td>
+									</tr>
+									<tr>
+										<td class="text-left">SUV</td>
+										<td class="text-left"><%= service.homeSUV %> Coins</td>
+									</tr>
+									<tr>
+										<td class="text-left">Bus</td>
+										<td class="text-left"><%= service.homeBus %> Coins</td>
+									</tr>
+									<tr>
+										<td class="text-left">Hatchback</td>
+										<td class="text-left"><%= service.homeHatchback %> Coins</td>
+                                    </tr>
+                                    <tr>
+										<td class="text-left">Tempo</td>
+										<td class="text-left"><%= service.homeTempo %> Coins</td>
+                                    </tr>
+                                    <tr>
+										<td class="text-left">Small Commercial</td>
+										<td class="text-left"><%= service.homeSmall %> Coins</td>
+                                    </tr>
+                                    <tr>
+										<td class="text-left">Others</td>
+										<td class="text-left"><%= service.homeOthers %> Coins</td>
+									</tr>
+								</tbody>
+							</table>
+							
+							
+							
+				
+						</div>
+					</div>
+                </div>
+                <div class="col-lg-4 col-md-6"style="border: rgba(256, 256, 256,0.01) solid 5.5px;">
+					<div class="about-grids">
+						
+						<div class="mt-3 about-list">
+                            <h3>Station Rates</h3>
+							<table class="table-fill">
+								
+								<thead>
+									<tr>
+										<th class="text-left">Vehicle Make</th>
+										<th class="text-left">Coins</th>
+									</tr>
+								</thead>
+								<tbody class="table-hover">
+                                    <tr>
+										<th class="text-left">Sedan</th>
+										<th class="text-left"><%= service.officeSedan %> Coins</th>
+									</tr>
+									<tr>
+										<td class="text-left">Auto Rikshaw</td>
+										<td class="text-left"><%= service.officeAuto %> Coins</td>
+									</tr>
+									<tr>
+										<td class="text-left">Two Wheeler</td>
+										<td class="text-left"><%= service.officeTwoWheeler %> Coins</td>
+									</tr>
+									<tr>
+										<td class="text-left">Maxi</td>
+										<td class="text-left"><%= service.officeMaxi %> Coins</td>
+									</tr>
+									<tr>
+										<td class="text-left">Multi Axel</td>
+										<td class="text-left"><%= service.officeMulti %> Coins</td>
+									</tr>
+									<tr>
+										<td class="text-left">SUV</td>
+										<td class="text-left"><%= service.officeSUV %> Coins</td>
+									</tr>
+									<tr>
+										<td class="text-left">Bus</td>
+										<td class="text-left"><%= service.officeBus %> Coins</td>
+									</tr>
+									<tr>
+										<td class="text-left">Hatchback</td>
+										<td class="text-left"><%= service.officeHatchback %> Coins</td>
+                                    </tr>
+                                    <tr>
+										<td class="text-left">Tempo</td>
+										<td class="text-left"><%= service.officeTempo %> Coins</td>
+                                    </tr>
+                                    <tr>
+										<td class="text-left">Small Commercial</td>
+										<td class="text-left"><%= service.officeSmall %> Coins</td>
+                                    </tr>
+                                    <tr>
+										<td class="text-left">Others</td>
+										<td class="text-left"><%= service.officeOthers %> Coins</td>
+									</tr>
+								</tbody>
+							</table>
+							
+							
+							
+				
+						</div>
+					</div>
+				</div>
+				
+			</div></div></div></section>
+   
+
+
+    </body>
+</html>
+
+	 

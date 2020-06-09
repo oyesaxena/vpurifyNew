@@ -22,9 +22,8 @@
 	<!-- SideBar -->
 	<div class="w3-sidebar w3-bar-block" style="display:none" id="mySidebar">
 		<button onclick="w3_close()" class="w3-bar-item w3-button w3-large">Close &times;</button>
-		<a href="#" class="w3-bar-item w3-button">Link 1</a>
-		<a href="#" class="w3-bar-item w3-button">Link 2</a>
-		<a href="#" class="w3-bar-item w3-button">Link 3</a>
+		<a href="/empDashboard/<%= employee._id %> " class="w3-bar-item w3-button">DashBoard</a>
+		
 	</div>
 	<script>
 		function w3_open() {
@@ -40,11 +39,7 @@
 	<!--/SideBar -->
 
 	<!-- Logout Button -->
-	<div class="topnav" style="position:static; z-index:2;">
-		<div class="topnav-right" style="text-align: right;">  
-			<a href="#admin">Logout</a>	
-		</div>
-	</div>
+	
 	<!-- /Logout Button -->
 
 	<!-- Background Images and Logo -->
@@ -110,6 +105,10 @@
 											<td class="text-left"><%= employee.pendings[i].phone %></td>
 										</tr>
 										<tr>
+											<td class="text-left">Customer Address</td>
+											<td class="text-left"><%= employee.pendings[i].address %></td>
+										</tr>
+										<tr>
 											<td class="text-left">Vehicle Number</td>
 											<td class="text-left"><%= employee.pendings[i].vehicleNo%></td>
 										</tr>
@@ -123,6 +122,7 @@
 									<input type="hidden" name="_id" readonly value="<%= employee.pendings[i]._id %>">
 											
 									<input type="hidden" name="name" readonly value="<%= employee.pendings[i].name %>">
+									<input type="hidden" name="coins" readonly value="<%= employee.pendings[i].coins %>">
 									<input type="hidden" name="phone" readonly value="<%= employee.pendings[i].phone %>">
 									<input type="hidden" name="email" readonly value="<%= employee.pendings[i].email %>">
 									<input type="hidden" name="slot" readonly value="<%= employee.pendings[i].slot%>">
@@ -158,8 +158,15 @@
 									</div>
 									<div class="form-left-to editContent">
 										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-										<label>Upload images after sanitisation</label>
-										<input type="file" name="files" placeholder="Images" required="" multiple>
+										<label style="color: tomato;">Upload car front image</label>
+										<input type="file" name="front" accept="image/*" placeholder="Images" required="">
+								   
+										<div class="clear"></div>
+									</div>
+									<div class="form-left-to editContent">
+										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+										<label style="color: tomato;">Upload car back image</label>
+										<input type="file" name="back" accept="image/*" placeholder="Images" required="">
 								   
 										<div class="clear"></div>
 									</div>

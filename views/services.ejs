@@ -35,7 +35,7 @@
 		<!-- Logout Button -->
 		<div class="topnav" style="position:static; z-index:2;">
 			<div class="topnav-right" style=	"text-align: right;">  
-				<a href="#admin">Logout</a>	
+				<a href="/admin">Back</a>	
 			</div>
 		</div> 
 		<!-- 2 Background Images -->
@@ -70,11 +70,45 @@
             <div class="team-colomn col-lg-3 col-md-6 col-sm-6" style="border: rgba(256, 256, 256,0.01) solid 5px;">
 				<div class="team-main-6"style="border-bottom: 30px;">
 					<div class="right-team-9">
-						
-                        <h6><a href="#page" class="title-team-32"><%= service.name %></a></h6>
-                        <h6><a href="#page" class="title-team-32"><%= service.phone %></a></h6>
+						<label><b>Name</b></label>
+						<h6><a href="#page" class="title-team-32"><%= service.name %></a></h6>
+						<label><b>Firm Name</b></label>
+						<h6><a href="#page" class="title-team-32"><%= service.firm %></a></h6>
+						<label><b>Address</b></label>
+						<h6><a href="#page" class="title-team-32"><%= service.address %></a></h6>
+						<label><b>Contact</b></label>
+						<h6><a href="#page" class="title-team-32"><%= service.phone %></a></h6>
+						<label><b>Email</b></label>
 						<h6><a href="#page" class="title-team-32"><%= service.email %></a></h6>
+						<label><b>Pin Code</b></label>
+						<h6><a href="#page" class="title-team-32"><%= service.pin %></a></h6>
+						<label><b>City</b></label>
+						<h6><a href="#page" class="title-team-32"><%= service.city %></a></h6>
+						<label><b>State</b></label>
+						<h6><a href="#page" class="title-team-32"><%= service.state %></a></h6>
+						<label><b>GST Number</b></label>
+						<h6><a href="#page" class="title-team-32"><%= service.gst %></a></h6>
+						<label><b>Vehicle number</b></label>
+						<h6><a href="#page" class="title-team-32"><%= service.number %></a></h6>
+						<br>
 						<a href="/docs/<%=service._id%>"><p  class="sm-text-32">Documents</p></a>
+						<br>
+						<br>
+						<form action="/serviceReject" method="POST">
+							<input type="hidden" value="<%= service._id %>" name="id">
+							<input type="hidden" value="<%= service.name %>" name="name">
+							<input type="hidden" value="<%= service.firm %>" name="firm">
+							<input type="hidden" value="<%= service.address %>" name="address">
+							<input type="hidden" value="<%= service.phone %>" name="phone">
+							<input type="hidden" value="<%= service.email %>" name="email">
+							<input type="hidden" value="<%= service.pin %>" name="pin">
+							<input type="hidden" value="<%= service.city %>" name="city">
+							<input type="hidden" value="<%= service.state %>" name="state">
+							<input type="hidden" value="<%= service.gst %>" name="gst">
+							<input type="hidden" value="<%= service.number %>" name="number">
+							<button type="submit">Service Reject</button>
+						
+						</form>
 					</div>
                 </div>
 			</div>

@@ -19,7 +19,10 @@
 	<!-- SideBar -->
 	<div class="w3-sidebar w3-bar-block" style="display:none" id="mySidebar">
 		<button onclick="w3_close()" class="w3-bar-item w3-button w3-large">Close &times;</button>
-		<a href="/empDashboard/<%= employee._id %>" class="w3-bar-item w3-button">Dashboard</a>
+		<a href="/subscription/<%= user._id %>" class="w3-bar-item w3-button">Buy Coins</a>
+        <a href="/search/<%= user._id %>" class="w3-bar-item w3-button">Search Stations</a>
+        <a href="/userDashboard/<%= user._id %> " class="w3-bar-item w3-button">Dashboard</a>
+		<a href="/qrCode/<%= user._id %>" class="w3-bar-item w3-button">Your QR code</a>
 	</div>
 	<script>
 		function w3_open() {
@@ -35,7 +38,11 @@
 	<!--/SideBar -->
 
 	<!-- Logout Button -->
-	
+	<div class="topnav" style="position:static; z-index:2;">
+		<div class="topnav-right" style="text-align: right;">  
+			<a href="/">Logout</a>	
+		</div>
+	</div>
 	<!-- /Logout Button -->
 
 	<!-- Background Images and Logo -->
@@ -59,11 +66,11 @@
 		<div class="recent-work ">
 			<div class="container">
 				<div class="main-titles-head">
-						<h3 class="header-name">Completed Bookings
+						<h3 class="header-name">Last Sanitisation Details
 						</h3>			  
 				</div>
 				<div class="row about-about">
-					<% for(var i=((employee.completedWork.length)-1);i>=0;i--){ %>
+					
 					<div class="col-lg-4 col-md-6"style="border: rgba(256, 256, 256,0.01) solid 5.5px;">
 						<div class="about-grids">
 							
@@ -71,34 +78,47 @@
 								<table class="table-fill">
 									<thead>
 										<tr>
-											<th class="text-left">Customer Name</th>
-											<th class="text-left"><%= employee.completedWork[i].customer %></th>
+											<th class="text-left">Date</th>
+											<th class="text-left"><%= user.lastDate %></th>
 										</tr>
 									</thead>
 									<tbody class="table-hover">
 										<tr>
-											<td class="text-left">Customer Contact</td>
-											<td class="text-left"><%= employee.completedWork[i].phone %></td>
-										</tr>
-										<tr>
 											<td class="text-left">Start Time</td>
-											<td class="text-left"><%= employee.completedWork[i].startTime %></td>
+											<td class="text-left"><%= user.lastStartTime %></td>
 										</tr>
 										<tr>
 											<td class="text-left">End Time</td>
-											<td class="text-left"><%= employee.completedWork[i].endTime %></td>
+											<td class="text-left"><%= user.lastEndTime %></td>
 										</tr>
-										<tr>
-											<td class="text-left">Date</td>
-											<td class="text-left"><%= employee.completedWork[i].date %></td>
-										</tr>
+										
+										
 									</tbody>
 								</table>
 							</div>
 						</div>
 					</div>
-				<% } %> 
+				
 					</div>
 					</div>
-					</div>
-	</section>
+                    </div>
+                    
+    </section>
+    <div class="team-colomn col-lg-3 col-md-6 col-sm-6" style="border: rgba(256, 256, 256,0.01) solid 5px;">
+        <div class="team-main-6"style="border-bottom: 30px;">
+            <div class="right-team-9">
+                <a href="#page"><img class="img-responsive" src="https://vpurify.s3.us-east-2.amazonaws.com/<%= user.lastFrontImage %>" alt=" "></a>
+                
+                <a href="https://vpurify.s3.us-east-2.amazonaws.com/<%= user.lastFrontImage %>"><p  class="sm-text-32">Download</p></a>
+            </div>
+        </div>
+    </div>
+    <div class="team-colomn col-lg-3 col-md-6 col-sm-6" style="border: rgba(256, 256, 256,0.01) solid 5px;">
+        <div class="team-main-6"style="border-bottom: 30px;">
+            <div class="right-team-9">
+                <a href="#page"><img class="img-responsive" src="https://vpurify.s3.us-east-2.amazonaws.com/<%= user.lastBackImage %>" alt=" "></a>
+                
+                <a href="https://vpurify.s3.us-east-2.amazonaws.com/<%= user.lastBackImage %>"><p  class="sm-text-32">Download</p></a>
+            </div>
+        </div>
+    </div>

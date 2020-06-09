@@ -22,6 +22,8 @@
 		<a href="/subscription/<%= user._id %>" class="w3-bar-item w3-button">Buy Coins</a>
 		<a href="/search/<%= user._id %>" class="w3-bar-item w3-button">Search Stations</a>
 		<a href="/qrCode/<%= user._id %>" class="w3-bar-item w3-button">Your QR code</a>
+		<a href="/completedUser/<%= user._id %>" class="w3-bar-item w3-button">Completed Bookings</a>
+		<a href="/lastDetails/<%= user._id %>" class="w3-bar-item w3-button">Last sanitisation details</a>
 	</div>
 	<script>
 		function w3_open() {
@@ -152,10 +154,10 @@
 						</h3>			  
 				</div>
 				<div class="row about-about">
-					<% for(var i=0;i<user.homeBookings.length;i++){ %>
+					<% for(var i=((user.homeBookings.length)-1);i>=0;i--){ %>
 					<div class="col-lg-4 col-md-6"style="border: rgba(256, 256, 256,0.01) solid 5.5px;">
 						<div class="about-grids">
-							<h4>Time 2pm:3pm</h4>
+							
 							<div class="mt-3 about-list">
 								<table class="table-fill">
 									<thead>
@@ -185,6 +187,10 @@
 											<td class="text-left">Station City</td>
 											<td class="text-left"><%= user.homeBookings[i].city %></td>
 										</tr>
+										<tr>
+											<th class="text-left">Coins</th>
+											<th class="text-left"><%= user.homeBookings[i].coins %></th>
+										</tr>
 									</tbody>
 								</table>
 							</div>
@@ -207,10 +213,10 @@
 						</h3>			  
 				</div>
 				<div class="row about-about">
-					<% for(var i=0;i<user.officeBookings.length;i++){ %>
+					<% for(var i=((user.officeBookings.length)-1);i>=0;i--){ %>
 					<div class="col-lg-4 col-md-6"style="border: rgba(256, 256, 256,0.01) solid 5.5px;">
 						<div class="about-grids">
-							<h4>Time 2pm:3pm</h4>
+							
 							<div class="mt-3 about-list">
 								<table class="table-fill">
 									<thead>

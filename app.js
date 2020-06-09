@@ -4,7 +4,7 @@ const express =require("express");
 const ejs = require("ejs");
 const path = require("path");
 const fs = require('fs')
-var stripe=require("stripe")("sk_test_cVqm5dM8e46TWlOxFqt6oCY4000N87a6tI")
+var stripe=require("stripe")("sk_test_51Gs3hQJKmdeuOmy6CoC4pJ2bwnzFAqE95aVk7DOcsNaf041wjgkFlYhp5xYDC4enc0nfjKIQoAZGQE9pvxC2CFI200Rdjol9zY")
 const bodyParser = require("body-parser");
 const mongoose=require("mongoose")
 var messagebird = require('messagebird')('lSeG8d2NuTn9IinXE6aKsn1Te');
@@ -28,7 +28,7 @@ app.set('view engine','ejs');
 app.use(bodyParser.urlencoded({extended:true}));
 
 
-mongoose.connect('mongodb://localhost:27017/vpurifyDB',{useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:true });
+mongoose.connect('mongodb+srv://vpurify:vpurify@vpurify-267xm.mongodb.net/vpurify?retryWrites=true&w=majority/vpurifyDB',{useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:true });
 
 aws.config.update({
     secretAccessKey: 'W1XlSdF0UC3cvmpS10Tc1z/2RcdnBMiwfk+aY4zJ',
@@ -66,10 +66,10 @@ const userSchema=new mongoose.Schema({
         min:0
         
     },
-    homeBookings:[{name:{type:String,trim:true},email:{type:String,trim:true},phone:{type:String,trim:true},address:{type:String,trim:true},city:{type:String,trim:true},slot:{type:String,trim:true},date:{type:String,trim:true}}],
-    officeBookings:[{name:{type:String,trim:true},email:{type:String,trim:true},phone:{type:String,trim:true},address:{type:String,trim:true},city:{type:String,trim:true},slot:{type:String,trim:true},date:{type:String,trim:true}}],
-    completed:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},pics:[],name:{type:String,trim:true},location:{type:String,trim:true}}],
-    lastDate:{type:String,trim:true,default:" "},lastStartTime:{type:String,trim:true,default:" "},lastEndTime:{type:String,trim:true,default:" "}
+    homeBookings:[{name:{type:String,trim:true},email:{type:String,trim:true},phone:{type:String,trim:true},address:{type:String,trim:true},city:{type:String,trim:true},slot:{type:String,trim:true},date:{type:String,trim:true},coins:Number}],
+    officeBookings:[{name:{type:String,trim:true},email:{type:String,trim:true},phone:{type:String,trim:true},address:{type:String,trim:true},city:{type:String,trim:true},slot:{type:String,trim:true},date:{type:String,trim:true},coins:Number}],
+    completed:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},pics:[],name:{type:String,trim:true},location:{type:String,trim:true},coins:Number}],
+    lastDate:{type:String,trim:true,default:" "},lastStartTime:{type:String,trim:true,default:" "},lastEndTime:{type:String,trim:true,default:" "},lastFrontImage:String,lastBackImage:String
 })
 
 const coinsSchema =new mongoose.Schema({
@@ -99,6 +99,21 @@ const registeredServiceSchema= new mongoose.Schema({
     
 })
 
+const rejectedServiceSchema= new mongoose.Schema({
+    email: {type:String,trim:true},
+    name:{type:String},
+    phone:{type:String,trim:true},
+    pin:{type:String,trim:true},
+    firm:{type:String,trim:true},
+    gst:{type:String,trim:true},
+    address:{type:String,trim:true},
+    number:{type:String,trim:true},
+    city:{type:String,trim:true},
+    state:{type:String,trim:true},
+    
+    
+})
+
 const ServiceSchema= new mongoose.Schema({
     email: {type:String,trim:true},
     name:{type:String},
@@ -114,11 +129,11 @@ const ServiceSchema= new mongoose.Schema({
     proofs:[],
     homeSlots:[{time:[{ type:String, trim: true, default:["No slots available today"] }], date:{type:String,trim:true}}],
     officeSlots:[{time:[{ type:String, trim: true, default:["No slots available today"] }], date:{type:String,trim:true}}],
-    homePendings:[{name:{type:String,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},slot:{type:String,trim:true},vehicleNo:{type:String,trim:true},date:{type:String,trim:true},userQR:{type:String,trim:true}}],
-    officePendings:[{name:{type:String,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},slot:{type:String,trim:true},vehicleNo:{type:String,trim:true},date:{type:String,trim:true},userQR:{type:String,trim:true}}],
+    homePendings:[{name:{type:String,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},slot:{type:String,trim:true},vehicleNo:{type:String,trim:true},date:{type:String,trim:true},userQR:{type:String,trim:true},address:{type:String,trim:true},model:{type:String},coins:Number}],
+    officePendings:[{name:{type:String,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},slot:{type:String,trim:true},vehicleNo:{type:String,trim:true},date:{type:String,trim:true},userQR:{type:String,trim:true},model:{type:String},coins:Number}],
     homeEmployees:[{name:{type:String,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},pin:{type:String,trim:true},city:{type:String,trim:true}}],
     officeEmployees:[{name:{type:String,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},pin:{type:String,trim:true},city:{type:String,trim:true}}],
-    completedBookings:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},vehicleNo:{type:String,trim:true},customer:{type:String,trim:true},location:{type:String,trim:true}}],
+    completedBookings:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},vehicleNo:{type:String,trim:true},customer:{type:String,trim:true},location:{type:String,trim:true},coins:Number}],
     homeMulti:Number,homeMaxi:Number,homeAuto:Number,homeSUV:Number,homeHatchback:Number,homeSmall:Number,homeSedan:Number,homeTwoWheeler:Number,homeTempo:Number,homeBus:Number,homeOthers:Number,
     officeMulti:Number,officeMaxi:Number,officeAuto:Number,officeSUV:Number,officeHatchback:Number,officeSmall:Number,officeSedan:Number,officeTwoWheeler:Number,officeTempo:Number,officeBus:Number,officeOthers:Number
 
@@ -138,6 +153,17 @@ const registeredEmployeeSchema= new mongoose.Schema({
     
 })
 
+const rejectedEmployeeSchema= new mongoose.Schema({
+    email: {type:String,trim:true},
+    name:{type:String},
+    phone:{type:String,trim:true},
+    pin:{type:String,trim:true},
+    education:{type:String,trim:true},
+    experience:{type:String,trim:true},
+    city:{type:String,trim:true},
+    number:{type:String,trim:true}
+})
+
 const EmployeeSchema= new mongoose.Schema({
     email: {type:String,trim:true},
     name:{type:String},
@@ -150,13 +176,12 @@ const EmployeeSchema= new mongoose.Schema({
     number:{type:String,trim:true},
     resume:[],
     company:{type:String,trim:true},
-    pendings:[{name:{type:String,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},slot:{type:String,trim:true},vehicleNo:{type:String,trim:true},date:{type:String,trim:true}}],
-    completedWork:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},phone:{type:String,trim:true},customer:{type:String,trim:true}}]
+    pendings:[{name:{type:String,trim:true},address:{type:String,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},slot:{type:String,trim:true},vehicleNo:{type:String,trim:true},model:{type:String},date:{type:String,trim:true},coins:Number}],
+    completedWork:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},phone:{type:String,trim:true},customer:{type:String,trim:true}}],post:{type:String,trim:true}
 
 })
 
 registeredEmployeeSchema.plugin(encrypt, { secret: secret , encryptedFields:['password']});
-
 EmployeeSchema.plugin(encrypt, { secret: secret , encryptedFields:['password']});
 
 
@@ -168,8 +193,9 @@ ServiceSchema.plugin(encrypt, { secret: secret , encryptedFields:['password']});
 
 const regEmployee=new mongoose.model("regEmployee",registeredEmployeeSchema);
 const Employee=new mongoose.model("Employee",EmployeeSchema);
-
+const rejectedEmployee=new mongoose.model("rejectedEmployee",rejectedEmployeeSchema);
 const User= new mongoose.model("User",userSchema);
+const rejectedService=new mongoose.model("rejectedService",rejectedServiceSchema);
 const regService=new mongoose.model("regService",registeredServiceSchema);
 const Service=new mongoose.model("Service",ServiceSchema);
 const Coin=new mongoose.model("Coin",coinsSchema);
@@ -187,61 +213,57 @@ app.get("/login",function(req,res){
     res.render("login");
 })
 
-app.get("/users",function(req,res){
-    User.find({},function(err,users){
-        res.render("users",{
-            users:users
-        })
-    })
 
-})
 
 app.get("/qrCode/:userId",function(req,res){
     requestedQR=req.params.userId;
     User.findOne({_id:requestedQR},function(err,user){
-        var temp=[ ]
+        var temp=[{}]
         var name=user.name
         temp.push("Name: ")
         temp.push(name)
         temp.push(" ")
         var phone=user.phone
-        temp.push(" Contact: ")
+        temp.push("Contact: ")
+        
         temp.push(phone)
         temp.push(" ")
         var email=user.email
-        temp.push(" Email: ")
+        temp.push("Email: ")
         temp.push(email)
         temp.push(" ")
+        
         var vehicleType=user.vehicleType
-        temp.push(" Vehicl Make: ")
+        temp.push("Vehicle Type: ")
         temp.push(vehicleType)
         temp.push(" ")
         var vehicleCompany=user.vehicleCompany
-        temp.push(" Vehicle Company: ")
+        temp.push("Vehicle Company: ")
         temp.push(vehicleCompany)
         temp.push(" ")
         var vehicleModel=user.model
-        temp.push(" Model: ")
+        temp.push("Model: ")
         temp.push(vehicleModel)
         temp.push(" ")
         var vehicleNo=user.number
-        temp.push(" Vehicle Number: ")
+        temp.push("Vehicle Number: ")
         temp.push(vehicleNo)
         temp.push(" ")
         var passingYear=user.year
-        temp.push(" Passing Year: ")
+        temp.push("Passing Year: ")
         temp.push(passingYear)
         temp.push(" ")
         var lastDate=user.lastDate
-        temp.push(" Last Date of sanitisation: ")
+        temp.push("Last Date: ")
         temp.push(lastDate)
         temp.push(" ")
         var lastStartTime=user.lastStartTime
-        temp.push(" Start Time: ")
+        temp.push("Start Time: ")
         temp.push(lastStartTime)
         temp.push(" ")
-        var lastEndTime=user.lastEndTime
-        temp.push(" End Time: ")
+        var lastEndTime=user.lastStartTime
+        temp.push("End Time")
+        
         temp.push(lastEndTime)
         temp.push(" ")
         
@@ -261,49 +283,52 @@ app.get("/qrCode/:userId",function(req,res){
 app.get("/search/qrCode/:userId",function(req,res){
     requestedQR=req.params.userId;
     User.findOne({_id:requestedQR},function(err,user){
-        var temp=[ ]
+        var temp=[{}]
         var name=user.name
         temp.push("Name: ")
         temp.push(name)
         temp.push(" ")
         var phone=user.phone
-        temp.push(" Contact: ")
+        temp.push("Contact: ")
+        
         temp.push(phone)
         temp.push(" ")
         var email=user.email
-        temp.push(" Email: ")
+        temp.push("Email: ")
         temp.push(email)
         temp.push(" ")
+        
         var vehicleType=user.vehicleType
-        temp.push(" Vehicl Make: ")
+        temp.push("Vehicle Type: ")
         temp.push(vehicleType)
         temp.push(" ")
         var vehicleCompany=user.vehicleCompany
-        temp.push(" Vehicle Company: ")
+        temp.push("Vehicle Company: ")
         temp.push(vehicleCompany)
         temp.push(" ")
         var vehicleModel=user.model
-        temp.push(" Model: ")
+        temp.push("Model: ")
         temp.push(vehicleModel)
         temp.push(" ")
         var vehicleNo=user.number
-        temp.push(" Vehicle Number: ")
+        temp.push("Vehicle Number: ")
         temp.push(vehicleNo)
         temp.push(" ")
         var passingYear=user.year
-        temp.push(" Passing Year: ")
+        temp.push("Passing Year: ")
         temp.push(passingYear)
         temp.push(" ")
         var lastDate=user.lastDate
-        temp.push(" Last Date of sanitisation: ")
+        temp.push("Last Date: ")
         temp.push(lastDate)
         temp.push(" ")
         var lastStartTime=user.lastStartTime
-        temp.push(" Start Time: ")
+        temp.push("Start Time: ")
         temp.push(lastStartTime)
         temp.push(" ")
-        var lastEndTime=user.lastEndTime
-        temp.push(" End Time: ")
+        var lastEndTime=user.lastStartTime
+        temp.push("End Time")
+        
         temp.push(lastEndTime)
         temp.push(" ")
 
@@ -323,27 +348,62 @@ app.get("/search/qrCode/:userId",function(req,res){
     })
 })
 
+app.get("/admin",function (req,res) {
+    res.render("admin")
+    
+})
 
 app.get("/subscription/qrCode/:userId",function(req,res){
     requestedQR=req.params.userId;
     User.findOne({_id:requestedQR},function(err,user){
         var temp=[{}]
         var name=user.name
+        temp.push("Name: ")
         temp.push(name)
+        temp.push(" ")
         var phone=user.phone
+        temp.push("Contact: ")
+        
         temp.push(phone)
+        temp.push(" ")
         var email=user.email
+        temp.push("Email: ")
         temp.push(email)
+        temp.push(" ")
+        
         var vehicleType=user.vehicleType
+        temp.push("Vehicle Type: ")
         temp.push(vehicleType)
+        temp.push(" ")
         var vehicleCompany=user.vehicleCompany
+        temp.push("Vehicle Company: ")
         temp.push(vehicleCompany)
+        temp.push(" ")
         var vehicleModel=user.model
+        temp.push("Model: ")
         temp.push(vehicleModel)
+        temp.push(" ")
         var vehicleNo=user.number
+        temp.push("Vehicle Number: ")
         temp.push(vehicleNo)
+        temp.push(" ")
         var passingYear=user.year
+        temp.push("Passing Year: ")
         temp.push(passingYear)
+        temp.push(" ")
+        var lastDate=user.lastDate
+        temp.push("Last Date: ")
+        temp.push(lastDate)
+        temp.push(" ")
+        var lastStartTime=user.lastStartTime
+        temp.push("Start Time: ")
+        temp.push(lastStartTime)
+        temp.push(" ")
+        var lastEndTime=user.lastStartTime
+        temp.push("End Time")
+        
+        temp.push(lastEndTime)
+        temp.push(" ")
         
         QRCode.toDataURL(temp,function (err, url){
             console.log(url)
@@ -654,10 +714,13 @@ app.route("/homeApprove/:empId")
             phone:employee.phone,
             pin:employee.pin,
             education:employee.education,
+            experience:employee.experience,
             city:employee.city,
             company:req.body.company,
             posting:req.body.posting,
-            password:employee.password
+            password:employee.password,
+            resume:employee.resume,
+            post:req.body.post
         })
         newEmployee.save(function(err){
             if(err){
@@ -696,7 +759,7 @@ app.route("/homeApprove/:empId")
             )
     })
 
-    regEmployee.deleteOne({_id:requestedEmp},function(err){
+    regEmployee.remove({_id:requestedEmp},function(err){
         if(err){
             console.log(err)
         }
@@ -706,6 +769,140 @@ app.route("/homeApprove/:empId")
         }
     })
 })
+
+app.post("/serviceReject",function (req,res) {
+    newRejectedService= new rejectedService({
+        name:req.body.name,
+        email:req.body.email,
+        phone:req.body.phone,
+        address:req.body.address,
+        pin:req.body.pin,
+        state:req.body.state,
+        city:req.body.city,
+        gst:req.body.gst,
+        firm:req.body.firm,
+        number:req.body.number,
+        
+    })
+    newRejectedService.save(function (err) {
+        if(err){
+            console.log(err)
+        }
+        else{
+            console.log("rejected")
+        }
+        
+    })
+    regService.remove({_id:req.body.id},function (err) {
+        if(err){
+            console.log(err)
+        }
+        else{
+            console.log("removed")
+            res.redirect("/services")
+        }
+        
+    })
+    
+})
+
+app.get("/rejectedServices",function (req,res) {
+    rejectedService.find({},function (err,services) {
+        res.render("rejectedServices",{
+            services:services
+        })
+        
+    })
+    
+})
+
+
+
+app.get("/rejectedEmployees",function (req,res) {
+    rejectedEmployee.find({},function (err,employees) {
+        res.render("rejectedEmployees",{
+            employees:employees
+        })
+        
+    })
+    
+})
+
+app.get("/addedCoins",function(req,res){
+    Coin.find({},function(err,coins){
+        res.render("addedCoins",{
+            coins:coins
+        })
+    })
+})
+
+app.post("removeCoin",function(req,res){
+    Coin.remove({_id:req.body.id},function(err){
+        if(err){
+            console.log(err)
+        }else{
+            res.redirect("/addedCoins")
+        }
+    })
+})
+
+app.get("/users",function(req,res){
+    User.find({},function(err,users){
+        res.render("users",{
+            users:users
+        })
+    })
+
+})
+
+app.get("/employees",function (req,res) {
+    Employee.find({},function (err,employees) {
+        res.render("Employees",{
+            employees:employees
+        })        
+    })
+    
+})
+
+app.post("/rejectEmployee",function (req,res) {
+    const id=req.body.id
+    newRejectedEmployee=new rejectedEmployee({
+        name:req.body.name,
+        email:req.body.email,
+        phone:req.body.phone,
+        city:req.body.city,
+        pin:req.body.pin,
+        education:req.body.education,
+        experience:req.body.experience
+    })
+    newRejectedEmployee.save(function (err) {
+        if (err){
+            console.log(err)
+        }else{
+            console.log("done")
+            
+        }
+        
+    })
+    regEmployee.remove({_id:id},function (err) {
+        if(err){
+            console.log(err)
+        }else{
+            res.redirect("/regEmployees")
+        }
+        
+    })
+    
+})
+
+app.get("/document/:serviceId",function(req,res){
+    Service.findOne({_id:req.params.serviceId},function(err,service){
+        res.render("documents",{
+            proofs:service.proofs
+        })
+    })
+})
+
 
 app.route("/officeApprove/:empId")
 
@@ -732,10 +929,14 @@ app.route("/officeApprove/:empId")
             phone:employee.phone,
             pin:employee.pin,
             education:employee.education,
+            experience:employee.experience,
             city:employee.city,
             company:req.body.company,
             posting:req.body.posting,
-            password:employee.password
+            password:employee.password,
+            resume:employee.resume,
+            post:req.body.post
+
         })
         newEmployee.save(function(err){
             if(err){
@@ -773,7 +974,7 @@ app.route("/officeApprove/:empId")
             }
             )
     })
-    regEmployee.deleteOne({_id:requestedEmp},function(err){
+    regEmployee.remove({_id:requestedEmp},function(err){
         if(err){
             console.log(err)
         }
@@ -931,32 +1132,52 @@ app.route("/subscription/:userId")
 //     res.render("slotBooked")
 // })
 
-app.post("/charge",function(req,res){
+app.post("/charge",(req,res)=>{
     
-    requestedUser=req.body.userEmail
-    User.updateOne({email:requestedUser},{
-        $inc:{
-            coins:req.body.coinsRange        
-        }
-        
-    },
-    {
-        overwrite:true
-    },
-        function (err) {
-            if(err){
-                console.log(err)
-            }
-            else{
-                console.log("updated")
-            }
+    requestedUser=req.body.email
+    // try {
+    //     stripe.customers
+    //       .create({
+    //         name: req.body.name,
+    //         email: req.body.email,
+    //         source: req.body.stripeToken
+    //       })
+    //       .then(customer =>
+    //         stripe.charges.create({
+    //           amount: req.body.amount * 100,
+    //           currency: "inr",
+    //           customer: customer.id
+    //         })
+    //       )
+    //       .then(() => User.updateOne({email:requestedUser},{
+    //         $inc:{
+    //             coins:req.body.coinsRange        
+    //         }
             
-        }
+    //     },
+    //     {
+    //         overwrite:true
+    //     },
+    //         function (err) {
+    //             if(err){
+    //                 console.log(err)
+    //             }
+    //             else{
+    //                 console.log("updated")
+    //             }
+                
+    //         }
+        
+    //     ))
+    //       .catch(err => console.log(err));
+    //   } catch (err) {
+    //     res.send(err);
+    //   }
     
-    )
+    
 
     var token=req.body.stripeToken;
-    var chargeAmount=req.body.chargeAmount * 100;
+    var chargeAmount=req.body.amount * 100;
     var charge=stripe.charges.create({
         amount:chargeAmount,
         currency:"inr",
@@ -964,14 +1185,46 @@ app.post("/charge",function(req,res){
 
     },
     function(err,charge){
-        if(err ==="StripeCardError"){
+        if(err){
             console.log("Your card was declined")
+            User.findOne({email:requestedUser},function(err,user){
+                res.render("slotBooked",{
+                    user:user
+                })
+            })
+        }else{
+            console.log("Your payment was successful")
+            User.updateOne({email:requestedUser},{
+                $inc:{
+                    coins:req.body.coinsRange        
+                }
+                
+            },
+            {
+                overwrite:true
+            },
+                function (err) {
+                    if(err){
+                        console.log(err)
+                    }
+                    else{
+                        console.log("updated")
+                        User.findOne({email:requestedUser},function(err,user){
+                            res.render("slotBooked",{
+                                user:user
+                            })
+                        })
+                    }
+                    
+                }
+            
+            )
+   
         }
 
     }
-    );
-    console.log("Your payment was successful")
-    res.redirect("/slotBooked")
+   );
+    
     
 
 
@@ -979,6 +1232,34 @@ app.post("/charge",function(req,res){
 
 app.get("/slotBooked",function(req,res){
     res.render("slotBooked")
+})
+
+
+app.get("/serviceDashboard/:serviceId",function(req,res){
+    id=req.params.serviceId
+    Service.findOne({_id:id},function(err,service){
+        res.render("serviceDashboard",{
+            service:service
+        })
+    })
+})
+
+app.get("/employeeDashboard/:empId",function(req,res){
+    id=req.params.empId
+    Employee.findOne({_id:id},function(err,service){
+        res.render("empDashboard",{
+            employee:employee
+        })
+    })
+})
+
+app.get("/rates/:serviceId",function(req,res){
+    serviceId=req.params.serviceId
+    Service.findOne({_id:serviceId},function(err,service){
+        res.render("rates",{
+            service:service
+        })
+    })
 })
 
 app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
@@ -1016,9 +1297,15 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                if(err){
                    console.log(docs)
                    console.log(err)
+                   await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
                }
                else if(docs==null){
                    console.log(docs)
+                   await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
                }
                else{
                    console.log("coin removed")
@@ -1050,7 +1337,9 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                                            email:detailsEmail,
                                            phone:detailsPhone,
                                            slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.homeTwoWheeler
                             }
                         }
                     });
@@ -1068,7 +1357,10 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                         vehicleNo:req.body.vehicleNo,
                         slot: requiredSlot,
                         date:requiredDate,
-                        userQR:req.file.key
+                        userQR:req.file.key,
+                        coins:service.homeTwoWheeler,
+                        model:model,
+                        address:req.body.address
                     });
             
                     const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
@@ -1079,12 +1371,20 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                     }
             
                     await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
-            
+                    await User.findOne({email:userEmail},async function(err,user){
+                        if(err){
+                            console.log(err)
+                        }else{
+                            res.render("bookingDone",{user:user})
+                        }
+                    } )
                     console.log("done");
-                    res.render("bookingDone");
+                    
                 } catch(err) {
                     console.warn("Error in method: ", (err && err.message) || err);
-                    res.render("bookingFailed");
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }
                }
            }
@@ -1103,10 +1403,14 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
            async function(err,docs){
                if(err){
                    console.log(err)
-                   res.send("booking failed")
+                   await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
                }else if(docs==null){
                 console.log(docs)
-                res.send("booking failed")
+                await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
             }
                else{
                    console.log("coin removed")
@@ -1138,7 +1442,9 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                                            email:detailsEmail,
                                            phone:detailsPhone,
                                            slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.homeSedan
                             }
                         }
                     });
@@ -1156,7 +1462,8 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                         vehicleNo:req.body.vehicleNo,
                         slot: requiredSlot,
                         date:requiredDate,
-                        userQR:req.file.key
+                        userQR:req.file.key,
+                        coins:service.homeSedan,model:model,address:req.body.address
                     });
             
                     const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
@@ -1169,10 +1476,19 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                     await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
             
                     console.log("done");
-                    res.render("bookingDone");
+                    await User.findOne({email:userEmail},async function(err,user){
+                        if(err){
+                            console.log(err)
+                        }else{
+                            res.render("bookingDone",{user:user})
+                        }
+                    } )
+                    
                 } catch(err) {
                     console.warn("Error in method: ", (err && err.message) || err);
-                    res.render("bookingFailed");
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }
                }
            }
@@ -1192,10 +1508,14 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                if(err){
                    console.log(err)
                    console.log(docs)
-                   res.send("booking failed")
+                   await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
                }else if(docs==null){
                 console.log(docs)
-                res.send("booking failed")
+                await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
             }else{
                    console.log("coin removed")
                    try {
@@ -1226,7 +1546,9 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                                            email:detailsEmail,
                                            phone:detailsPhone,
                                            slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.homeHatchback
                             }
                         }
                     });
@@ -1244,7 +1566,8 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                         vehicleNo:req.body.vehicleNo,
                         slot: requiredSlot,
                         date:requiredDate,
-                        userQR:req.file.key
+                        userQR:req.file.key,
+                        coins:service.homeHatchback,model:model,address:req.body.address
                     });
             
                     const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
@@ -1257,10 +1580,18 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                     await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
             
                     console.log("done");
-                    res.render("bookingDone");
+                    await User.findOne({email:userEmail},async function(err,user){
+                        if(err){
+                            console.log(err)
+                        }else{
+                            res.render("bookingDone",{user:user})
+                        }
+                    } )
                 } catch(err) {
                     console.warn("Error in method: ", (err && err.message) || err);
-                    res.render("bookingFailed");
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }
                }
            })
@@ -1279,10 +1610,14 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                if(err){
                    console.log(err)
                    console,log(docs)
-                   res.send("booking failed")
+                   await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
                }else if(docs==null){
                 console.log(docs)
-                res.send("booking failed")
+                await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
             }
                else{
                    console.log("coin removed")
@@ -1314,7 +1649,9 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                                            email:detailsEmail,
                                            phone:detailsPhone,
                                            slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.homeAuto
                             }
                         }
                     });
@@ -1332,7 +1669,8 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                         vehicleNo:req.body.vehicleNo,
                         slot: requiredSlot,
                         date:requiredDate,
-                        userQR:req.file.key
+                        userQR:req.file.key,
+                        coins:service.homeAuto,model:model,address:req.body.address
                     });
             
                     const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
@@ -1345,10 +1683,18 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                     await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
             
                     console.log("done");
-                    res.render("bookingDone");
+                    await User.findOne({email:userEmail},async function(err,user){
+                        if(err){
+                            console.log(err)
+                        }else{
+                            res.render("bookingDone",{user:user})
+                        }
+                    } )
                 } catch(err) {
                     console.warn("Error in method: ", (err && err.message) || err);
-                    res.render("bookingFailed");
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }
                }
            })
@@ -1366,10 +1712,14 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
            async function(err,docs){
                if(err){
                    console.log(err)
-                   res.send("booking failed")
+                   await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
                }else if(docs==null){
                 console.log(docs)
-                res.send("booking failed")
+                await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
             }else{
                    console.log("coin removed")
                    try {
@@ -1400,7 +1750,9 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                                            email:detailsEmail,
                                            phone:detailsPhone,
                                            slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.homeSmall
                             }
                         }
                     });
@@ -1418,7 +1770,8 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                         vehicleNo:req.body.vehicleNo,
                         slot: requiredSlot,
                         date:requiredDate,
-                        userQR:req.file.key
+                        userQR:req.file.key,
+                        coins:service.homeSmall,model:model,address:req.body.address
                     });
             
                     const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
@@ -1431,10 +1784,18 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                     await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
             
                     console.log("done");
-                    res.render("bookingDone");
+                    await User.findOne({email:userEmail},async function(err,user){
+                        if(err){
+                            console.log(err)
+                        }else{
+                            res.render("bookingDone",{user:user})
+                        }
+                    } )
                 } catch(err) {
                     console.warn("Error in method: ", (err && err.message) || err);
-                    res.render("bookingFailed");
+                 await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }
                }
            })
@@ -1452,10 +1813,14 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
            async function(err,docs){
                if(err){
                    console.log(err)
-                   res.send("booking failed")
+                   await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
                }else if(docs==null){
                 console.log(docs)
-                res.send("booking failed")
+                await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
             }else{
                    console.log("coin removed")
                    try {
@@ -1486,7 +1851,9 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                                            email:detailsEmail,
                                            phone:detailsPhone,
                                            slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.homeSUV
                             }
                         }
                     });
@@ -1504,7 +1871,8 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                         vehicleNo:req.body.vehicleNo,
                         slot: requiredSlot,
                         date:requiredDate,
-                        userQR:req.file.key
+                        userQR:req.file.key,
+                        coins:service.homeSUV,model:model,address:req.body.address
                     });
             
                     const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
@@ -1517,10 +1885,18 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                     await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
             
                     console.log("done");
-                    res.render("bookingDone");
+                    await User.findOne({email:userEmail},async function(err,user){
+                        if(err){
+                            console.log(err)
+                        }else{
+                            res.render("bookingDone",{user:user})
+                        }
+                    } )
                 } catch(err) {
                     console.warn("Error in method: ", (err && err.message) || err);
-                    res.render("bookingFailed");
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }
                    
                }
@@ -1539,10 +1915,14 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
            async function(err,docs){
                if(err){
                    console.log(err)
-                   res.send("booking failed")
+                   await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
                }else if(docs==null){
                 console.log(docs)
-                res.send("booking failed")
+                await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
             }else{
                    console.log("coin removed")
                    try {
@@ -1573,7 +1953,9 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                                            email:detailsEmail,
                                            phone:detailsPhone,
                                            slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.homeMaxi
                             }
                         }
                     });
@@ -1591,7 +1973,8 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                         vehicleNo:req.body.vehicleNo,
                         slot: requiredSlot,
                         date:requiredDate,
-                        userQR:req.file.key
+                        userQR:req.file.key,
+                        coins:service.homeMaxi,model:model,address:req.body.address
                     });
             
                     const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
@@ -1604,10 +1987,18 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                     await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
             
                     console.log("done");
-                    res.render("bookingDone");
+                    await User.findOne({email:userEmail},async function(err,user){
+                        if(err){
+                            console.log(err)
+                        }else{
+                            res.render("bookingDone",{user:user})
+                        }
+                    } )
                 } catch(err) {
                     console.warn("Error in method: ", (err && err.message) || err);
-                    res.render("bookingFailed");
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }
                }
            })
@@ -1625,10 +2016,14 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
            async function(err,docs){
                if(err){
                    console.log(err)
-                   res.send("booking failed")
+                   await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
                }else if(docs==null){
                 console.log(docs)
-                res.send("booking failed")
+                await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
             }else{
                    console.log("coin removed")
                    try {
@@ -1659,7 +2054,9 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                                            email:detailsEmail,
                                            phone:detailsPhone,
                                            slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.homeTempo
                             }
                         }
                     });
@@ -1677,7 +2074,8 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                         vehicleNo:req.body.vehicleNo,
                         slot: requiredSlot,
                         date:requiredDate,
-                        userQR:req.file.key
+                        userQR:req.file.key,
+                        coins:service.homeTempo,model:model,address:req.body.address
                     });
             
                     const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
@@ -1690,10 +2088,18 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                     await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
             
                     console.log("done");
-                    res.render("bookingDone");
+                    await User.findOne({email:userEmail},async function(err,user){
+                        if(err){
+                            console.log(err)
+                        }else{
+                            res.render("bookingDone",{user:user})
+                        }
+                    } )
                 } catch(err) {
                     console.warn("Error in method: ", (err && err.message) || err);
-                    res.render("bookingFailed");
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }
                }
            })
@@ -1711,10 +2117,14 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
            async function(err,docs){
                if(err){
                    console.log(err)
-                   res.send("booking failed")
+                   await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
                }else if(docs==null){
                 console.log(docs)
-                res.send("booking failed")
+                await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
             }else{
                    console.log("coin removed")
                    try {
@@ -1745,7 +2155,9 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                                            email:detailsEmail,
                                            phone:detailsPhone,
                                            slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.homeBus
                             }
                         }
                     });
@@ -1763,7 +2175,8 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                         vehicleNo:req.body.vehicleNo,
                         slot: requiredSlot,
                         date:requiredDate,
-                        userQR:req.file.key
+                        userQR:req.file.key,
+                        coins:service.homeBus,model:model,address:req.body.address
                     });
             
                     const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
@@ -1776,10 +2189,18 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                     await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
             
                     console.log("done");
-                    res.render("bookingDone");
+                    await User.findOne({email:userEmail},async function(err,user){
+                        if(err){
+                            console.log(err)
+                        }else{
+                            res.render("bookingDone",{user:user})
+                        }
+                    } )
                 } catch(err) {
                     console.warn("Error in method: ", (err && err.message) || err);
-                    res.render("bookingFailed");
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }
                }
            })
@@ -1797,10 +2218,14 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
            async function(err,docs){
                if(err){
                    console.log(err)
-                   res.send("booking failed")
+                   await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
                }else if(docs==null){
                 console.log(docs)
-                res.send("booking failed")
+                await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
             }else{
                    console.log("coin removed")
                    try {
@@ -1831,7 +2256,9 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                                            email:detailsEmail,
                                            phone:detailsPhone,
                                            slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.homeMulti
                             }
                         }
                     });
@@ -1849,7 +2276,8 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                         vehicleNo:req.body.vehicleNo,
                         slot: requiredSlot,
                         date:requiredDate,
-                        userQR:req.file.key
+                        userQR:req.file.key,
+                        coins:service.homeMulti,model:model,address:req.body.address
                     });
             
                     const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
@@ -1862,10 +2290,18 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                     await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
             
                     console.log("done");
-                    res.render("bookingDone");
+                    await User.findOne({email:userEmail},async function(err,user){
+                        if(err){
+                            console.log(err)
+                        }else{
+                            res.render("bookingDone",{user:user})
+                        }
+                    } )
                 } catch(err) {
                     console.warn("Error in method: ", (err && err.message) || err);
-                    res.render("bookingFailed");
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }
                }
            })
@@ -1883,10 +2319,14 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
            async function(err,docs){
                if(err){
                    console.log(err)
-                   res.send("booking failed")
+                   await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
                }else if(docs==null){
                 console.log(docs)
-                res.send("booking failed")
+                await User.findOne({email:userEmail},function(err,user){
+                    res.render("bookingFailed",{user:user})
+                })
             }else{
                    console.log("coin removed")
                    try {
@@ -1917,7 +2357,9 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                                            email:detailsEmail,
                                            phone:detailsPhone,
                                            slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.homeOthers
                             }
                         }
                     });
@@ -1935,7 +2377,8 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                         vehicleNo:req.body.vehicleNo,
                         slot: requiredSlot,
                         date:requiredDate,
-                        userQR:req.file.key
+                        userQR:req.file.key,
+                        coins:service.homeOthers,model:model,address:req.body.address
                     });
             
                     const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
@@ -1948,11 +2391,18 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                     await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
             
                     console.log("done");
-                    res.render("bookingDone");
+                    await User.findOne({email:userEmail},async function(err,user){
+                        if(err){
+                            console.log(err)
+                        }else{
+                            res.render("bookingDone",{user:user})
+                        }
+                    } )
                 } catch(err) {
                     console.warn("Error in method: ", (err && err.message) || err);
-                    res.render("bookingFailed");
-                }
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })                }
                }
            })
         })
@@ -2013,9 +2463,14 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                    if(err){
                        console.log(docs)
                        console.log(err)
+                       await User.findOne({email:userEmail},function(err,user){
+                           res.render("bookingFailed",{user:user})
+                       })
                    }else if(docs==null){
                        console.log("operation failed")
-                       res.send("Booking failed")
+                       await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                    }
                    else{
                        console.log("coin removed")
@@ -2047,7 +2502,9 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                                                email:detailsEmail,
                                                phone:detailsPhone,
                                                slot:requiredSlot,
-                                           date:requiredDate
+                                               date:requiredDate,
+                                               address:req.body.detailsAddress,
+                                               coins:service.officeTwoWheeler
                                 }
                             }
                         });
@@ -2062,7 +2519,9 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                             vehicleNo:req.body.vehicleNo,
                             slot: requiredSlot,
                             date:requiredDate,
-                            userQR:req.file.key
+                            userQR:req.file.key,
+                            coins:service.officeTwoWheeler,model:model
+
                         });
                 
                         const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
@@ -2075,10 +2534,18 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                         await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
                 
                         console.log("done");
-                        res.send("bookingDone");
+                        await User.findOne({email:userEmail},async function(err,user){
+                            if(err){
+                                console.log(err)
+                            }else{
+                                res.render("bookingDone",{user:user})
+                            }
+                        } )
                     } catch(err) {
                         console.warn("Error in method: ", (err && err.message) || err);
-                        res.render("bookingFailed");
+                        await User.findOne({email:userEmail},function(err,user){
+                            res.render("bookingFailed",{user:user})
+                        })
                     }
                    }
                }
@@ -2098,9 +2565,14 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                    if(err){
                        console.log(docs)
                        console.log(err)
+                       await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                    }else if(docs==null){
                     console.log("operation failed")
-                    res.send("Booking failed")
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }else{
                        console.log("coin removed")
                        try {
@@ -2131,7 +2603,9 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                                                email:detailsEmail,
                                                phone:detailsPhone,
                                                slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.officeSedan
                                 }
                             }
                         });
@@ -2146,7 +2620,8 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                             vehicleNo:req.body.vehicleNo,
                             slot: requiredSlot,
                             date:requiredDate,
-                            userQR:req.file.key
+                            userQR:req.file.key,
+                            coins:service.officeSedan,model:model
                         });
                 
                         const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
@@ -2159,10 +2634,18 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                         await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
                 
                         console.log("done");
-                        res.send("bookingDone");
+                        await User.findOne({email:userEmail},async function(err,user){
+                            if(err){
+                                console.log(err)
+                            }else{
+                                res.render("bookingDone",{user:user})
+                            }
+                        } )
                     } catch(err) {
                         console.warn("Error in method: ", (err && err.message) || err);
-                        res.render("bookingFailed");
+                        await User.findOne({email:userEmail},function(err,user){
+                            res.render("bookingFailed",{user:user})
+                        })
                     }
                    }
                }
@@ -2182,9 +2665,14 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                    if(err){
                        console.log(docs)
                        console.log(err)
+                       await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                    }else if(docs==null){
                     console.log("operation failed")
-                    res.send("Booking failed")
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }else{
                        console.log("coin removed")
                        try {
@@ -2215,7 +2703,9 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                                                email:detailsEmail,
                                                phone:detailsPhone,
                                                slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.officeHatchback
                                 }
                             }
                         });
@@ -2230,7 +2720,8 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                             vehicleNo:req.body.vehicleNo,
                             slot: requiredSlot,
                             date:requiredDate,
-                            userQR:req.file.key
+                            userQR:req.file.key,
+                            coins:service.officeHatchback,model:model
                         });
                 
                         const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
@@ -2243,10 +2734,18 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                         await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
                 
                         console.log("done");
-                        res.send("bookingDone");
+                        await User.findOne({email:userEmail},async function(err,user){
+                            if(err){
+                                console.log(err)
+                            }else{
+                                res.render("bookingDone",{user:user})
+                            }
+                        } )
                     } catch(err) {
                         console.warn("Error in method: ", (err && err.message) || err);
-                        res.render("bookingFailed");
+                        await User.findOne({email:userEmail},function(err,user){
+                            res.render("bookingFailed",{user:user})
+                        })
                     }
                    }
                })
@@ -2265,9 +2764,14 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                    if(err){
                        console.log(docs)
                        console.log(err)
+                       await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                    }else if(docs==null){
                     console.log("operation failed")
-                    res.send("Booking failed")
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }else{
                        console.log("coin removed")
                        try {
@@ -2298,7 +2802,9 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                                                email:detailsEmail,
                                                phone:detailsPhone,
                                                slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.officeAuto
                                 }
                             }
                         });
@@ -2313,7 +2819,8 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                             vehicleNo:req.body.vehicleNo,
                             slot: requiredSlot,
                             date:requiredDate,
-                            userQR:req.file.key
+                            userQR:req.file.key,
+                            coins:service.officeAuto,model:model
                         });
                 
                         const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
@@ -2326,10 +2833,18 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                         await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
                 
                         console.log("done");
-                        res.send("bookingDone");
+                        await User.findOne({email:userEmail},async function(err,user){
+                            if(err){
+                                console.log(err)
+                            }else{
+                                res.render("bookingDone",{user:user})
+                            }
+                        } )
                     } catch(err) {
                         console.warn("Error in method: ", (err && err.message) || err);
-                        res.render("bookingFailed");
+                        await User.findOne({email:userEmail},function(err,user){
+                            res.render("bookingFailed",{user:user})
+                        })
                     }
                    }
                })
@@ -2348,9 +2863,14 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                    if(err){
                        console.log(docs)
                        console.log(err)
+                       await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                    }else if(docs==null){
                     console.log("operation failed")
-                    res.send("Booking failed")
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }else{
                        console.log("coin removed")
                        try {
@@ -2381,7 +2901,9 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                                                email:detailsEmail,
                                                phone:detailsPhone,
                                                slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.officeSmall
                                 }
                             }
                         });
@@ -2396,7 +2918,8 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                             vehicleNo:req.body.vehicleNo,
                             slot: requiredSlot,
                             date:requiredDate,
-                            userQR:req.file.key
+                            userQR:req.file.key,
+                            coins:service.officeSmall,model:model
                         });
                 
                         const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
@@ -2409,10 +2932,18 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                         await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
                 
                         console.log("done");
-                        res.send("bookingDone");
+                        await User.findOne({email:userEmail},async function(err,user){
+                            if(err){
+                                console.log(err)
+                            }else{
+                                res.render("bookingDone",{user:user})
+                            }
+                        } )
                     } catch(err) {
                         console.warn("Error in method: ", (err && err.message) || err);
-                        res.render("bookingFailed");
+                        await User.findOne({email:userEmail},function(err,user){
+                            res.render("bookingFailed",{user:user})
+                        })
                     }
                    }
                })
@@ -2431,9 +2962,14 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                    if(err){
                        console.log(docs)
                        console.log(err)
+                       await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                    }else if(docs==null){
                     console.log("operation failed")
-                    res.send("Booking failed")
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }else{
                        console.log("coin removed")
                        try {
@@ -2464,7 +3000,9 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                                                email:detailsEmail,
                                                phone:detailsPhone,
                                                slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.officeSUV
                                 }
                             }
                         });
@@ -2479,7 +3017,8 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                             vehicleNo:req.body.vehicleNo,
                             slot: requiredSlot,
                             date:requiredDate,
-                            userQR:req.file.key
+                            userQR:req.file.key,
+                            coins:service.officeSUV,model:model
                         });
                 
                         const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
@@ -2492,10 +3031,18 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                         await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
                 
                         console.log("done");
-                        res.send("bookingDone");
+                        await User.findOne({email:userEmail},async function(err,user){
+                            if(err){
+                                console.log(err)
+                            }else{
+                                res.render("bookingDone",{user:user})
+                            }
+                        } )
                     } catch(err) {
                         console.warn("Error in method: ", (err && err.message) || err);
-                        res.render("bookingFailed");
+                        await User.findOne({email:userEmail},function(err,user){
+                            res.render("bookingFailed",{user:user})
+                        })
                     }
                    }
                })
@@ -2514,9 +3061,12 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                    if(err){
                        console.log(docs)
                        console.log(err)
+                       await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                    }else if(docs==null){
                     console.log("operation failed")
-                    res.send("Booking failed")
+                    res.render("bookingFailed");
                 }else{
                        
                        console.log("coin removed")
@@ -2548,7 +3098,9 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                                                email:detailsEmail,
                                                phone:detailsPhone,
                                                slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.officeMaxi
                                 }
                             }
                         });
@@ -2563,7 +3115,8 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                             vehicleNo:req.body.vehicleNo,
                             slot: requiredSlot,
                             date:requiredDate,
-                            userQR:req.file.key
+                            userQR:req.file.key,
+                            coins:service.officeMaxi,model:model
                         });
                 
                         const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
@@ -2576,10 +3129,18 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                         await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
                 
                         console.log("done");
-                        res.send("bookingDone");
+                        await User.findOne({email:userEmail},async function(err,user){
+                            if(err){
+                                console.log(err)
+                            }else{
+                                res.render("bookingDone",{user:user})
+                            }
+                        } )
                     } catch(err) {
                         console.warn("Error in method: ", (err && err.message) || err);
-                        res.render("bookingFailed");
+                        await User.findOne({email:userEmail},function(err,user){
+                            res.render("bookingFailed",{user:user})
+                        })
                     }
                    }
                })
@@ -2598,9 +3159,14 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                    if(err){
                        console.log(docs)
                        console.log(err)
+                       await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                    }else if(docs==null){
                     console.log("operation failed")
-                    res.send("Booking failed")
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }else{
                        
                        console.log("coin removed")
@@ -2632,7 +3198,9 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                                                email:detailsEmail,
                                                phone:detailsPhone,
                                                slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.officeTempo
                                 }
                             }
                         });
@@ -2647,7 +3215,8 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                             vehicleNo:req.body.vehicleNo,
                             slot: requiredSlot,
                             date:requiredDate,
-                            userQR:req.file.key
+                            userQR:req.file.key,
+                            coins:service.officeTempo,model:model
                         });
                 
                         const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
@@ -2660,10 +3229,18 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                         await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
                 
                         console.log("done");
-                        res.send("bookingDone");
+                        await User.findOne({email:userEmail},async function(err,user){
+                            if(err){
+                                console.log(err)
+                            }else{
+                                res.render("bookingDone",{user:user})
+                            }
+                        } )
                     } catch(err) {
                         console.warn("Error in method: ", (err && err.message) || err);
-                        res.render("bookingFailed");
+                        await User.findOne({email:userEmail},function(err,user){
+                            res.render("bookingFailed",{user:user})
+                        })
                     }
                    }
                })
@@ -2682,9 +3259,14 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                    if(err){
                        console.log(docs)
                        console.log(err)
+                       await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                    }else if(docs==null){
                     console.log("operation failed")
-                    res.send("Booking failed")
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }else{
                        
                        console.log("coin removed")
@@ -2716,7 +3298,9 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                                                email:detailsEmail,
                                                phone:detailsPhone,
                                                slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.officeBus
                                 }
                             }
                         });
@@ -2731,7 +3315,8 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                             vehicleNo:req.body.vehicleNo,
                             slot: requiredSlot,
                             date:requiredDate,
-                            userQR:req.file.key
+                            userQR:req.file.key,
+                            coins:service.officeBus,model:model
                         });
                 
                         const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
@@ -2744,10 +3329,18 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                         await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
                 
                         console.log("done");
-                        res.send("bookingDone");
+                        await User.findOne({email:userEmail},async function(err,user){
+                            if(err){
+                                console.log(err)
+                            }else{
+                                res.render("bookingDone",{user:user})
+                            }
+                        } )
                     } catch(err) {
                         console.warn("Error in method: ", (err && err.message) || err);
-                        res.render("bookingFailed");
+                        await User.findOne({email:userEmail},function(err,user){
+                            res.render("bookingFailed",{user:user})
+                        })
                     }
                    }
                })
@@ -2766,9 +3359,14 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                    if(err){
                        console.log(err)
                        console.log(docs)
+                       await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                    }else if(docs==null){
                     console.log("operation failed")
-                    res.send("Booking failed")
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }else{
                        
                        console.log("coin removed")
@@ -2800,7 +3398,9 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                                                email:detailsEmail,
                                                phone:detailsPhone,
                                                slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.officeMulti
                                 }
                             }
                         });
@@ -2815,7 +3415,8 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                             vehicleNo:req.body.vehicleNo,
                             slot: requiredSlot,
                             date:requiredDate,
-                            userQR:req.file.key
+                            userQR:req.file.key,
+                            coins:service.officeMulti,model:model
                         });
                 
                         const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
@@ -2828,10 +3429,18 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                         await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
                 
                         console.log("done");
-                        res.send("bookingDone");
+                        await User.findOne({email:userEmail},async function(err,user){
+                            if(err){
+                                console.log(err)
+                            }else{
+                                res.render("bookingDone",{user:user})
+                            }
+                        } )
                     } catch(err) {
                         console.warn("Error in method: ", (err && err.message) || err);
-                        res.render("bookingFailed");
+                        await User.findOne({email:userEmail},function(err,user){
+                            res.render("bookingFailed",{user:user})
+                        })
                     }
                    }
                })
@@ -2850,9 +3459,14 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                    if(err){
                        console.log(docs)
                        console.log(err)
+                       await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                    }else if(docs==null){
                     console.log("operation failed")
-                    res.send("Booking failed")
+                    await User.findOne({email:userEmail},function(err,user){
+                        res.render("bookingFailed",{user:user})
+                    })
                 }else{
                        
                        console.log("coin removed")
@@ -2884,7 +3498,9 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                                                email:detailsEmail,
                                                phone:detailsPhone,
                                                slot:requiredSlot,
-                                           date:requiredDate
+                                           date:requiredDate,
+                                           address:req.body.detailsAddress,
+                                           coins:service.officeOthers
                                 }
                             }
                         });
@@ -2899,7 +3515,8 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                             vehicleNo:req.body.vehicleNo,
                             slot: requiredSlot,
                             date:requiredDate,
-                            userQR:req.file.key
+                            userQR:req.file.key,
+                            coins:service.officeOthers,model:model
                         });
                 
                         const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
@@ -2912,10 +3529,18 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
                         await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
                 
                         console.log("done");
-                        res.send("bookingDone");
+                        await User.findOne({email:userEmail},async function(err,user){
+                            if(err){
+                                console.log(err)
+                            }else{
+                                res.render("bookingDone",{user:user})
+                            }
+                        } )
                     } catch(err) {
                         console.warn("Error in method: ", (err && err.message) || err);
-                        res.render("bookingFailed");
+                        await User.findOne({email:userEmail},function(err,user){
+                            res.render("bookingFailed",{user:user})
+                        })
                     }
                    }
                })
@@ -2934,6 +3559,8 @@ app.get("/completedEmployee/:empId",function(req,res){
     })
 })
 
+
+
 app.get("/completedUser/:userId",function(req,res){
     User.findOne({_id:req.params.userId},function(err,user){
         res.render("completedUser",{
@@ -2941,6 +3568,7 @@ app.get("/completedUser/:userId",function(req,res){
         })
     })
 })
+
 app.get("/completedService/:serviceId",function(req,res){
     Service.findOne({_id:req.params.serviceId},function(err,service){
         res.render("completedService",{
@@ -3041,7 +3669,7 @@ app.route("/pendings/:empId")
 })
 // completedWork:[{date:String,startTime:String,endTime:String,phone:String,customer:String}]
 
-.post(upload.array("files",4),async (req,res)=>{
+.post(upload.fields([{name:"front",maxCount:1},{name:"back",maxCount:1}]),async (req,res)=>{
     
     Employee.findOneAndUpdate({_id:req.body.id},{
        $push:{
@@ -3070,7 +3698,7 @@ app.route("/pendings/:empId")
         }
         else{
             console.log("work done")
-            res.send("Work Completed")
+            
         }
     }
     )
@@ -3092,6 +3720,26 @@ app.route("/pendings/:empId")
                 console.log(docs)
             }else{
                 console.log("ok")
+                Service.findOneAndUpdate({firm:req.body.serviceName},{
+                    $pull:{
+                        homePendings:{
+                            slot:req.body.slot
+                        }
+                    }
+                },{
+                    overwrite:true
+                },function(err){
+                    if(err){
+                        console.log(err)
+                    }else{
+                        Employee.findOne({_id:req.body.id},function(err,employee){
+                            res.render("pendings",{
+                                employee:employee
+                            })
+                        })
+                        
+                    }
+                })
             }
             
         }
@@ -3113,12 +3761,33 @@ app.route("/pendings/:empId")
             }else if(docs==null){
                 console.log(docs)
             }else{
-                console.log("ok")
+                Service.findOneAndUpdate({firm:req.body.serviceName},{
+                    $pull:{
+                        officePendings:{
+                            slot:req.body.slot
+                        }
+                    }
+                },{
+                    overwrite:true
+                },function(err){
+                    if(err){
+                        console.log(err)
+                    }else{
+                        Employee.findOne({_id:req.body.id},function(err,employee){
+                            res.render("pendings",{
+                                employee:employee
+                            })
+                        })
+                        
+                    }
+                })
             }
             
         }
         )
     }
+    
+
 
     User.findOneAndUpdate({email:req.body.email},{
         $push:{
@@ -3128,14 +3797,17 @@ app.route("/pendings/:empId")
                 endTime:req.body.endTime,
                 date:req.body.date,
                 location:req.body.location,
-                pics:req.files
+                pics:req.files,
+                coins:req.body.coins
             }
 
         },
         $set:{
             lastDate:req.body.date,
             lastStartTime:req.body.startTime,
-            lastEndTime:req.body.endTime
+            lastEndTime:req.body.endTime,
+            lastFrontImage:req.front.key,
+            lastBackImage:req.back.key
         }
         
     },
@@ -3163,16 +3835,13 @@ app.route("/pendings/:empId")
                 endTime:req.body.endTime,
                 vehicleNo:req.body.vehicleNo,
                 customer:req.body.name,
-                location:req.body.location
+                location:req.body.location,
+                coins:req.body.coins
 
             }
 
         },
-        $pull:{
-            homePendings:{
-                slot:req.body.slot
-            }
-        }
+        
     },{
         overwrite:false,
         multi:true
@@ -3183,12 +3852,34 @@ app.route("/pendings/:empId")
         }
         else{
             console.log("done Work")
+            Employee.findOne({_id:req.body.id},function(err,employee){
+                res.render("pendings",{
+                    employee:employee
+                })
+            })
         }
     }
     
     )
 
 
+})
+
+app.get("/empDashboard/:empId",function(req,res){
+    Employee.findOne({_id:req.params.empId},function(err,employee){
+
+        res.render("empDashboard",{
+            employee:employee
+        })
+    })
+})
+
+app.get("/lastDetails/:userId",function(req,res){
+    User.findOne({_id:req.params.userId},function(err,user){
+        res.render("lastDetails",{
+            user:user
+        })
+    })
 })
 
 
@@ -3218,7 +3909,9 @@ app.route("/homeUpcomingBookings/:serviceId")
                 email:req.body.email,
                 slot:req.body.slot,
                 date:req.body.date,
-                vehicleNo:req.body.vehicleNo
+                vehicleNo:req.body.vehicleNo,
+                address:req.body.address,
+                coins:req.body.coins
             }
         }
         
@@ -3232,7 +3925,11 @@ app.route("/homeUpcomingBookings/:serviceId")
         }
         else{
             console.log("done")
-            res.render("employee alloted")
+            Service.findOne({_id:requestedService},function(err,service){
+                res.render("upcomingBookings",{
+                    service:service
+                })
+            })
         }
     }
     )
@@ -3266,7 +3963,8 @@ app.route("/officeUpcomingBookings/:serviceId")
                 email:req.body.email,
                 slot:req.body.slot,
                 date:req.body.date,
-                vehicleNo:req.body.vehicleNo
+                vehicleNo:req.body.vehicleNo,
+                coins:req.body.coins
             }
         }
         
@@ -3280,7 +3978,11 @@ app.route("/officeUpcomingBookings/:serviceId")
         }
         else{
             console.log("done")
-            res.render("employee alloted")
+            Service.findOne({_id:requestedService},function(err,service){
+                res.render("officeUpcomingBookings",{
+                    service:service
+                })
+            })
         }
     }
     )
@@ -3333,7 +4035,8 @@ app.post("/search",function(req,res){
 
 app.post("/citySearch",function(req,res){
     var enteredCity=req.body.city
-    Service.find({city:enteredCity},function(err,stations){
+    var searchCity=enteredCity.charAt(0).toUpperCase()+enteredCity.slice(1)
+    Service.find({city:searchCity},function(err,stations){
         if(err){
             console.log(err)
         }
@@ -3380,6 +4083,7 @@ app.post("/register",upload.single('img'),function(req,res){
         model:req.body.model,
         number:req.body.vehicleNo,
         year:req.body.passingYear,
+        address:req.body.address,
         profile:req.file.key
     });
     newUser.save(function(err){
@@ -3405,8 +4109,20 @@ app.get("/empreg",function(req,res){
     res.render("employeeReg")
 })
 
+app.post("/removeCoin",function(req,res){
+    Coin.remove({_id:req.body.id},function(err){
+        if(err){
+            console.log(err)
+            res.redirect("/addedCoins")
+        }else{
+            res.redirect("/addedCoins")
+        }
+    })
+})
 
 app.post("/empreg", upload.array("files",10) ,function(req,res){
+    city=req.body.city
+    regCity=city.charAt(0).toUpperCase()+city.slice(1)
     const newRegEmployee = new regEmployee({
         email:req.body.username,
         name:req.body.name,
@@ -3414,10 +4130,9 @@ app.post("/empreg", upload.array("files",10) ,function(req,res){
         password:req.body.password,
         pin:req.body.pin,
         education:req.body.education,
-        experience:req.body.state,
-        city:req.body.city,
-        resume:req.files
-        
+        experience:req.body.experience,
+        city:regCity,
+        resume:req.files    
 
     });
     newRegEmployee.save(function(err){
@@ -3434,6 +4149,8 @@ app.post("/empreg", upload.array("files",10) ,function(req,res){
 
 
 app.post("/reg",function(req,res){
+    city=req.body.city
+    regCity=city.charAt(0).toUpperCase()+city.slice(1)
     const newRegService = new regService({
         email:req.body.username,
         name:req.body.name,
@@ -3443,9 +4160,10 @@ app.post("/reg",function(req,res){
         address:req.body.address,
         gst:req.body.gst,
         state:req.body.state,
-        city:req.body.city,
+        city:regCity,
         firm:req.body.firm,
-        number:req.body.number
+        number:req.body.number,
+        
 
     });
     newRegService.save(function(err){

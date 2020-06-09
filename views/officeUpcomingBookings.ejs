@@ -111,6 +111,10 @@
 										<td class="text-left">Vehicle Number</td>
 										<td class="text-left"><%= service.officePendings[i].vehicleNo%></td>
 									</tr>
+									<tr>
+										<td class="text-left">Coins</td>
+										<td class="text-left"><%= service.officePendings[i].coins%></td>
+									</tr>
 								</tbody>
 							</table>
 							<br>
@@ -119,6 +123,7 @@
 								<input type="hidden" name="name" value="<%= service.officePendings[i].name %>">
 								<input type="hidden" name="phone" value="<%= service.officePendings[i].phone %>">
 								<input type="hidden" name="email" value="<%= service.officePendings[i].email %>">
+								<input type="hidden" name="coins" value="<%= service.officePendings[i].coins %>">
 								<input type="hidden" name="slot" value="<%= service.officePendings[i].slot %>">
 								<input type="hidden" name="date" value="<%= service.officePendings[i].date %>">
 								<input type="hidden" name="vehicleNo" value="<%= service.officePendings[i].vehicleNo %>">

@@ -53,6 +53,7 @@
                 <form  method="POST">
                     <div class="form-left-to editContent">
                         <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                        <input type="hidden" value="On Site" name="post">
                         <select type="number" name="company" placeholder="Number of Coins" required="">
                             <% services.forEach(service => { %>
                                 <option value="<%= service.firm %>"><%= service.firm %></option>

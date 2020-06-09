@@ -45,16 +45,40 @@
         <div class="mid-class">
             
             <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
-                    
+                    <label style="color: tomato;">Firm Name</label>
                     <h2 class="editContent"><%= service.firm %></h2>
+                    <label style="color: tomato;">City</label>
                     <h2 class="editContent"><%= service.city %></h2>
+                    <label style="color: tomato;">Contact</label>
                     <h2 class="editContent"><%= service.phone %></h2>
+                    <label style="color: tomato;">Email</label>
                     <h2 class="editContent"><%= service.email %></h2>
+                    <label style="color: tomato;">Address</label>
+                    <h2 class="editContent"><%= service.address %></h2>
+                    <label style="color: tomato;">Date</label>
                     <h2 class="editContent"><%= slotDate %></h2>
+                    <label style="color: tomato;">Time Slot</label>
                     <h2 class="editContent"><%= slotTime %></h2>
+
                      
                     
             </div>
+            <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
+                <h2 class="editContent" style="color: tomato;">Prices</h2>
+                <h2 class="editContent">Sedan: <%= service.homeSedan %> Coins</h2>
+                <h2 class="editContent">Hatchback: <%= service.homeHatchback %> Coins</h2>
+                <h2 class="editContent">Maxi: <%= service.homeMaxi %> Coins</h2>
+                <h2 class="editContent">Auto: <%= service.homeAuto %> Coins</h2>
+                <h2 class="editContent">Tempo: <%= service.homeTempo %> Coins</h2>
+                <h2 class="editContent">Two Wheeler: <%= service.homeTwoWheeler %> Coins</h2>
+                <h2 class="editContent">Bus: <%= service.homeBus %> Coins</h2>
+                <h2 class="editContent">SUV: <%= service.homeSUV %> Coins</h2>
+                <h2 class="editContent">Multi Axel: <%= service.homeMulti %> Coins</h2>
+                <h2 class="editContent">Small Commercial: <%= service.homeSmall %> Coins</h2>
+                <h2 class="editContent">Others: <%= service.homeOthers %> Coins</h2>
+                 
+                
+        </div>
             
         </div>
         
@@ -78,6 +102,7 @@
         <form method="POST" enctype="multipart/form-data">
             <input type="hidden" value="<%= service.firm %>" readonly name="detailsName">
     <input type="hidden" value="<%= service.phone %>" readonly name="detailsPhone">
+    <input type="hidden" value="<%= service.address %>" readonly name="detailsAddress">
     <input type="hidden" value="<%= service.email %>" readonly name="detailsEmail">
     <input type="hidden" value="<%= slotDate %>" readonly name="detailsDate">
     <input type="hidden" value="<%= slotTime %>" readonly name="detailsSlot">
@@ -85,6 +110,12 @@
             <div class="form-left-to editContent">
                 <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                 <input type="email" name="yourEmail" placeholder="Please enter registered email id">
+
+                <div class="clear"></div>
+            </div>
+            <div class="form-left-to editContent">
+                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                <input type="text" name="address" placeholder="Please enter registered Address">
 
                 <div class="clear"></div>
             </div>

@@ -17,9 +17,7 @@
 	<!-- SideBar -->
         <div class="w3-sidebar w3-bar-block" style="display:none" id="mySidebar">
             <button onclick="w3_close()" class="w3-bar-item w3-button w3-large">Close &times;</button>
-            <a href="#" class="w3-bar-item w3-button">Link 1</a>
-            <a href="#" class="w3-bar-item w3-button">Link 2</a>
-            <a href="#" class="w3-bar-item w3-button">Link 3</a>
+            <a href="/admin" class="w3-bar-item w3-button">Back</a>
         </div>
         <script>
             function w3_open() {
@@ -35,7 +33,7 @@
 		<!-- Logout Button -->
 		<div class="topnav" style="position:static; z-index:2;">
 			<div class="topnav-right" style=	"text-align: right;">  
-				<a href="#admin">Logout</a>	
+				<a href="/admin">Back</a>	
 			</div>
 		</div> 
 		<!-- 2 Background Images -->
@@ -70,14 +68,40 @@
             <div class="team-colomn col-lg-3 col-md-6 col-sm-6" style="border: rgba(256, 256, 256,0.01) solid 5px;">
 				<div class="team-main-6"style="border-bottom: 30px;">
 					<div class="right-team-9">
-						
+						<b><label>Name:</label></b>
                         <h6><a href="#page" class="title-team-32"><%= employee.name %></a></h6>
+                        <b><label>Contact:</label></b>
                         <h6><a href="#page" class="title-team-32"><%= employee.phone %></a></h6>
-						<h6><a href="#page" class="title-team-32"><%= employee.email %></a></h6>
-                        <a href="/cv/<%=employee._id%>"><p  class="sm-text-32">CV</p></a>
-                        <a href="/officeApprove/<%=employee._id%>"><p  class="sm-text-32">Approve as on slot employee</p></a>
-                        <a href="/homeApprove/<%=employee._id%>"><p  class="sm-text-32">Approve as a home employee</p></a>
+                        <b><label>Email:</label></b>
+                        <h6><a href="#page" class="title-team-32"><%= employee.email %></a></h6>
+                        <b><label>Education:</label></b>
+                        <h6><a href="#page" class="title-team-32"><%= employee.education %></a></h6>
+                        <b><label>City:</label></b>
+                        <h6><a href="#page" class="title-team-32"><%= employee.city %></a></h6>
+                        <b><label>Pin Code:</label></b>
+                        <h6><a href="#page" class="title-team-32"><%= employee.pin %></a></h6>
+                        <b><label>Experience:</label></b>
+                        <h6><a href="#page" class="title-team-32"><%= employee.experience %></a></h6>
+                        <a href="/cv/<%=employee._id%>"><p  class="sm-text-32">RESUME</p></a>
+                        <br>
+                        <button id="sendNewSms"><a href="/officeApprove/<%=employee._id%>"><p  class="sm-text-32">Approve as on slot employee</p></a></button>
+                        <br>
+                        <br>
+                        <button id="sendNewSms"><a href="/homeApprove/<%=employee._id%>"><p  class="sm-text-32">Approve as a home employee</p></a></button>
+                        <br>
+                        <br>
+                        <form method="POST" action="/rejectEmployee">
+                            <input type="hidden" name="id" value="<%= employee._id %>" readonly>
+                            <input type="hidden" name="name" value="<%= employee.name %>" readonly>
+                            <input type="hidden" name="phone" value="<%= employee.phone %>" readonly>
+                            <input type="hidden" name="email" value="<%= employee.email %>" readonly>
+                            <input type="hidden" name="education" value="<%= employee.education %>" readonly>
+                            <input type="hidden" name="city" value="<%= employee.city %>" readonly>
+                            <input type="hidden" name="pin" value="<%= employee.pin %>" readonly>
+                            <input type="hidden" name="experience" value="<%= employee.experience %>" readonly>
 
+                            <button type="submit"><p  class="sm-text-32">Reject Employee</p></button>
+                        </form>
 					</div>
                 </div>
 			</div>
@@ -92,8 +116,9 @@
 		</div>
 	</div>
 	<!-- /team-grids -->
-	</section>
-
+    </section>
+    
+    
 </body>
 
 </html>

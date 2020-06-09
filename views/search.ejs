@@ -25,6 +25,8 @@
             <a href="/subscription/<%= user._id %> " class="w3-bar-item w3-button">Buy Coins</a>
             <a href="/userDashboard/<%= user._id %> " class="w3-bar-item w3-button">Dashboard</a>
             <a href="qrCode/<%= user._id %> " class="w3-bar-item w3-button">Your QR code</a>
+            <a href="/completedUser/<%= user._id %>" class="w3-bar-item w3-button">Completed Bookings</a>
+		<a href="/lastDetails/<%= user._id %>" class="w3-bar-item w3-button">Last sanitisation details</a>
         </div>
         <script>
                         function w3_open() {
