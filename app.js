@@ -4227,10 +4227,9 @@ app.route("/proof")
 
 
 
+const PORT = process.env.PORT || 3000;
 
-app.listen(3000,function(){
-    console.log("App is running")
-})
+app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 
 
 
