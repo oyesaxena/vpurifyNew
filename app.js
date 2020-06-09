@@ -1283,1134 +1283,154 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
 })
 
 .post(upload.single('img'),async (req,res) => {
-    const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
-        const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-    
-    if(model=="Two Wheeler"){
-        Service.findOne({name:requiredName}, (err,service)=>{
-            User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.homeTwoWheeler)}},{
-               $inc:{
-                   coins:-(service.homeTwoWheeler)
-               }
-           },{
-               overwrite:true
-           },
-           async function(err,docs){
-               if(err){
-                   console.log(docs)
-                   console.log(err)
-                   await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-               }
-               else if(docs==null){
-                   console.log(docs)
-                   await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-               }
-               else{
-                   console.log("coin removed")
-                   try {
+    try {
+        const { model, yourEmail: userEmail } = req.body;
+        const { stationName: requiredName } = req.params;
 
-                    // Guidlines
-                    // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                    // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                    // 3. Use async/await instead of callbacks.
-                    // 4. use proper linting (Refer airbnb guideline)
-            
-                    // This is known as object destructuring
-            
-                    // Good Practice
-                    const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
-                    const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-            
-                    // Bad Practice
-                    // let userEmail = req.body.yourEmail
-                    // let requiredName = req.params.stationName
-                    // let requiredSlot = req.params.timeSlot;    
-                    // let requiredDate = req.params.dateSlot;
-            
-                    // Use async/await instead of callback
-                    await User.updateOne({ email: userEmail }, {
-                        $push: {
-                            homeBookings: {name:detailsName,
-                                           city:detailsCity,
-                                           email:detailsEmail,
-                                           phone:detailsPhone,
-                                           slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.homeTwoWheeler
-                            }
-                        }
-                    });
-            
-                    
-                    
-            
-                    // This is known as object destructuring
-                    const { homeSlots = [], homePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-            
-                    homePendings.push({
-                        name: userName,
-                        email: userEmail,
-                        phone: phone,
-                        vehicleNo:req.body.vehicleNo,
-                        slot: requiredSlot,
-                        date:requiredDate,
-                        userQR:req.file.key,
-                        coins:service.homeTwoWheeler,
-                        model:model,
-                        address:req.body.address
-                    });
-            
-                    const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
-                    if (homeSlotIndex !== -1) {
-                        const { time = [] } = homeSlots[homeSlotIndex];
-                        const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                        homeSlots[homeSlotIndex].time = [...updatedTime];
-                    }
-            
-                    await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
-                    await User.findOne({email:userEmail},async function(err,user){
-                        if(err){
-                            console.log(err)
-                        }else{
-                            res.render("bookingDone",{user:user})
-                        }
-                    } )
-                    console.log("done");
-                    
-                } catch(err) {
-                    console.warn("Error in method: ", (err && err.message) || err);
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
+        const service = await Service.findOne({ name: requiredName }).lean();
+        if (!service) {
+            const user = await User.findOne({ email: userEmail }).lean();
+            res.render("bookingFailed",{ user });
+            return;
+        }
+
+        let usedCoins = "";
+
+        switch (model) {
+            case "Two Wheeler":
+                usedCoins = service.homeTwoWheeler;
+                break;
+            case "Sedan":
+                usedCoins = service.homeSedan;
+                break;
+            case "Hatchback":
+                usedCoins = service.homeHatchback;
+                break;
+            case "Auto Rikshaw":
+                usedCoins = service.homeAuto;
+                break;
+            case "small":
+                usedCoins = service.homeSmall;
+                break;
+            case "SUV":
+                usedCoins = service.homeSUV;
+                break;
+            case "Maxi":
+                usedCoins = service.homeMaxi;
+                break;
+            case "Tempo":
+                usedCoins = service.homeTempo;
+                break;
+            case "Bus":
+                usedCoins = service.homeBus;
+                break;
+            case "Multi Axel":
+                usedCoins = service.homeMulti;
+                break;
+            case "others":
+                usedCoins = service.homeOthers;
+                break;
+            default:
+                usedCoins = "Not Found";
+        }
+
+        if (usedCoins === "Not Found") {
+            const user = await User.findOne({ email: userEmail }).lean();
+            res.render("bookingFailed", { user });
+            return;
+        }
+
+        const userExists = await User.findOneAndUpdate(
+            { email: userEmail, coins: { $gte: usedCoins } },
+            { $inc: { coins: -usedCoins } },
+            { new: true, overwrite:true },
+        );
+
+        if (!userExists) {
+            console.log(userExists);
+            const user = await User.findOne({ email: userEmail }).lean();
+            res.render("bookingFailed",{ user });
+            return ;
+        }
+
+        // Guidlines
+        // 1. Use let/const instead of var, var uses global scope instead of functional scope.
+        // 2. Use => keyword instead of function keyword. Refer ES6 changes
+        // 3. Use async/await instead of callbacks.
+        // 4. use proper linting (Refer airbnb guideline)
+
+        // This is known as object destructuring
+
+        // Good Practice
+        const {
+            detailsCity,
+            detailsEmail,
+            detailsName,
+            detailsPhone,
+            phone,
+            userName,
+        } = req.body;
+
+        const {
+            dateSlot: requiredDate,
+            timeSlot: requiredSlot,
+        } = req.params;
+
+        // Bad Practice
+        // let userEmail = req.body.yourEmail
+        // let requiredName = req.params.stationName
+        // let requiredSlot = req.params.timeSlot;    
+        // let requiredDate = req.params.dateSlot;
+
+        // Use async/await instead of callback
+        await User.updateOne({ email: userEmail }, {
+            $push: {
+                homeBookings: {
+                    address: req.body.detailsAddress,
+                    city: detailsCity,
+                    coins: usedCoins,
+                    date: requiredDate,
+                    email: detailsEmail,
+                    name: detailsName,
+                    phone: detailsPhone,
+                    slot: requiredSlot,
                 }
-               }
-           }
-
-           )
-       })
-   }else if(model=="Sedan"){
-        Service.findOne({name:requiredName}, (err,service)=>{
-            User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.homeSedan)}},{
-               $inc:{
-                   coins:-(service.homeSedan)
-               }
-           },{
-               overwrite:true
-           },
-           async function(err,docs){
-               if(err){
-                   console.log(err)
-                   await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-               }else if(docs==null){
-                console.log(docs)
-                await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
             }
-               else{
-                   console.log("coin removed")
-                   try {
+        });
 
-                    // Guidlines
-                    // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                    // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                    // 3. Use async/await instead of callbacks.
-                    // 4. use proper linting (Refer airbnb guideline)
-            
-                    // This is known as object destructuring
-            
-                    // Good Practice
-                    const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
-                    const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-            
-                    // Bad Practice
-                    // let userEmail = req.body.yourEmail
-                    // let requiredName = req.params.stationName
-                    // let requiredSlot = req.params.timeSlot;    
-                    // let requiredDate = req.params.dateSlot;
-            
-                    // Use async/await instead of callback
-                    await User.findOneAndUpdate({ email: userEmail }, {
-                        $push: {
-                            homeBookings: {name:detailsName,
-                                           city:detailsCity,
-                                           email:detailsEmail,
-                                           phone:detailsPhone,
-                                           slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.homeSedan
-                            }
-                        }
-                    });
-            
-                    
-                    
-            
-                    // This is known as object destructuring
-                    const { homeSlots = [], homePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-            
-                    homePendings.push({
-                        name: userName,
-                        email: userEmail,
-                        phone: phone,
-                        vehicleNo:req.body.vehicleNo,
-                        slot: requiredSlot,
-                        date:requiredDate,
-                        userQR:req.file.key,
-                        coins:service.homeSedan,model:model,address:req.body.address
-                    });
-            
-                    const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
-                    if (homeSlotIndex !== -1) {
-                        const { time = [] } = homeSlots[homeSlotIndex];
-                        const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                        homeSlots[homeSlotIndex].time = [...updatedTime];
-                    }
-            
-                    await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
-            
-                    console.log("done");
-                    await User.findOne({email:userEmail},async function(err,user){
-                        if(err){
-                            console.log(err)
-                        }else{
-                            res.render("bookingDone",{user:user})
-                        }
-                    } )
-                    
-                } catch(err) {
-                    console.warn("Error in method: ", (err && err.message) || err);
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }
-               }
-           }
-           )
-       })
+        // This is known as object destructuring
+        const { homeSlots = [], homePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
 
-   }else if(model=="Hatchback"){
-        Service.findOne({name:requiredName}, (err,service)=>{
-            User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.homeHatchback)}},{
-               $inc:{
-                   coins:-(service.homeHatchback)
-               }
-           },{
-               overwrite:true
-           },
-           async function(err,docs){
-               if(err){
-                   console.log(err)
-                   console.log(docs)
-                   await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-               }else if(docs==null){
-                console.log(docs)
-                await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-            }else{
-                   console.log("coin removed")
-                   try {
+        homePendings.push({
+            address: req.body.address,
+            coins: usedCoins,
+            date: requiredDate,
+            email: userEmail,
+            model: model,
+            name: userName,
+            phone: phone,
+            slot: requiredSlot,
+            userQR: req.file.key,
+            vehicleNo: req.body.vehicleNo,
+        });
 
-                    // Guidlines
-                    // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                    // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                    // 3. Use async/await instead of callbacks.
-                    // 4. use proper linting (Refer airbnb guideline)
-            
-                    // This is known as object destructuring
-            
-                    // Good Practice
-                    const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
-                    const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-            
-                    // Bad Practice
-                    // let userEmail = req.body.yourEmail
-                    // let requiredName = req.params.stationName
-                    // let requiredSlot = req.params.timeSlot;    
-                    // let requiredDate = req.params.dateSlot;
-            
-                    // Use async/await instead of callback
-                    await User.updateOne({ email: userEmail }, {
-                        $push: {
-                            homeBookings: {name:detailsName,
-                                           city:detailsCity,
-                                           email:detailsEmail,
-                                           phone:detailsPhone,
-                                           slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.homeHatchback
-                            }
-                        }
-                    });
-            
-                    
-                    
-            
-                    // This is known as object destructuring
-                    const { homeSlots = [], homePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-            
-                    homePendings.push({
-                        name: userName,
-                        email: userEmail,
-                        phone: phone,
-                        vehicleNo:req.body.vehicleNo,
-                        slot: requiredSlot,
-                        date:requiredDate,
-                        userQR:req.file.key,
-                        coins:service.homeHatchback,model:model,address:req.body.address
-                    });
-            
-                    const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
-                    if (homeSlotIndex !== -1) {
-                        const { time = [] } = homeSlots[homeSlotIndex];
-                        const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                        homeSlots[homeSlotIndex].time = [...updatedTime];
-                    }
-            
-                    await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
-            
-                    console.log("done");
-                    await User.findOne({email:userEmail},async function(err,user){
-                        if(err){
-                            console.log(err)
-                        }else{
-                            res.render("bookingDone",{user:user})
-                        }
-                    } )
-                } catch(err) {
-                    console.warn("Error in method: ", (err && err.message) || err);
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }
-               }
-           })
-       })
+        const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
+        if (homeSlotIndex !== -1) {
+            const { time = [] } = homeSlots[homeSlotIndex];
+            const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
+            homeSlots[homeSlotIndex].time = [...updatedTime];
+        }
 
-   }else if(model=="Auto Rikshaw"){
-       Service.findOne({name:requiredName}, (err,service)=>{
-           User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.homeAuto)}},{
-               $inc:{
-                   coins:-(service.homeAuto)
-               }
-           },{
-               overwrite:true
-           },
-           async function(err,docs){
-               if(err){
-                   console.log(err)
-                   console,log(docs)
-                   await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-               }else if(docs==null){
-                console.log(docs)
-                await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-            }
-               else{
-                   console.log("coin removed")
-                   try {
-
-                    // Guidlines
-                    // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                    // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                    // 3. Use async/await instead of callbacks.
-                    // 4. use proper linting (Refer airbnb guideline)
-            
-                    // This is known as object destructuring
-            
-                    // Good Practice
-                    const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
-                    const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-            
-                    // Bad Practice
-                    // let userEmail = req.body.yourEmail
-                    // let requiredName = req.params.stationName
-                    // let requiredSlot = req.params.timeSlot;    
-                    // let requiredDate = req.params.dateSlot;
-            
-                    // Use async/await instead of callback
-                    await User.updateOne({ email: userEmail }, {
-                        $push: {
-                            homeBookings: {name:detailsName,
-                                           city:detailsCity,
-                                           email:detailsEmail,
-                                           phone:detailsPhone,
-                                           slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.homeAuto
-                            }
-                        }
-                    });
-            
-                    
-                    
-            
-                    // This is known as object destructuring
-                    const { homeSlots = [], homePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-            
-                    homePendings.push({
-                        name: userName,
-                        email: userEmail,
-                        phone: phone,
-                        vehicleNo:req.body.vehicleNo,
-                        slot: requiredSlot,
-                        date:requiredDate,
-                        userQR:req.file.key,
-                        coins:service.homeAuto,model:model,address:req.body.address
-                    });
-            
-                    const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
-                    if (homeSlotIndex !== -1) {
-                        const { time = [] } = homeSlots[homeSlotIndex];
-                        const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                        homeSlots[homeSlotIndex].time = [...updatedTime];
-                    }
-            
-                    await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
-            
-                    console.log("done");
-                    await User.findOne({email:userEmail},async function(err,user){
-                        if(err){
-                            console.log(err)
-                        }else{
-                            res.render("bookingDone",{user:user})
-                        }
-                    } )
-                } catch(err) {
-                    console.warn("Error in method: ", (err && err.message) || err);
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }
-               }
-           })
-       })
-
-   }else if(model=="small"){
-       Service.findOne({name:requiredName}, (err,service)=>{
-           User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.homeSmall)}},{
-               $inc:{
-                   coins:-(service.homeSmall)
-               }
-           },{
-               overwrite:true
-           },
-           async function(err,docs){
-               if(err){
-                   console.log(err)
-                   await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-               }else if(docs==null){
-                console.log(docs)
-                await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-            }else{
-                   console.log("coin removed")
-                   try {
-
-                    // Guidlines
-                    // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                    // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                    // 3. Use async/await instead of callbacks.
-                    // 4. use proper linting (Refer airbnb guideline)
-            
-                    // This is known as object destructuring
-            
-                    // Good Practice
-                    const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
-                    const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-            
-                    // Bad Practice
-                    // let userEmail = req.body.yourEmail
-                    // let requiredName = req.params.stationName
-                    // let requiredSlot = req.params.timeSlot;    
-                    // let requiredDate = req.params.dateSlot;
-            
-                    // Use async/await instead of callback
-                    await User.updateOne({ email: userEmail }, {
-                        $push: {
-                            homeBookings: {name:detailsName,
-                                           city:detailsCity,
-                                           email:detailsEmail,
-                                           phone:detailsPhone,
-                                           slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.homeSmall
-                            }
-                        }
-                    });
-            
-                    
-                    
-            
-                    // This is known as object destructuring
-                    const { homeSlots = [], homePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-            
-                    homePendings.push({
-                        name: userName,
-                        email: userEmail,
-                        phone: phone,
-                        vehicleNo:req.body.vehicleNo,
-                        slot: requiredSlot,
-                        date:requiredDate,
-                        userQR:req.file.key,
-                        coins:service.homeSmall,model:model,address:req.body.address
-                    });
-            
-                    const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
-                    if (homeSlotIndex !== -1) {
-                        const { time = [] } = homeSlots[homeSlotIndex];
-                        const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                        homeSlots[homeSlotIndex].time = [...updatedTime];
-                    }
-            
-                    await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
-            
-                    console.log("done");
-                    await User.findOne({email:userEmail},async function(err,user){
-                        if(err){
-                            console.log(err)
-                        }else{
-                            res.render("bookingDone",{user:user})
-                        }
-                    } )
-                } catch(err) {
-                    console.warn("Error in method: ", (err && err.message) || err);
-                 await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }
-               }
-           })
-       })
-
-   }else if(model=="SUV"){
-       Service.findOne({name:requiredName}, (err,service)=>{
-           User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.homeSUV)}},{
-               $inc:{
-                   coins:-(service.homeSUV)
-               }
-           },{
-               overwrite:true
-           },
-           async function(err,docs){
-               if(err){
-                   console.log(err)
-                   await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-               }else if(docs==null){
-                console.log(docs)
-                await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-            }else{
-                   console.log("coin removed")
-                   try {
-
-                    // Guidlines
-                    // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                    // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                    // 3. Use async/await instead of callbacks.
-                    // 4. use proper linting (Refer airbnb guideline)
-            
-                    // This is known as object destructuring
-            
-                    // Good Practice
-                    const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
-                    const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-            
-                    // Bad Practice
-                    // let userEmail = req.body.yourEmail
-                    // let requiredName = req.params.stationName
-                    // let requiredSlot = req.params.timeSlot;    
-                    // let requiredDate = req.params.dateSlot;
-            
-                    // Use async/await instead of callback
-                    await User.updateOne({ email: userEmail }, {
-                        $push: {
-                            homeBookings: {name:detailsName,
-                                           city:detailsCity,
-                                           email:detailsEmail,
-                                           phone:detailsPhone,
-                                           slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.homeSUV
-                            }
-                        }
-                    });
-            
-                    
-                    
-            
-                    // This is known as object destructuring
-                    const { homeSlots = [], homePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-            
-                    homePendings.push({
-                        name: userName,
-                        email: userEmail,
-                        phone: phone,
-                        vehicleNo:req.body.vehicleNo,
-                        slot: requiredSlot,
-                        date:requiredDate,
-                        userQR:req.file.key,
-                        coins:service.homeSUV,model:model,address:req.body.address
-                    });
-            
-                    const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
-                    if (homeSlotIndex !== -1) {
-                        const { time = [] } = homeSlots[homeSlotIndex];
-                        const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                        homeSlots[homeSlotIndex].time = [...updatedTime];
-                    }
-            
-                    await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
-            
-                    console.log("done");
-                    await User.findOne({email:userEmail},async function(err,user){
-                        if(err){
-                            console.log(err)
-                        }else{
-                            res.render("bookingDone",{user:user})
-                        }
-                    } )
-                } catch(err) {
-                    console.warn("Error in method: ", (err && err.message) || err);
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }
-                   
-               }
-           })
-       })
-
-   }else if(model=="Maxi"){
-       Service.findOne({name:requiredName},(err,service)=>{
-           User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.homeMaxi)}},{
-               $inc:{
-                   coins:-(service.homeMaxi)
-               }
-           },{
-               overwrite:true
-           },
-           async function(err,docs){
-               if(err){
-                   console.log(err)
-                   await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-               }else if(docs==null){
-                console.log(docs)
-                await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-            }else{
-                   console.log("coin removed")
-                   try {
-
-                    // Guidlines
-                    // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                    // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                    // 3. Use async/await instead of callbacks.
-                    // 4. use proper linting (Refer airbnb guideline)
-            
-                    // This is known as object destructuring
-            
-                    // Good Practice
-                    const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
-                    const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-            
-                    // Bad Practice
-                    // let userEmail = req.body.yourEmail
-                    // let requiredName = req.params.stationName
-                    // let requiredSlot = req.params.timeSlot;    
-                    // let requiredDate = req.params.dateSlot;
-            
-                    // Use async/await instead of callback
-                    await User.updateOne({ email: userEmail }, {
-                        $push: {
-                            homeBookings: {name:detailsName,
-                                           city:detailsCity,
-                                           email:detailsEmail,
-                                           phone:detailsPhone,
-                                           slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.homeMaxi
-                            }
-                        }
-                    });
-            
-                    
-                    
-            
-                    // This is known as object destructuring
-                    const { homeSlots = [], homePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-            
-                    homePendings.push({
-                        name: userName,
-                        email: userEmail,
-                        phone: phone,
-                        vehicleNo:req.body.vehicleNo,
-                        slot: requiredSlot,
-                        date:requiredDate,
-                        userQR:req.file.key,
-                        coins:service.homeMaxi,model:model,address:req.body.address
-                    });
-            
-                    const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
-                    if (homeSlotIndex !== -1) {
-                        const { time = [] } = homeSlots[homeSlotIndex];
-                        const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                        homeSlots[homeSlotIndex].time = [...updatedTime];
-                    }
-            
-                    await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
-            
-                    console.log("done");
-                    await User.findOne({email:userEmail},async function(err,user){
-                        if(err){
-                            console.log(err)
-                        }else{
-                            res.render("bookingDone",{user:user})
-                        }
-                    } )
-                } catch(err) {
-                    console.warn("Error in method: ", (err && err.message) || err);
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }
-               }
-           })
-       })
-
-   }else if(model=="Tempo"){
-      Service.findOne({name:requiredName}, (err,service)=>{
-           User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.homeTempo)}},{
-               $inc:{
-                   coins:-(service.homeTempo)
-               }
-           },{
-               overwrite:true
-           },
-           async function(err,docs){
-               if(err){
-                   console.log(err)
-                   await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-               }else if(docs==null){
-                console.log(docs)
-                await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-            }else{
-                   console.log("coin removed")
-                   try {
-
-                    // Guidlines
-                    // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                    // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                    // 3. Use async/await instead of callbacks.
-                    // 4. use proper linting (Refer airbnb guideline)
-            
-                    // This is known as object destructuring
-            
-                    // Good Practice
-                    const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
-                    const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-            
-                    // Bad Practice
-                    // let userEmail = req.body.yourEmail
-                    // let requiredName = req.params.stationName
-                    // let requiredSlot = req.params.timeSlot;    
-                    // let requiredDate = req.params.dateSlot;
-            
-                    // Use async/await instead of callback
-                    await User.updateOne({ email: userEmail }, {
-                        $push: {
-                            homeBookings: {name:detailsName,
-                                           city:detailsCity,
-                                           email:detailsEmail,
-                                           phone:detailsPhone,
-                                           slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.homeTempo
-                            }
-                        }
-                    });
-            
-                    
-                    
-            
-                    // This is known as object destructuring
-                    const { homeSlots = [], homePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-            
-                    homePendings.push({
-                        name: userName,
-                        email: userEmail,
-                        phone: phone,
-                        vehicleNo:req.body.vehicleNo,
-                        slot: requiredSlot,
-                        date:requiredDate,
-                        userQR:req.file.key,
-                        coins:service.homeTempo,model:model,address:req.body.address
-                    });
-            
-                    const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
-                    if (homeSlotIndex !== -1) {
-                        const { time = [] } = homeSlots[homeSlotIndex];
-                        const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                        homeSlots[homeSlotIndex].time = [...updatedTime];
-                    }
-            
-                    await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
-            
-                    console.log("done");
-                    await User.findOne({email:userEmail},async function(err,user){
-                        if(err){
-                            console.log(err)
-                        }else{
-                            res.render("bookingDone",{user:user})
-                        }
-                    } )
-                } catch(err) {
-                    console.warn("Error in method: ", (err && err.message) || err);
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }
-               }
-           })
-       })
-
-   }else if(model=="Bus"){
-       Service.findOne({name:requiredName},  (err,service)=>{
-           User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.homeBus)}},{
-               $inc:{
-                   coins:-(service.homeBus)
-               }
-           },{
-               overwrite:true
-           },
-           async function(err,docs){
-               if(err){
-                   console.log(err)
-                   await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-               }else if(docs==null){
-                console.log(docs)
-                await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-            }else{
-                   console.log("coin removed")
-                   try {
-
-                    // Guidlines
-                    // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                    // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                    // 3. Use async/await instead of callbacks.
-                    // 4. use proper linting (Refer airbnb guideline)
-            
-                    // This is known as object destructuring
-            
-                    // Good Practice
-                    const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
-                    const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-            
-                    // Bad Practice
-                    // let userEmail = req.body.yourEmail
-                    // let requiredName = req.params.stationName
-                    // let requiredSlot = req.params.timeSlot;    
-                    // let requiredDate = req.params.dateSlot;
-            
-                    // Use async/await instead of callback
-                    await User.updateOne({ email: userEmail }, {
-                        $push: {
-                            homeBookings: {name:detailsName,
-                                           city:detailsCity,
-                                           email:detailsEmail,
-                                           phone:detailsPhone,
-                                           slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.homeBus
-                            }
-                        }
-                    });
-            
-                    
-                    
-            
-                    // This is known as object destructuring
-                    const { homeSlots = [], homePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-            
-                    homePendings.push({
-                        name: userName,
-                        email: userEmail,
-                        phone: phone,
-                        vehicleNo:req.body.vehicleNo,
-                        slot: requiredSlot,
-                        date:requiredDate,
-                        userQR:req.file.key,
-                        coins:service.homeBus,model:model,address:req.body.address
-                    });
-            
-                    const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
-                    if (homeSlotIndex !== -1) {
-                        const { time = [] } = homeSlots[homeSlotIndex];
-                        const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                        homeSlots[homeSlotIndex].time = [...updatedTime];
-                    }
-            
-                    await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
-            
-                    console.log("done");
-                    await User.findOne({email:userEmail},async function(err,user){
-                        if(err){
-                            console.log(err)
-                        }else{
-                            res.render("bookingDone",{user:user})
-                        }
-                    } )
-                } catch(err) {
-                    console.warn("Error in method: ", (err && err.message) || err);
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }
-               }
-           })
-       })
-
-   }else if(model=="Multi Axel"){
-       Service.findOne({name:requiredName}, (err,service)=>{
-           User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.homeMulti)}},{
-               $inc:{
-                   coins:-(service.homeMulti)
-               }
-           },{
-               overwrite:true
-           },
-           async function(err,docs){
-               if(err){
-                   console.log(err)
-                   await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-               }else if(docs==null){
-                console.log(docs)
-                await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-            }else{
-                   console.log("coin removed")
-                   try {
-
-                    // Guidlines
-                    // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                    // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                    // 3. Use async/await instead of callbacks.
-                    // 4. use proper linting (Refer airbnb guideline)
-            
-                    // This is known as object destructuring
-            
-                    // Good Practice
-                    const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
-                    const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-            
-                    // Bad Practice
-                    // let userEmail = req.body.yourEmail
-                    // let requiredName = req.params.stationName
-                    // let requiredSlot = req.params.timeSlot;    
-                    // let requiredDate = req.params.dateSlot;
-            
-                    // Use async/await instead of callback
-                    await User.updateOne({ email: userEmail }, {
-                        $push: {
-                            homeBookings: {name:detailsName,
-                                           city:detailsCity,
-                                           email:detailsEmail,
-                                           phone:detailsPhone,
-                                           slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.homeMulti
-                            }
-                        }
-                    });
-            
-                    
-                    
-            
-                    // This is known as object destructuring
-                    const { homeSlots = [], homePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-            
-                    homePendings.push({
-                        name: userName,
-                        email: userEmail,
-                        phone: phone,
-                        vehicleNo:req.body.vehicleNo,
-                        slot: requiredSlot,
-                        date:requiredDate,
-                        userQR:req.file.key,
-                        coins:service.homeMulti,model:model,address:req.body.address
-                    });
-            
-                    const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
-                    if (homeSlotIndex !== -1) {
-                        const { time = [] } = homeSlots[homeSlotIndex];
-                        const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                        homeSlots[homeSlotIndex].time = [...updatedTime];
-                    }
-            
-                    await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
-            
-                    console.log("done");
-                    await User.findOne({email:userEmail},async function(err,user){
-                        if(err){
-                            console.log(err)
-                        }else{
-                            res.render("bookingDone",{user:user})
-                        }
-                    } )
-                } catch(err) {
-                    console.warn("Error in method: ", (err && err.message) || err);
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }
-               }
-           })
-       })
-
-   }else if(model=="others"){
-        Service.findOne({name:requiredName}, (err,service)=>{
-            User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.homeOthers)}},{
-                $inc:{
-                    coins:-(service.homeOthers)
-                }
-            },{
-               overwrite:true
-           },
-           async function(err,docs){
-               if(err){
-                   console.log(err)
-                   await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-               }else if(docs==null){
-                console.log(docs)
-                await User.findOne({email:userEmail},function(err,user){
-                    res.render("bookingFailed",{user:user})
-                })
-            }else{
-                   console.log("coin removed")
-                   try {
-
-                    // Guidlines
-                    // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                    // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                    // 3. Use async/await instead of callbacks.
-                    // 4. use proper linting (Refer airbnb guideline)
-            
-                    // This is known as object destructuring
-            
-                    // Good Practice
-                    const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
-                    const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-            
-                    // Bad Practice
-                    // let userEmail = req.body.yourEmail
-                    // let requiredName = req.params.stationName
-                    // let requiredSlot = req.params.timeSlot;    
-                    // let requiredDate = req.params.dateSlot;
-            
-                    // Use async/await instead of callback
-                    await User.updateOne({ email: userEmail }, {
-                        $push: {
-                            homeBookings: {name:detailsName,
-                                           city:detailsCity,
-                                           email:detailsEmail,
-                                           phone:detailsPhone,
-                                           slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.homeOthers
-                            }
-                        }
-                    });
-            
-                    
-                    
-            
-                    // This is known as object destructuring
-                    const { homeSlots = [], homePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-            
-                    homePendings.push({
-                        name: userName,
-                        email: userEmail,
-                        phone: phone,
-                        vehicleNo:req.body.vehicleNo,
-                        slot: requiredSlot,
-                        date:requiredDate,
-                        userQR:req.file.key,
-                        coins:service.homeOthers,model:model,address:req.body.address
-                    });
-            
-                    const homeSlotIndex = (homeSlots || []).findIndex(homeSlot => homeSlot.date === requiredDate);
-                    if (homeSlotIndex !== -1) {
-                        const { time = [] } = homeSlots[homeSlotIndex];
-                        const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                        homeSlots[homeSlotIndex].time = [...updatedTime];
-                    }
-            
-                    await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
-            
-                    console.log("done");
-                    await User.findOne({email:userEmail},async function(err,user){
-                        if(err){
-                            console.log(err)
-                        }else{
-                            res.render("bookingDone",{user:user})
-                        }
-                    } )
-                } catch(err) {
-                    console.warn("Error in method: ", (err && err.message) || err);
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })                }
-               }
-           })
-        })
-
+        await Service.updateOne({ name: requiredName }, { $set: { homePendings, homeSlots } });
+        const user = await User.findOne({email:userEmail});
+        
+        res.render("bookingDone",{ user });
+        console.log("done");
+    } catch(err) {
+        console.warn("Error in method: ", (err && err.message) || err);
+        const user = await User.findOne({email:userEmail});
+        res.render("bookingFailed",{ user });
     }
-    
 })
 
 app.get("/verifiedServices",(req,res)=>{
