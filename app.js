@@ -1,10 +1,11 @@
 //jshint esversion:6
+const StripeSecretKey=process.env.STRIPE_SECRET_KEY
 
 const express =require("express");
 const ejs = require("ejs");
 const path = require("path");
 const fs = require('fs')
-var stripe=require("stripe")("sk_live_atnMmoIIIo6GVZbkcqLqdyNz00Xddhc0Fl")
+var stripe=require("stripe")("StripeSecretKey")
 const bodyParser = require("body-parser");
 const mongoose=require("mongoose")
 const app=express();
@@ -1435,7 +1436,7 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
                     // let requiredDate = req.params.dateSlot;
             
                     // Use async/await instead of callback
-                    await User.updateOne({ email: userEmail }, {
+                    await User.findOneAndUpdate({ email: userEmail }, {
                         $push: {
                             homeBookings: {name:detailsName,
                                            city:detailsCity,
@@ -4021,7 +4022,7 @@ app.get("/search/:userId",function(req,res){
 
 app.post("/search",function(req,res){
     
-    var enteredPin= req.body.pin
+    const enteredPin= req.body.pin
     Service.find({pin:enteredPin},function(err,stations){
            if (err){
             console.log(err)
