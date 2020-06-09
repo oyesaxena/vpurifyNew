@@ -1185,9 +1185,10 @@ app.post("/charge",(req,res)=>{
     },
     function(err,charge){
         if(err){
+            console.log(err)
             console.log("Your card was declined")
             User.findOne({email:requestedUser},function(err,user){
-                res.render("slotBooked",{
+                res.render("paymentFailed",{
                     user:user
                 })
             })
