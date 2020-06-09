@@ -1,4 +1,5 @@
 //jshint esversion:6
+require('dotenv').load()
 const StripeSecretKey=process.env.STRIPE_SECRET_KEY
 
 const express =require("express");
