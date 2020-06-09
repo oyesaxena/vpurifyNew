@@ -3095,28 +3095,24 @@ app.post("/addCoins",function(req,res){
 
 
 app.post("/register",upload.single('img'),function(req,res){
-    const newUser = new User({
-        email:req.body.username,
-        name:req.body.name,
-        phone:req.body.phone,
-        password:req.body.password,
-        vehicleType:req.body.vehicleType,
-        vehicleCompany:req.body.company,
-        model:req.body.model,
-        number:req.body.vehicleNo,
-        year:req.body.passingYear,
-        address:req.body.address,
-        profile:req.file.key
-    });
-    newUser.save(function(err){
-        if (err) {
-            console.log(err)
-
-        }
-        else{
-            res.render("userLogin")
-        }
-    })
+    try {
+        await User.create({
+            email:req.body.username,
+            name:req.body.name,
+            phone:req.body.phone,
+            password:req.body.password,
+            vehicleType:req.body.vehicleType,
+            vehicleCompany:req.body.company,
+            model:req.body.model,
+            number:req.body.vehicleNo,
+            year:req.body.passingYear,
+            address:req.body.address,
+            profile:req.file.key
+        });
+        res.render("userLogin");
+    } catch (err) {
+        console.log(err);
+    }
 })
 
 app.get("/view/:name",function(req,res){
@@ -3143,68 +3139,49 @@ app.post("/removeCoin",function(req,res){
 })
 
 app.post("/empreg", upload.array("files",10) ,function(req,res){
-    city=req.body.city
-    regCity=city.charAt(0).toUpperCase()+city.slice(1)
-    const newRegEmployee = new regEmployee({
-        email:req.body.username,
-        name:req.body.name,
-        phone:req.body.phone,
-        password:req.body.password,
-        pin:req.body.pin,
-        education:req.body.education,
-        experience:req.body.experience,
-        city:regCity,
-        resume:req.files    
+    try {
+        const { city = "" } = req.body;
+        const regCity = city.charAt(0).toUpperCase() + city.slice(1)
+        await regEmployee.create({
+            email:req.body.username,
+            name:req.body.name,
+            phone:req.body.phone,
+            password:req.body.password,
+            pin:req.body.pin,
+            education:req.body.education,
+            experience:req.body.experience,
+            city:regCity,
+            resume:req.files    
 
-    });
-    newRegEmployee.save(function(err){
-        if (err) {
-            console.log(err)
-
-        }
-        else{
-            res.render("thankyou")
-        }
-        
-    })
+        });
+        res.render("thankyou");
+    } catch (err) {
+        console.log(err);
+    }
 })
-
 
 app.post("/reg",function(req,res){
-    city=req.body.city
-    regCity=city.charAt(0).toUpperCase()+city.slice(1)
-    const newRegService = new regService({
-        email:req.body.username,
-        name:req.body.name,
-        phone:req.body.phone,
-        password:req.body.password,
-        pin:req.body.pin,
-        address:req.body.address,
-        gst:req.body.gst,
-        state:req.body.state,
-        city:regCity,
-        firm:req.body.firm,
-        number:req.body.number,
-        
-
-    });
-    newRegService.save(function(err){
-        if (err) {
-            console.log(err)
-
-        }
-        else{
-            res.redirect("/proof")
-        }
-    })
+    try {
+        const { city = "" } = req.body;
+        const regCity = city.charAt(0).toUpperCase() + city.slice(1)
+        await regService.create({
+            email:req.body.username,
+            name:req.body.name,
+            phone:req.body.phone,
+            password:req.body.password,
+            pin:req.body.pin,
+            address:req.body.address,
+            gst:req.body.gst,
+            state:req.body.state,
+            city:regCity,
+            firm:req.body.firm,
+            number:req.body.number,
+        });
+        res.render("thankyou");
+    } catch (err) {
+        console.log(err);
+    }
 })
-
-
-
-
-
-
-
 
 app.route("/proof")
 
