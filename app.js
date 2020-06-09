@@ -1,5 +1,5 @@
 //jshint esversion:6
-require('dotenv').load()
+require('dotenv').config()
 const StripeSecretKey = process.env.STRIPE_SECRET_KEY
 
 const express =require("express");
@@ -1407,7 +1407,8 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
         console.log("done");
     } catch(err) {
         console.warn("Error in method: ", (err && err.message) || err);
-        const user = await User.findOne({email:userEmail});
+        const { yourEmail: userEmail } = req.body;
+        const user = await User.findOne({email: userEmail});
         res.render("bookingFailed",{ user });
     }
 })
