@@ -6,7 +6,7 @@ const express =require("express");
 const ejs = require("ejs");
 const path = require("path");
 const fs = require('fs')
-var stripe=require("stripe")(StripeSecretKey)
+var stripe=require("stripe")("sk_live_9LkHUPDjM4cwTKspnkWcpnsD007nvtVShE")
 const bodyParser = require("body-parser");
 const mongoose=require("mongoose")
 const app=express();
@@ -29,7 +29,7 @@ app.set('view engine','ejs');
 app.use(bodyParser.urlencoded({extended:true}));
 
 
-mongoose.connect('mongodb+srv://vpurify:vpurify@vpurify-267xm.mongodb.net/vpurify?retryWrites=true&w=majority/vpurifyDB',{useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:true });
+mongoose.connect('mongodb+srv://vpurify:vpurify@vpurify-267xm.mongodb.net/vpurify?retryWrites=true',{useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:true });
 
 aws.config.update({
     secretAccessKey: 'W1XlSdF0UC3cvmpS10Tc1z/2RcdnBMiwfk+aY4zJ',
@@ -69,8 +69,8 @@ const userSchema=new mongoose.Schema({
     },
     homeBookings:[{name:{type:String,trim:true},email:{type:String,trim:true},phone:{type:String,trim:true},address:{type:String,trim:true},city:{type:String,trim:true},slot:{type:String,trim:true},date:{type:String,trim:true},coins:Number}],
     officeBookings:[{name:{type:String,trim:true},email:{type:String,trim:true},phone:{type:String,trim:true},address:{type:String,trim:true},city:{type:String,trim:true},slot:{type:String,trim:true},date:{type:String,trim:true},coins:Number}],
-    completed:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},pics:[],name:{type:String,trim:true},location:{type:String,trim:true},coins:Number}],
-    lastDate:{type:String,trim:true,default:" "},lastStartTime:{type:String,trim:true,default:" "},lastEndTime:{type:String,trim:true,default:" "},lastFrontImage:String,lastBackImage:String
+    completed:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},name:{type:String,trim:true},location:{type:String,trim:true},coins:Number}],
+    lastDate:{type:String,trim:true,default:" "},lastStartTime:{type:String,trim:true,default:" "},lastEndTime:{type:String,trim:true,default:" "},lastImages:[]
 })
 
 const coinsSchema =new mongoose.Schema({
@@ -130,11 +130,11 @@ const ServiceSchema= new mongoose.Schema({
     proofs:[],
     homeSlots:[{time:[{ type:String, trim: true, default:["No slots available today"] }], date:{type:String,trim:true}}],
     officeSlots:[{time:[{ type:String, trim: true, default:["No slots available today"] }], date:{type:String,trim:true}}],
-    homePendings:[{name:{type:String,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},slot:{type:String,trim:true},vehicleNo:{type:String,trim:true},date:{type:String,trim:true},userQR:{type:String,trim:true},address:{type:String,trim:true},model:{type:String},coins:Number}],
-    officePendings:[{name:{type:String,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},slot:{type:String,trim:true},vehicleNo:{type:String,trim:true},date:{type:String,trim:true},userQR:{type:String,trim:true},model:{type:String},coins:Number}],
+    homePendings:[{name:{type:String,trim:true},model:{type:stripe,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},slot:{type:String,trim:true},vehicleNo:{type:String,trim:true},date:{type:String,trim:true},userQR:{type:String,trim:true},address:{type:String,trim:true},model:{type:String},coins:Number}],
+    officePendings:[{name:{type:String,trim:true},model:{type:stripe,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},slot:{type:String,trim:true},vehicleNo:{type:String,trim:true},date:{type:String,trim:true},userQR:{type:String,trim:true},model:{type:String},coins:Number}],
     homeEmployees:[{name:{type:String,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},pin:{type:String,trim:true},city:{type:String,trim:true}}],
     officeEmployees:[{name:{type:String,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},pin:{type:String,trim:true},city:{type:String,trim:true}}],
-    completedBookings:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},vehicleNo:{type:String,trim:true},customer:{type:String,trim:true},location:{type:String,trim:true},coins:Number}],
+    completedBookings:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},vehicleNo:{type:String,trim:true},customer:{type:String,trim:true},location:{type:String,trim:true},coins:Number,model:{type:String,trim:true}}],
     homeMulti:Number,homeMaxi:Number,homeAuto:Number,homeSUV:Number,homeHatchback:Number,homeSmall:Number,homeSedan:Number,homeTwoWheeler:Number,homeTempo:Number,homeBus:Number,homeOthers:Number,
     officeMulti:Number,officeMaxi:Number,officeAuto:Number,officeSUV:Number,officeHatchback:Number,officeSmall:Number,officeSedan:Number,officeTwoWheeler:Number,officeTempo:Number,officeBus:Number,officeOthers:Number
 
@@ -177,8 +177,8 @@ const EmployeeSchema= new mongoose.Schema({
     number:{type:String,trim:true},
     resume:[],
     company:{type:String,trim:true},
-    pendings:[{name:{type:String,trim:true},address:{type:String,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},slot:{type:String,trim:true},vehicleNo:{type:String,trim:true},model:{type:String},date:{type:String,trim:true},coins:Number}],
-    completedWork:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},phone:{type:String,trim:true},customer:{type:String,trim:true}}],post:{type:String,trim:true}
+    pendings:[{name:{type:String,trim:true},model:{type:String,trim:true},address:{type:String,trim:true},phone:{type:String,trim:true},email:{type:String,trim:true},slot:{type:String,trim:true},vehicleNo:{type:String,trim:true},model:{type:String},date:{type:String,trim:true},coins:Number}],
+    completedWork:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},phone:{type:String,trim:true},customer:{type:String,trim:true},coins:Number}],post:{type:String,trim:true}
 
 })
 
@@ -219,54 +219,61 @@ app.get("/login",function(req,res){
 app.get("/qrCode/:userId",function(req,res){
     requestedQR=req.params.userId;
     User.findOne({_id:requestedQR},function(err,user){
-        var temp=[{}]
-        var name=user.name
+        let temp=[{}]
+        let name=user.name
         temp.push("Name: ")
         temp.push(name)
         temp.push(" ")
-        var phone=user.phone
+        let phone=user.phone
         temp.push("Contact: ")
         
         temp.push(phone)
         temp.push(" ")
-        var email=user.email
+        let email=user.email
         temp.push("Email: ")
         temp.push(email)
         temp.push(" ")
         
-        var vehicleType=user.vehicleType
+        let vehicleType=user.vehicleType
         temp.push("Vehicle Type: ")
         temp.push(vehicleType)
         temp.push(" ")
-        var vehicleCompany=user.vehicleCompany
+        let vehicleCompany=user.vehicleCompany
         temp.push("Vehicle Company: ")
         temp.push(vehicleCompany)
         temp.push(" ")
-        var vehicleModel=user.model
+        let vehicleModel=user.model
         temp.push("Model: ")
         temp.push(vehicleModel)
         temp.push(" ")
-        var vehicleNo=user.number
+        let vehicleNo=user.number
         temp.push("Vehicle Number: ")
         temp.push(vehicleNo)
         temp.push(" ")
-        var passingYear=user.year
+        let passingYear=user.year
         temp.push("Passing Year: ")
         temp.push(passingYear)
         temp.push(" ")
-        var lastDate=user.lastDate
+        let lastDate=user.lastDate
         temp.push("Last Date: ")
         temp.push(lastDate)
         temp.push(" ")
-        var lastStartTime=user.lastStartTime
+        let lastStartTime=user.lastStartTime
         temp.push("Start Time: ")
         temp.push(lastStartTime)
         temp.push(" ")
-        var lastEndTime=user.lastStartTime
+        let lastEndTime=user.lastStartTime
         temp.push("End Time")
         
         temp.push(lastEndTime)
         temp.push(" ")
+        let frontImage=user.lastImages[0].location
+        temp.push("Front Image: ")
+        temp.push(frontImage)
+        temp.push(" ")
+        let backImage=user.lastImages[1].location
+        temp.push("Back Image: ")
+        temp.push(backImage)
         
         // var lastTime=user.completed[-1].endTime
         // temp.push(lastTime)
@@ -332,7 +339,13 @@ app.get("/search/qrCode/:userId",function(req,res){
         
         temp.push(lastEndTime)
         temp.push(" ")
-
+        let frontImage=user.lastImages[0].location
+        temp.push("Front Image: ")
+        temp.push(frontImage)
+        temp.push(" ")
+        let backImage=user.lastImages[1].location
+        temp.push("Back Image: ")
+        temp.push(backImage)
         
         // var lastDate=user.completed[-1].date
         // temp.push(lastDate)
@@ -405,6 +418,13 @@ app.get("/subscription/qrCode/:userId",function(req,res){
         
         temp.push(lastEndTime)
         temp.push(" ")
+        let frontImage=user.lastImages[0].location
+        temp.push("Front Image: ")
+        temp.push(frontImage)
+        temp.push(" ")
+        let backImage=user.lastImages[1].location
+        temp.push("Back Image: ")
+        temp.push(backImage)
         
         QRCode.toDataURL(temp,function (err, url){
             console.log(url)
@@ -1133,83 +1153,114 @@ app.route("/subscription/:userId")
 //     res.render("slotBooked")
 // })
 
-app.post("/charge", async (req,res)=>{
-    try {
-        requestedUser=req.body.email
-        // try {
-        //     stripe.customers
-        //       .create({
-        //         name: req.body.name,
-        //         email: req.body.email,
-        //         source: req.body.stripeToken
-        //       })
-        //       .then(customer =>
-        //         stripe.charges.create({
-        //           amount: req.body.amount * 100,
-        //           currency: "inr",
-        //           customer: customer.id
-        //         })
-        //       )
-        //       .then(() => User.updateOne({email:requestedUser},{
-        //         $inc:{
-        //             coins:req.body.coinsRange        
-        //         }
+// app.post("/charge", async (req,res)=>{
+//     try {
+//         requestedUser=req.body.email
+//         // try {
+//         //     stripe.customers
+//         //       .create({
+//         //         name: req.body.name,
+//         //         email: req.body.email,
+//         //         source: req.body.stripeToken
+//         //       })
+//         //       .then(customer =>
+//         //         stripe.charges.create({
+//         //           amount: req.body.amount * 100,
+//         //           currency: "inr",
+//         //           customer: customer.id
+//         //         })
+//         //       )
+//         //       .then(() => User.updateOne({email:requestedUser},{
+//         //         $inc:{
+//         //             coins:req.body.coinsRange        
+//         //         }
                 
-        //     },
-        //     {
-        //         overwrite:true
-        //     },
-        //         function (err) {
-        //             if(err){
-        //                 console.log(err)
-        //             }
-        //             else{
-        //                 console.log("updated")
-        //             }
+//         //     },
+//         //     {
+//         //         overwrite:true
+//         //     },
+//         //         function (err) {
+//         //             if(err){
+//         //                 console.log(err)
+//         //             }
+//         //             else{
+//         //                 console.log("updated")
+//         //             }
                     
-        //         }
+//         //         }
             
-        //     ))
-        //       .catch(err => console.log(err));
-        //   } catch (err) {
-        //     res.send(err);
-        //   }
+//         //     ))
+//         //       .catch(err => console.log(err));
+//         //   } catch (err) {
+//         //     res.send(err);
+//         //   }
         
         
 
-        var token=req.body.stripeToken;
-        var chargeAmount=req.body.amount * 100;
+//         var token=req.body.stripeToken;
+//         var chargeAmount=req.body.amount * 100;
+//         const paymentIntent = await stripe.paymentIntents.create({
+//             amount: chargeAmount,
+//             currency: 'inr',
+//             // Verify your integration in this guide by including this parameter
+//             metadata: {integration_check: 'accept_a_payment'},
+//           });
+//         const charge = await stripe.charges.create({
+//             amount:chargeAmount,
+//             currency:"inr",
+//             source:token,
+//         });
 
-        const charge = await stripe.charges.create({
-            amount:chargeAmount,
-            currency:"inr",
-            source:token,
-        });
-
-        console.log("Your payment was successful")
-        await User.updateOne({email:requestedUser},{
-            $inc:{
-                coins:req.body.coinsRange        
-            }
+//         console.log("Your payment was successful")
+//         await User.updateOne({email:requestedUser},{
+//             $inc:{
+//                 coins:req.body.coinsRange        
+//             }
             
-        },
-        {
-            overwrite:true
-        });
+//         },
+//         {
+//             overwrite:true
+//         });
         
-        console.log("Updated");
-        const user = await User.findOne({email:requestedUser});
-        res.render("slotBooked",{ user });
-    } catch (err) {
+//         console.log("Updated");
+//         const user = await User.findOne({email:requestedUser});
+//         res.render("slotBooked",{ user });
+//     } catch (err) {
+//         console.log(err)
+//         console.log("Your card was declined")
+//         User.findOne({email:requestedUser},function(err,user){
+//             res.render("paymentFailed",{
+//                 user:user
+//             })
+//         });
+//     }
+// })
+// const user = await User.findOne({ email: userEmail }).lean();
+//             res.render("bookingFailed", { user });
+//             return;
+
+app.post("/charge", async (req,res)=>{
+    try{
+        
+        const {id:id, userId:userId}=req.body
+        const coin= await Coin.findOne({_id:id}).lean();
+        const user=await User.findOne({_id:userId}).lean();
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: req.body.amount*10,
+            currency: 'inr',
+            // Verify your integration in this guide by including this parameter
+            metadata: {integration_check: 'accept_a_payment'},
+          });
+        res.render("checkout",{ coin,user,paymentIntent })
+    }
+    catch(err){
         console.log(err)
-        console.log("Your card was declined")
-        User.findOne({email:requestedUser},function(err,user){
-            res.render("paymentFailed",{
-                user:user
-            })
-        });
     }
 })
+
+
+
+
 
 app.get("/slotBooked",function(req,res){
     res.render("slotBooked")
@@ -1347,7 +1398,7 @@ app.route("/homeBooking/:stationName/:dateSlot/:timeSlot")
             detailsName,
             detailsPhone,
             phone,
-            userName,
+            userName
         } = req.body;
 
         const {
@@ -1450,1105 +1501,155 @@ app.route("/officeBooking/:stationName/:dateSlot/:timeSlot")
 })
 
 .post(upload.single('img'),async (req,res) => {
-    const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity,model } = req.body;
-        const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-        if(model=="Two Wheeler"){
-            Service.findOne({name:requiredName}, (err,service)=>{
-                User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.officeTwoWheeler)}},{
-                   $inc:{
-                       coins:-(service.officeTwoWheeler)
-                   }
-               },{
-                   overwrite:true
-               },
-               async function(err,docs){
-                   if(err){
-                       console.log(docs)
-                       console.log(err)
-                       await User.findOne({email:userEmail},function(err,user){
-                           res.render("bookingFailed",{user:user})
-                       })
-                   }else if(docs==null){
-                       console.log("operation failed")
-                       await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                   }
-                   else{
-                       console.log("coin removed")
-                       try {
+    try {
+        const { model, yourEmail: userEmail } = req.body;
+        const { stationName: requiredName } = req.params;
 
-                        // Guidlines
-                        // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                        // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                        // 3. Use async/await instead of callbacks.
-                        // 4. use proper linting (Refer airbnb guideline)
-                
-                        // This is known as object destructuring
-                
-                        // Good Practice
-                        const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity } = req.body;
-                        const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-                        
-                        // Bad Practice
-                        // let userEmail = req.body.yourEmail
-                        // let requiredName = req.params.stationName
-                        // let requiredSlot = req.params.timeSlot;    
-                        // let requiredDate = req.params.dateSlot;
-                
-                        // Use async/await instead of callback
-                        await User.updateOne({ email: userEmail }, {
-                            $push: {
-                                officeBookings: {name:detailsName,
-                                               city:detailsCity,
-                                               email:detailsEmail,
-                                               phone:detailsPhone,
-                                               slot:requiredSlot,
-                                               date:requiredDate,
-                                               address:req.body.detailsAddress,
-                                               coins:service.officeTwoWheeler
-                                }
-                            }
-                        });
-                
-                        // This is known as object destructuring
-                        const { officeSlots = [], officePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-                
-                        officePendings.push({
-                            name: userName,
-                            email: userEmail,
-                            phone: phone,
-                            vehicleNo:req.body.vehicleNo,
-                            slot: requiredSlot,
-                            date:requiredDate,
-                            userQR:req.file.key,
-                            coins:service.officeTwoWheeler,model:model
-
-                        });
-                
-                        const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
-                        if (officeSlotIndex !== -1) {
-                            const { time = [] } = officeSlots[officeSlotIndex];
-                            const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                            officeSlots[officeSlotIndex].time = [...updatedTime];
-                        }
-                
-                        await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
-                
-                        console.log("done");
-                        await User.findOne({email:userEmail},async function(err,user){
-                            if(err){
-                                console.log(err)
-                            }else{
-                                res.render("bookingDone",{user:user})
-                            }
-                        } )
-                    } catch(err) {
-                        console.warn("Error in method: ", (err && err.message) || err);
-                        await User.findOne({email:userEmail},function(err,user){
-                            res.render("bookingFailed",{user:user})
-                        })
-                    }
-                   }
-               }
-    
-               )
-           })
-       }else if(model=="Sedan"){
-            Service.findOne({name:requiredName}, (err,service)=>{
-                User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.officeSedan)}},{
-                   $inc:{
-                       coins:-(service.officeSedan)
-                   }
-               },{
-                   overwrite:true
-               },
-               async function(err,docs){
-                   if(err){
-                       console.log(docs)
-                       console.log(err)
-                       await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                   }else if(docs==null){
-                    console.log("operation failed")
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }else{
-                       console.log("coin removed")
-                       try {
-
-                        // Guidlines
-                        // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                        // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                        // 3. Use async/await instead of callbacks.
-                        // 4. use proper linting (Refer airbnb guideline)
-                
-                        // This is known as object destructuring
-                
-                        // Good Practice
-                        const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity } = req.body;
-                        const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-                        
-                        // Bad Practice
-                        // let userEmail = req.body.yourEmail
-                        // let requiredName = req.params.stationName
-                        // let requiredSlot = req.params.timeSlot;    
-                        // let requiredDate = req.params.dateSlot;
-                
-                        // Use async/await instead of callback
-                        await User.updateOne({ email: userEmail }, {
-                            $push: {
-                                officeBookings: {name:detailsName,
-                                               city:detailsCity,
-                                               email:detailsEmail,
-                                               phone:detailsPhone,
-                                               slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.officeSedan
-                                }
-                            }
-                        });
-                
-                        // This is known as object destructuring
-                        const { officeSlots = [], officePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-                
-                        officePendings.push({
-                            name: userName,
-                            email: userEmail,
-                            phone: phone,
-                            vehicleNo:req.body.vehicleNo,
-                            slot: requiredSlot,
-                            date:requiredDate,
-                            userQR:req.file.key,
-                            coins:service.officeSedan,model:model
-                        });
-                
-                        const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
-                        if (officeSlotIndex !== -1) {
-                            const { time = [] } = officeSlots[officeSlotIndex];
-                            const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                            officeSlots[officeSlotIndex].time = [...updatedTime];
-                        }
-                
-                        await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
-                
-                        console.log("done");
-                        await User.findOne({email:userEmail},async function(err,user){
-                            if(err){
-                                console.log(err)
-                            }else{
-                                res.render("bookingDone",{user:user})
-                            }
-                        } )
-                    } catch(err) {
-                        console.warn("Error in method: ", (err && err.message) || err);
-                        await User.findOne({email:userEmail},function(err,user){
-                            res.render("bookingFailed",{user:user})
-                        })
-                    }
-                   }
-               }
-               )
-           })
-    
-       }else if(model=="Hatchback"){
-            Service.findOne({name:requiredName}, (err,service)=>{
-                User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.officeHatchback)}},{
-                   $inc:{
-                       coins:-(service.officeHatchback)
-                   }
-               },{
-                   overwrite:true
-               },
-               async function(err,docs){
-                   if(err){
-                       console.log(docs)
-                       console.log(err)
-                       await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                   }else if(docs==null){
-                    console.log("operation failed")
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }else{
-                       console.log("coin removed")
-                       try {
-
-                        // Guidlines
-                        // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                        // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                        // 3. Use async/await instead of callbacks.
-                        // 4. use proper linting (Refer airbnb guideline)
-                
-                        // This is known as object destructuring
-                
-                        // Good Practice
-                        const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity } = req.body;
-                        const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-                        
-                        // Bad Practice
-                        // let userEmail = req.body.yourEmail
-                        // let requiredName = req.params.stationName
-                        // let requiredSlot = req.params.timeSlot;    
-                        // let requiredDate = req.params.dateSlot;
-                
-                        // Use async/await instead of callback
-                        await User.updateOne({ email: userEmail }, {
-                            $push: {
-                                officeBookings: {name:detailsName,
-                                               city:detailsCity,
-                                               email:detailsEmail,
-                                               phone:detailsPhone,
-                                               slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.officeHatchback
-                                }
-                            }
-                        });
-                
-                        // This is known as object destructuring
-                        const { officeSlots = [], officePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-                
-                        officePendings.push({
-                            name: userName,
-                            email: userEmail,
-                            phone: phone,
-                            vehicleNo:req.body.vehicleNo,
-                            slot: requiredSlot,
-                            date:requiredDate,
-                            userQR:req.file.key,
-                            coins:service.officeHatchback,model:model
-                        });
-                
-                        const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
-                        if (officeSlotIndex !== -1) {
-                            const { time = [] } = officeSlots[officeSlotIndex];
-                            const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                            officeSlots[officeSlotIndex].time = [...updatedTime];
-                        }
-                
-                        await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
-                
-                        console.log("done");
-                        await User.findOne({email:userEmail},async function(err,user){
-                            if(err){
-                                console.log(err)
-                            }else{
-                                res.render("bookingDone",{user:user})
-                            }
-                        } )
-                    } catch(err) {
-                        console.warn("Error in method: ", (err && err.message) || err);
-                        await User.findOne({email:userEmail},function(err,user){
-                            res.render("bookingFailed",{user:user})
-                        })
-                    }
-                   }
-               })
-           })
-    
-       }else if(model=="Auto Rikshaw"){
-           Service.findOne({name:requiredName}, (err,service)=>{
-               User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.officeAuto)}},{
-                   $inc:{
-                       coins:-(service.officeAuto)
-                   }
-               },{
-                   overwrite:true
-               },
-               async function(err,docs){
-                   if(err){
-                       console.log(docs)
-                       console.log(err)
-                       await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                   }else if(docs==null){
-                    console.log("operation failed")
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }else{
-                       console.log("coin removed")
-                       try {
-
-                        // Guidlines
-                        // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                        // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                        // 3. Use async/await instead of callbacks.
-                        // 4. use proper linting (Refer airbnb guideline)
-                
-                        // This is known as object destructuring
-                
-                        // Good Practice
-                        const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity } = req.body;
-                        const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-                        
-                        // Bad Practice
-                        // let userEmail = req.body.yourEmail
-                        // let requiredName = req.params.stationName
-                        // let requiredSlot = req.params.timeSlot;    
-                        // let requiredDate = req.params.dateSlot;
-                
-                        // Use async/await instead of callback
-                        await User.updateOne({ email: userEmail }, {
-                            $push: {
-                                officeBookings: {name:detailsName,
-                                               city:detailsCity,
-                                               email:detailsEmail,
-                                               phone:detailsPhone,
-                                               slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.officeAuto
-                                }
-                            }
-                        });
-                
-                        // This is known as object destructuring
-                        const { officeSlots = [], officePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-                
-                        officePendings.push({
-                            name: userName,
-                            email: userEmail,
-                            phone: phone,
-                            vehicleNo:req.body.vehicleNo,
-                            slot: requiredSlot,
-                            date:requiredDate,
-                            userQR:req.file.key,
-                            coins:service.officeAuto,model:model
-                        });
-                
-                        const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
-                        if (officeSlotIndex !== -1) {
-                            const { time = [] } = officeSlots[officeSlotIndex];
-                            const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                            officeSlots[officeSlotIndex].time = [...updatedTime];
-                        }
-                
-                        await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
-                
-                        console.log("done");
-                        await User.findOne({email:userEmail},async function(err,user){
-                            if(err){
-                                console.log(err)
-                            }else{
-                                res.render("bookingDone",{user:user})
-                            }
-                        } )
-                    } catch(err) {
-                        console.warn("Error in method: ", (err && err.message) || err);
-                        await User.findOne({email:userEmail},function(err,user){
-                            res.render("bookingFailed",{user:user})
-                        })
-                    }
-                   }
-               })
-           })
-    
-       }else if(model=="small"){
-           Service.findOne({name:requiredName}, (err,service)=>{
-               User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.officeSmall)}},{
-                   $inc:{
-                       coins:-(service.officeSmall)
-                   }
-               },{
-                   overwrite:true
-               },
-              async function(err,docs){
-                   if(err){
-                       console.log(docs)
-                       console.log(err)
-                       await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                   }else if(docs==null){
-                    console.log("operation failed")
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }else{
-                       console.log("coin removed")
-                       try {
-
-                        // Guidlines
-                        // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                        // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                        // 3. Use async/await instead of callbacks.
-                        // 4. use proper linting (Refer airbnb guideline)
-                
-                        // This is known as object destructuring
-                
-                        // Good Practice
-                        const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity } = req.body;
-                        const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-                        
-                        // Bad Practice
-                        // let userEmail = req.body.yourEmail
-                        // let requiredName = req.params.stationName
-                        // let requiredSlot = req.params.timeSlot;    
-                        // let requiredDate = req.params.dateSlot;
-                
-                        // Use async/await instead of callback
-                        await User.updateOne({ email: userEmail }, {
-                            $push: {
-                                officeBookings: {name:detailsName,
-                                               city:detailsCity,
-                                               email:detailsEmail,
-                                               phone:detailsPhone,
-                                               slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.officeSmall
-                                }
-                            }
-                        });
-                
-                        // This is known as object destructuring
-                        const { officeSlots = [], officePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-                
-                        officePendings.push({
-                            name: userName,
-                            email: userEmail,
-                            phone: phone,
-                            vehicleNo:req.body.vehicleNo,
-                            slot: requiredSlot,
-                            date:requiredDate,
-                            userQR:req.file.key,
-                            coins:service.officeSmall,model:model
-                        });
-                
-                        const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
-                        if (officeSlotIndex !== -1) {
-                            const { time = [] } = officeSlots[officeSlotIndex];
-                            const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                            officeSlots[officeSlotIndex].time = [...updatedTime];
-                        }
-                
-                        await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
-                
-                        console.log("done");
-                        await User.findOne({email:userEmail},async function(err,user){
-                            if(err){
-                                console.log(err)
-                            }else{
-                                res.render("bookingDone",{user:user})
-                            }
-                        } )
-                    } catch(err) {
-                        console.warn("Error in method: ", (err && err.message) || err);
-                        await User.findOne({email:userEmail},function(err,user){
-                            res.render("bookingFailed",{user:user})
-                        })
-                    }
-                   }
-               })
-           })
-    
-       }else if(model=="SUV"){
-           Service.findOne({name:requiredName}, (err,service)=>{
-               User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.officeSUV)}},{
-                   $inc:{
-                       coins:-(service.officeSUV)
-                   }
-               },{
-                   overwrite:true
-               },
-               async function(err,docs){
-                   if(err){
-                       console.log(docs)
-                       console.log(err)
-                       await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                   }else if(docs==null){
-                    console.log("operation failed")
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }else{
-                       console.log("coin removed")
-                       try {
-
-                        // Guidlines
-                        // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                        // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                        // 3. Use async/await instead of callbacks.
-                        // 4. use proper linting (Refer airbnb guideline)
-                
-                        // This is known as object destructuring
-                
-                        // Good Practice
-                        const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity } = req.body;
-                        const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-                        
-                        // Bad Practice
-                        // let userEmail = req.body.yourEmail
-                        // let requiredName = req.params.stationName
-                        // let requiredSlot = req.params.timeSlot;    
-                        // let requiredDate = req.params.dateSlot;
-                
-                        // Use async/await instead of callback
-                        await User.updateOne({ email: userEmail }, {
-                            $push: {
-                                officeBookings: {name:detailsName,
-                                               city:detailsCity,
-                                               email:detailsEmail,
-                                               phone:detailsPhone,
-                                               slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.officeSUV
-                                }
-                            }
-                        });
-                
-                        // This is known as object destructuring
-                        const { officeSlots = [], officePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-                
-                        officePendings.push({
-                            name: userName,
-                            email: userEmail,
-                            phone: phone,
-                            vehicleNo:req.body.vehicleNo,
-                            slot: requiredSlot,
-                            date:requiredDate,
-                            userQR:req.file.key,
-                            coins:service.officeSUV,model:model
-                        });
-                
-                        const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
-                        if (officeSlotIndex !== -1) {
-                            const { time = [] } = officeSlots[officeSlotIndex];
-                            const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                            officeSlots[officeSlotIndex].time = [...updatedTime];
-                        }
-                
-                        await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
-                
-                        console.log("done");
-                        await User.findOne({email:userEmail},async function(err,user){
-                            if(err){
-                                console.log(err)
-                            }else{
-                                res.render("bookingDone",{user:user})
-                            }
-                        } )
-                    } catch(err) {
-                        console.warn("Error in method: ", (err && err.message) || err);
-                        await User.findOne({email:userEmail},function(err,user){
-                            res.render("bookingFailed",{user:user})
-                        })
-                    }
-                   }
-               })
-           })
-    
-       }else if(model=="Maxi"){
-           Service.findOne({name:requiredName},(err,service)=>{
-               User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.officeMaxi)}},{
-                   $inc:{
-                       coins:-(service.officeMaxi)
-                   }
-               },{
-                   overwrite:true
-               },
-               async function(err,docs){
-                   if(err){
-                       console.log(docs)
-                       console.log(err)
-                       await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                   }else if(docs==null){
-                    console.log("operation failed")
-                    res.render("bookingFailed");
-                }else{
-                       
-                       console.log("coin removed")
-                       try {
-
-                        // Guidlines
-                        // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                        // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                        // 3. Use async/await instead of callbacks.
-                        // 4. use proper linting (Refer airbnb guideline)
-                
-                        // This is known as object destructuring
-                
-                        // Good Practice
-                        const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity } = req.body;
-                        const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-                        
-                        // Bad Practice
-                        // let userEmail = req.body.yourEmail
-                        // let requiredName = req.params.stationName
-                        // let requiredSlot = req.params.timeSlot;    
-                        // let requiredDate = req.params.dateSlot;
-                
-                        // Use async/await instead of callback
-                        await User.updateOne({ email: userEmail }, {
-                            $push: {
-                                officeBookings: {name:detailsName,
-                                               city:detailsCity,
-                                               email:detailsEmail,
-                                               phone:detailsPhone,
-                                               slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.officeMaxi
-                                }
-                            }
-                        });
-                
-                        // This is known as object destructuring
-                        const { officeSlots = [], officePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-                
-                        officePendings.push({
-                            name: userName,
-                            email: userEmail,
-                            phone: phone,
-                            vehicleNo:req.body.vehicleNo,
-                            slot: requiredSlot,
-                            date:requiredDate,
-                            userQR:req.file.key,
-                            coins:service.officeMaxi,model:model
-                        });
-                
-                        const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
-                        if (officeSlotIndex !== -1) {
-                            const { time = [] } = officeSlots[officeSlotIndex];
-                            const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                            officeSlots[officeSlotIndex].time = [...updatedTime];
-                        }
-                
-                        await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
-                
-                        console.log("done");
-                        await User.findOne({email:userEmail},async function(err,user){
-                            if(err){
-                                console.log(err)
-                            }else{
-                                res.render("bookingDone",{user:user})
-                            }
-                        } )
-                    } catch(err) {
-                        console.warn("Error in method: ", (err && err.message) || err);
-                        await User.findOne({email:userEmail},function(err,user){
-                            res.render("bookingFailed",{user:user})
-                        })
-                    }
-                   }
-               })
-           })
-    
-       }else if(model=="Tempo"){
-          Service.findOne({name:requiredName}, (err,service)=>{
-               User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.officeTempo)}},{
-                   $inc:{
-                       coins:-(service.officeTempo)
-                   }
-               },{
-                   overwrite:true
-               },
-               async function(err,docs){
-                   if(err){
-                       console.log(docs)
-                       console.log(err)
-                       await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                   }else if(docs==null){
-                    console.log("operation failed")
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }else{
-                       
-                       console.log("coin removed")
-                       try {
-
-                        // Guidlines
-                        // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                        // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                        // 3. Use async/await instead of callbacks.
-                        // 4. use proper linting (Refer airbnb guideline)
-                
-                        // This is known as object destructuring
-                
-                        // Good Practice
-                        const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity } = req.body;
-                        const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-                        
-                        // Bad Practice
-                        // let userEmail = req.body.yourEmail
-                        // let requiredName = req.params.stationName
-                        // let requiredSlot = req.params.timeSlot;    
-                        // let requiredDate = req.params.dateSlot;
-                
-                        // Use async/await instead of callback
-                        await User.updateOne({ email: userEmail }, {
-                            $push: {
-                                officeBookings: {name:detailsName,
-                                               city:detailsCity,
-                                               email:detailsEmail,
-                                               phone:detailsPhone,
-                                               slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.officeTempo
-                                }
-                            }
-                        });
-                
-                        // This is known as object destructuring
-                        const { officeSlots = [], officePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-                
-                        officePendings.push({
-                            name: userName,
-                            email: userEmail,
-                            phone: phone,
-                            vehicleNo:req.body.vehicleNo,
-                            slot: requiredSlot,
-                            date:requiredDate,
-                            userQR:req.file.key,
-                            coins:service.officeTempo,model:model
-                        });
-                
-                        const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
-                        if (officeSlotIndex !== -1) {
-                            const { time = [] } = officeSlots[officeSlotIndex];
-                            const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                            officeSlots[officeSlotIndex].time = [...updatedTime];
-                        }
-                
-                        await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
-                
-                        console.log("done");
-                        await User.findOne({email:userEmail},async function(err,user){
-                            if(err){
-                                console.log(err)
-                            }else{
-                                res.render("bookingDone",{user:user})
-                            }
-                        } )
-                    } catch(err) {
-                        console.warn("Error in method: ", (err && err.message) || err);
-                        await User.findOne({email:userEmail},function(err,user){
-                            res.render("bookingFailed",{user:user})
-                        })
-                    }
-                   }
-               })
-           })
-    
-       }else if(model=="Bus"){
-           Service.findOne({name:requiredName},  (err,service)=>{
-               User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.officeBus)}},{  
-                   $inc:{
-                       coins:-(service.officeBus)
-                   }
-               },{
-                   overwrite:true
-               },
-              async function(err,docs){
-                   if(err){
-                       console.log(docs)
-                       console.log(err)
-                       await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                   }else if(docs==null){
-                    console.log("operation failed")
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }else{
-                       
-                       console.log("coin removed")
-                       try {
-
-                        // Guidlines
-                        // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                        // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                        // 3. Use async/await instead of callbacks.
-                        // 4. use proper linting (Refer airbnb guideline)
-                
-                        // This is known as object destructuring
-                
-                        // Good Practice
-                        const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity } = req.body;
-                        const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-                        
-                        // Bad Practice
-                        // let userEmail = req.body.yourEmail
-                        // let requiredName = req.params.stationName
-                        // let requiredSlot = req.params.timeSlot;    
-                        // let requiredDate = req.params.dateSlot;
-                
-                        // Use async/await instead of callback
-                        await User.updateOne({ email: userEmail }, {
-                            $push: {
-                                officeBookings: {name:detailsName,
-                                               city:detailsCity,
-                                               email:detailsEmail,
-                                               phone:detailsPhone,
-                                               slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.officeBus
-                                }
-                            }
-                        });
-                
-                        // This is known as object destructuring
-                        const { officeSlots = [], officePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-                
-                        officePendings.push({
-                            name: userName,
-                            email: userEmail,
-                            phone: phone,
-                            vehicleNo:req.body.vehicleNo,
-                            slot: requiredSlot,
-                            date:requiredDate,
-                            userQR:req.file.key,
-                            coins:service.officeBus,model:model
-                        });
-                
-                        const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
-                        if (officeSlotIndex !== -1) {
-                            const { time = [] } = officeSlots[officeSlotIndex];
-                            const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                            officeSlots[officeSlotIndex].time = [...updatedTime];
-                        }
-                
-                        await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
-                
-                        console.log("done");
-                        await User.findOne({email:userEmail},async function(err,user){
-                            if(err){
-                                console.log(err)
-                            }else{
-                                res.render("bookingDone",{user:user})
-                            }
-                        } )
-                    } catch(err) {
-                        console.warn("Error in method: ", (err && err.message) || err);
-                        await User.findOne({email:userEmail},function(err,user){
-                            res.render("bookingFailed",{user:user})
-                        })
-                    }
-                   }
-               })
-           })
-    
-       }else if(model=="Multi Axel"){
-           Service.findOne({name:requiredName}, (err,service)=>{
-               User.findOneAndUpdate({email:userEmail,coins:{$gt:(service.officeMulti)}},{
-                   $inc:{
-                       coins:-(service.officeMulti)
-                   }
-               },{
-                   overwrite:true
-               },
-               async function(err,docs){
-                   if(err){
-                       console.log(err)
-                       console.log(docs)
-                       await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                   }else if(docs==null){
-                    console.log("operation failed")
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }else{
-                       
-                       console.log("coin removed")
-                       try {
-
-                        // Guidlines
-                        // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                        // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                        // 3. Use async/await instead of callbacks.
-                        // 4. use proper linting (Refer airbnb guideline)
-                
-                        // This is known as object destructuring
-                
-                        // Good Practice
-                        const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity } = req.body;
-                        const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-                        
-                        // Bad Practice
-                        // let userEmail = req.body.yourEmail
-                        // let requiredName = req.params.stationName
-                        // let requiredSlot = req.params.timeSlot;    
-                        // let requiredDate = req.params.dateSlot;
-                
-                        // Use async/await instead of callback
-                        await User.updateOne({ email: userEmail }, {
-                            $push: {
-                                officeBookings: {name:detailsName,
-                                               city:detailsCity,
-                                               email:detailsEmail,
-                                               phone:detailsPhone,
-                                               slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.officeMulti
-                                }
-                            }
-                        });
-                
-                        // This is known as object destructuring
-                        const { officeSlots = [], officePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-                
-                        officePendings.push({
-                            name: userName,
-                            email: userEmail,
-                            phone: phone,
-                            vehicleNo:req.body.vehicleNo,
-                            slot: requiredSlot,
-                            date:requiredDate,
-                            userQR:req.file.key,
-                            coins:service.officeMulti,model:model
-                        });
-                
-                        const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
-                        if (officeSlotIndex !== -1) {
-                            const { time = [] } = officeSlots[officeSlotIndex];
-                            const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                            officeSlots[officeSlotIndex].time = [...updatedTime];
-                        }
-                
-                        await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
-                
-                        console.log("done");
-                        await User.findOne({email:userEmail},async function(err,user){
-                            if(err){
-                                console.log(err)
-                            }else{
-                                res.render("bookingDone",{user:user})
-                            }
-                        } )
-                    } catch(err) {
-                        console.warn("Error in method: ", (err && err.message) || err);
-                        await User.findOne({email:userEmail},function(err,user){
-                            res.render("bookingFailed",{user:user})
-                        })
-                    }
-                   }
-               })
-           })
-    
-       }else if(model=="others"){
-            Service.findOne({name:requiredName}, (err,service)=>{
-                User.findOneAndUpdate({email:userEmail,coins:{$gte:(service.officeOthers)}},{
-                    $inc:{
-                        coins:-(service.officeOthers)
-                    }
-                },{
-                   overwrite:true
-               },
-              async function(err,docs){
-                   if(err){
-                       console.log(docs)
-                       console.log(err)
-                       await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                   }else if(docs==null){
-                    console.log("operation failed")
-                    await User.findOne({email:userEmail},function(err,user){
-                        res.render("bookingFailed",{user:user})
-                    })
-                }else{
-                       
-                       console.log("coin removed")
-                       try {
-
-                        // Guidlines
-                        // 1. Use let/const instead of var, var uses global scope instead of functional scope.
-                        // 2. Use => keyword instead of function keyword. Refer ES6 changes
-                        // 3. Use async/await instead of callbacks.
-                        // 4. use proper linting (Refer airbnb guideline)
-                
-                        // This is known as object destructuring
-                
-                        // Good Practice
-                        const { userName, yourEmail: userEmail, detailsName, phone, detailsPhone, detailsEmail ,detailsCity } = req.body;
-                        const { stationName: requiredName, timeSlot: requiredSlot, dateSlot: requiredDate } = req.params;
-                        
-                        // Bad Practice
-                        // let userEmail = req.body.yourEmail
-                        // let requiredName = req.params.stationName
-                        // let requiredSlot = req.params.timeSlot;    
-                        // let requiredDate = req.params.dateSlot;
-                
-                        // Use async/await instead of callback
-                        await User.updateOne({ email: userEmail }, {
-                            $push: {
-                                officeBookings: {name:detailsName,
-                                               city:detailsCity,
-                                               email:detailsEmail,
-                                               phone:detailsPhone,
-                                               slot:requiredSlot,
-                                           date:requiredDate,
-                                           address:req.body.detailsAddress,
-                                           coins:service.officeOthers
-                                }
-                            }
-                        });
-                
-                        // This is known as object destructuring
-                        const { officeSlots = [], officePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
-                
-                        officePendings.push({
-                            name: userName,
-                            email: userEmail,
-                            phone: phone,
-                            vehicleNo:req.body.vehicleNo,
-                            slot: requiredSlot,
-                            date:requiredDate,
-                            userQR:req.file.key,
-                            coins:service.officeOthers,model:model
-                        });
-                
-                        const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
-                        if (officeSlotIndex !== -1) {
-                            const { time = [] } = officeSlots[officeSlotIndex];
-                            const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
-                            officeSlots[officeSlotIndex].time = [...updatedTime];
-                        }
-                
-                        await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
-                
-                        console.log("done");
-                        await User.findOne({email:userEmail},async function(err,user){
-                            if(err){
-                                console.log(err)
-                            }else{
-                                res.render("bookingDone",{user:user})
-                            }
-                        } )
-                    } catch(err) {
-                        console.warn("Error in method: ", (err && err.message) || err);
-                        await User.findOne({email:userEmail},function(err,user){
-                            res.render("bookingFailed",{user:user})
-                        })
-                    }
-                   }
-               })
-            })
-    
+        const service = await Service.findOne({ name: requiredName }).lean();
+        if (!service) {
+            const user = await User.findOne({ email: userEmail }).lean();
+            res.render("bookingFailed",{ user });
+            return;
         }
+
+        let usedCoins = "";
+
+        switch (model) {
+            case "Two Wheeler":
+                usedCoins = service.officeTwoWheeler;
+                break;
+            case "Sedan":
+                usedCoins = service.officeSedan;
+                break;
+            case "Hatchback":
+                usedCoins = service.officeHatchback;
+                break;
+            case "Auto Rikshaw":
+                usedCoins = service.officeAuto;
+                break;
+            case "small":
+                usedCoins = service.officeSmall;
+                break;
+            case "SUV":
+                usedCoins = service.officeSUV;
+                break;
+            case "Maxi":
+                usedCoins = service.officeMaxi;
+                break;
+            case "Tempo":
+                usedCoins = service.officeTempo;
+                break;
+            case "Bus":
+                usedCoins = service.officeBus;
+                break;
+            case "Multi Axel":
+                usedCoins = service.officeMulti;
+                break;
+            case "others":
+                usedCoins = service.officeOthers;
+                break;
+            default:
+                usedCoins = "Not Found";
+        }
+
+        if (usedCoins === "Not Found") {
+            const user = await User.findOne({ email: userEmail }).lean();
+            res.render("bookingFailed", { user });
+            return;
+        }
+
+        const userExists = await User.findOneAndUpdate(
+            { email: userEmail, coins: { $gte: usedCoins } },
+            { $inc: { coins: -usedCoins } },
+            { new: true, overwrite:true },
+        );
+
+        if (!userExists) {
+            console.log(userExists);
+            const user = await User.findOne({ email: userEmail }).lean();
+            res.render("bookingFailed",{ user });
+            return ;
+        }
+
+        // Guidlines
+        // 1. Use let/const instead of var, var uses global scope instead of functional scope.
+        // 2. Use => keyword instead of function keyword. Refer ES6 changes
+        // 3. Use async/await instead of callbacks.
+        // 4. use proper linting (Refer airbnb guideline)
+
+        // This is known as object destructuring
+
+        // Good Practice
+        const {
+            detailsCity,
+            detailsEmail,
+            detailsName,
+            detailsPhone,
+            phone,
+            userName
+        } = req.body;
+
+        const {
+            dateSlot: requiredDate,
+            timeSlot: requiredSlot,
+        } = req.params;
+
+        // Bad Practice
+        // let userEmail = req.body.yourEmail
+        // let requiredName = req.params.stationName
+        // let requiredSlot = req.params.timeSlot;    
+        // let requiredDate = req.params.dateSlot;
+
+        // Use async/await instead of callback
+        await User.updateOne({ email: userEmail }, {
+            $push: {
+                officeBookings: {
+                    address: req.body.detailsAddress,
+                    city: detailsCity,
+                    coins: usedCoins,
+                    date: requiredDate,
+                    email: detailsEmail,
+                    name: detailsName,
+                    phone: detailsPhone,
+                    slot: requiredSlot,
+                }
+            }
+        });
+
+        // This is known as object destructuring
+        const { officeSlots = [], officePendings = [] } = await Service.findOne({ name: requiredName }).lean() || {};
+
+        officePendings.push({
+            address: req.body.address,
+            coins: usedCoins,
+            date: requiredDate,
+            email: userEmail,
+            model: model,
+            name: userName,
+            phone: phone,
+            slot: requiredSlot,
+            userQR: req.file.key,
+            vehicleNo: req.body.vehicleNo,
+        });
+
+        const officeSlotIndex = (officeSlots || []).findIndex(officeSlot => officeSlot.date === requiredDate);
+        if (officeSlotIndex !== -1) {
+            const { time = [] } = officeSlots[officeSlotIndex];
+            const updatedTime = (time || []).filter(timeSlot => timeSlot.trim() !== requiredSlot.trim());
+            officeSlots[officeSlotIndex].time = [...updatedTime];
+        }
+
+        await Service.updateOne({ name: requiredName }, { $set: { officePendings, officeSlots } });
+        const user = await User.findOne({email:userEmail});
+        
+        res.render("bookingDone",{ user });
+        console.log("done");
+    } catch(err) {
+        console.warn("Error in method: ", (err && err.message) || err);
+        const { yourEmail: userEmail } = req.body;
+        const user = await User.findOne({email: userEmail});
+        res.render("bookingFailed",{ user });
+    }
     
     
 })
@@ -2659,6 +1760,8 @@ app.post("/empLogin",function(req,res){
     
 })
 
+
+
 app.route("/pendings/:empId")
 
 .get( function(req,res){
@@ -2671,201 +1774,173 @@ app.route("/pendings/:empId")
 })
 // completedWork:[{date:String,startTime:String,endTime:String,phone:String,customer:String}]
 
-.post(upload.fields([{name:"front",maxCount:1},{name:"back",maxCount:1}]),async (req,res)=>{
-    
-    Employee.findOneAndUpdate({_id:req.body.id},{
-       $push:{
-           completedWork:{
-               customer:req.body.name,
-               phone:req.body.phone,
-               startTime:req.body.startTime,
-               endTime:req.body.endTime,
-               date:req.body.date,
-               
-           }
-       },
-       $pull:{
-           pendings:{
-               _id:req.body._id
-           }
-       } 
-    },
-    {
-        overwrite:false,
-        multi:true
-    },
-    function(err){
-        if(err){
-            console.log(err)
-        }
-        else{
-            console.log("work done")
+.post(upload.array("files",2),async (req,res)=>{
+        const{email:email,id:id,empid:empid,model:model,name:name,coins:coins,phone:phone,slot:slot,date:date,vehicleNo:vehicleNo,startTime:startTime,endTime:endTime,serviceName:serviceName,location:location}=req.body
+        // await User.findOneAndUpdate({email:email},{
             
-        }
-    }
-    )
-    if(req.body.location=="Home"){
-        User.findOneAndUpdate({email:req.body.email},{
-            $pull:{
-                homeBookings:{
-                    slot:req.body.slot
-                }
-            }
-        },{
-            overwrite:true,
-            multi:true
-        },
-        function (err,docs) {
-            if(err){
-                console.log(err)
-            }else if(docs==null){
-                console.log(docs)
-            }else{
-                console.log("ok")
-                Service.findOneAndUpdate({firm:req.body.serviceName},{
-                    $pull:{
-                        homePendings:{
-                            slot:req.body.slot
-                        }
+        // },{
+        //     upsert:true,
+        //     new:true
+        // },function(err){
+        //     if(err){
+        //         console.log(err)
+        //     }
+        // })
+        if(location=="Home"){
+            await User.updateOne({email:email},{
+                $push:{
+                    completed:{
+                        name:serviceName,
+                        startTime:startTime,
+                        endTime:endTime,
+                        date:date,
+                        location:location,
+                        coins:coins
                     }
-                },{
-                    overwrite:true
-                },function(err){
-                    if(err){
-                        console.log(err)
-                    }else{
-                        Employee.findOne({_id:req.body.id},function(err,employee){
-                            res.render("pendings",{
-                                employee:employee
-                            })
-                        })
-                        
-                    }
-                })
-            }
-            
-        }
-        )
-    }else if(req.body.location=="On Site"){
-        User.findOneAndUpdate({email:req.body.email},{
-            $pull:{
-                officeBookings:{
-                    slot:req.body.slot
-                }
-            }
-        },{
-            overwrite:true,
-            multi:true
-        },
-        function (err,docs) {
-            if(err){
-                console.log(err)
-            }else if(docs==null){
-                console.log(docs)
-            }else{
-                Service.findOneAndUpdate({firm:req.body.serviceName},{
-                    $pull:{
-                        officePendings:{
-                            slot:req.body.slot
-                        }
-                    }
-                },{
-                    overwrite:true
-                },function(err){
-                    if(err){
-                        console.log(err)
-                    }else{
-                        Employee.findOne({_id:req.body.id},function(err,employee){
-                            res.render("pendings",{
-                                employee:employee
-                            })
-                        })
-                        
-                    }
-                })
-            }
-            
-        }
-        )
-    }
-    
-
-
-    User.findOneAndUpdate({email:req.body.email},{
-        $push:{
-            completed:{
-                name:req.body.serviceName,
-                startTime:req.body.startTime,
-                endTime:req.body.endTime,
-                date:req.body.date,
-                location:req.body.location,
-                pics:req.files,
-                coins:req.body.coins
-            }
-
-        },
-        $set:{
-            lastDate:req.body.date,
-            lastStartTime:req.body.startTime,
-            lastEndTime:req.body.endTime,
-            lastFrontImage:req.front.key,
-            lastBackImage:req.back.key
-        }
         
-    },
-    {
-        overwrite:false,
-        multi:true
-    },
-    function(err){
-        if(err){
-            console.log(err)
-        }
-        else{
-            console.log("done")
-        }
-    }
-    
-    
-    )
-
-    Service.findOneAndUpdate({firm:req.body.serviceName},{
-        $push:{
-            completedBookings:{
-                date:req.body.date,
-                startTime:req.body.startTime,
-                endTime:req.body.endTime,
-                vehicleNo:req.body.vehicleNo,
-                customer:req.body.name,
-                location:req.body.location,
-                coins:req.body.coins
-
-            }
-
-        },
-        
-    },{
-        overwrite:false,
-        multi:true
-    },
-    function(err){
-        if(err){
-            console.log(err)
-        }
-        else{
-            console.log("done Work")
-            Employee.findOne({_id:req.body.id},function(err,employee){
-                res.render("pendings",{
-                    employee:employee
-                })
+                },
+                $set:{
+                    lastDate:date,
+                    lastStartTime:startTime,
+                    lastEndTime:endTime,
+                    lastImages:req.files
+                },
+                $pull:{
+                    homeBookings:{
+                        slot:slot
+                    }
+                }
+                
+            },{
+                overwrite:false,
+                multi:false,
+                new:true,
+                upsert:true
+            },function(err){
+                if(err){
+                    console.log(err)
+                }
             })
-        }
-    }
+        await Service.updateOne({firm:serviceName},{
+            $push:{
+                completedBookings:{
+                    date:date,
+                    startTime:startTime,
+                    endTime:endTime,
+                    vehicleNo:vehicleNo,
+                    customer:name,
+                    location:location,
+                    coins:coins,
+                    model:model
     
-    )
-
-
-})
+                }
+    
+            },
+            $pull:{
+                homePendings:{
+                    slot:slot
+                }
+            }
+            
+        })
+        await Employee.updateOne({_id:id},{
+            $push:{
+                completedWork:{
+                    customer:name,
+                    phone:phone,
+                    startTime:startTime,
+                    endTime:endTime,
+                    date:date,
+                    coins:coins
+                    
+                }
+            },
+            $pull:{
+                pendings:{
+                    _id:empid
+                }
+            } 
+         })
+         Employee.findOne({_id:id},function(err,employee){
+            res.render("pendings",{ employee:employee })
+         })
+        }else if(location=="On Site"){
+            await User.updateOne({email:email},{
+                $push:{
+                    completed:{
+                        name:serviceName,
+                        startTime:startTime,
+                        endTime:endTime,
+                        date:date,
+                        location:location,
+                        coins:coins
+                    }
+        
+                },
+                $set:{
+                    lastDate:date,
+                    lastStartTime:startTime,
+                    lastEndTime:endTime,
+                    lastImages:req.files
+                },
+                $pull:{
+                    officeBookings:{
+                        slot:slot
+                    }
+                }
+                
+            },{
+                overwrite:true
+            })
+        await Service.updateOne({firm:serviceName},{
+            $push:{
+                completedBookings:{
+                    date:date,
+                    startTime:startTime,
+                    endTime:endTime,
+                    vehicleNo:vehicleNo,
+                    customer:name,
+                    location:location,
+                    coins:coins,
+                    model:model
+    
+                }
+    
+            },
+            $pull:{
+                officePendings:{
+                    slot:slot
+                }
+            }
+            
+        })
+        await Employee.updateOne({_id:id},{
+            $push:{
+                completedWork:{
+                    customer:name,
+                    phone:phone,
+                    startTime:startTime,
+                    endTime:endTime,
+                    date:date,
+                    coins:coins
+                    
+                }
+            },
+            $pull:{
+                pendings:{
+                    _id:empid
+                }
+            } 
+         })
+         Employee.findOne({_id:id},function(err,employee){
+            res.render("pendings",{ employee:employee })
+         })
+        
+        }
+        
+    
+}
+)
 
 app.get("/empDashboard/:empId",function(req,res){
     Employee.findOne({_id:req.params.empId},function(err,employee){
@@ -2913,7 +1988,8 @@ app.route("/homeUpcomingBookings/:serviceId")
                 date:req.body.date,
                 vehicleNo:req.body.vehicleNo,
                 address:req.body.address,
-                coins:req.body.coins
+                coins:req.body.coins,
+                model:req.body.model
             }
         }
         

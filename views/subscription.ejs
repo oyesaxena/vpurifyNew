@@ -8,7 +8,7 @@
 	<title>Title Here</title>
 
     <link href="/css/font-awesome.min.css" rel="stylesheet">
-
+    <script src="https://js.stripe.com/v3/"></script>
     <link href="/css/styles.css" rel="stylesheet" type="text/css" media="all">
     <link rel="stylesheet" href="/css/sidebar.css">
     <script src="/script2.js"></script>
@@ -73,6 +73,8 @@
         <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
             <h2 class="editContent"> Buy <%= coin._doc.range %> coins  </h2>
         <form action="/charge" method="POST">
+            <input type="hidden" value="<%= coin._doc._id %>" name="id" readonly>
+            <input type="hidden" value="<%= user._id %>" readonly name="userId">
             <div class="form-left-to editContent">
                 <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                 <input type="email"  name="email" value="<%= user.email %>" readonly required="">
@@ -88,22 +90,13 @@
             <div class="form-left-to editContent">
                 <span class="fas fa-money-bill-wave" aria-hidden="true" style="outline: none; cursor: inherit;">INR</span>
                 <input  value="<%= coin._doc.price %>" id="amt" name="amount" required="" readonly>
-
+            
                 <div class="clear"></div>
             </div>
-            <script
-           src="https://checkout.stripe.com/checkout.js"
-           class="stripe-button"
-           data-key="pk_live_7t7nq5ov8ULDjf1yxRBJzLoD003Axchtpb"
+            <div class="btnn">
+                <button type="submit" class=" btn" style="outline: none; cursor: inherit;">Buy Coins</button>
+            </div>
             
-           data-name="coin"
-           data-description="booking your selected slot"
-           data-locale="auto"
-           data-currency="inr"
-        >
-        
-            
-        </script>
         
             </form>
                     

@@ -113,6 +113,10 @@
 										<td class="text-left"><%= service.homePendings[i].vehicleNo%></td>
 									</tr>
 									<tr>
+										<td class="text-left">Vehicle Make</td>
+										<td class="text-left"><%= service.homePendings[i].model%></td>
+									</tr>
+									<tr>
 										<td class="text-left">Coins</td>
 										<td class="text-left"><%= service.homePendings[i].coins%></td>
 									</tr>
@@ -129,7 +133,7 @@
 								<input type="hidden" name="slot" value="<%= service.homePendings[i].slot %>">
 								<input type="hidden" name="date" value="<%= service.homePendings[i].date %>">
 								<input type="hidden" name="vehicleNo" value="<%= service.homePendings[i].vehicleNo %>">
-														
+								<input type="hidden" name="model" value="<%= service.homePendings[i].model %>">						
 								<div class="form-left-to editContent">
 									
 									<span class="fa fa-user-o" aria-hidden="true" style="outline: none; cursor: inherit;">Select</span>

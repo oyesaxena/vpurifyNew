@@ -103,22 +103,15 @@
 					</div>
                     </div>
                     
-    </section>
+	</section>
+	<% for(var i=0;i<user.lastImages.length;i++){ %> 
     <div class="team-colomn col-lg-3 col-md-6 col-sm-6" style="border: rgba(256, 256, 256,0.01) solid 5px;">
         <div class="team-main-6"style="border-bottom: 30px;">
             <div class="right-team-9">
-                <a href="#page"><img class="img-responsive" src="https://vpurify.s3.us-east-2.amazonaws.com/<%= user.lastFrontImage %>" alt=" "></a>
+                <a href="#page"><img class="img-responsive" src="<%= user.lastImages[i].location %>" alt=" "></a>
                 
-                <a href="https://vpurify.s3.us-east-2.amazonaws.com/<%= user.lastFrontImage %>"><p  class="sm-text-32">Download</p></a>
+                <a href="<%= user.lastImages[i].location %>"><p  class="sm-text-32">Download</p></a>
             </div>
         </div>
     </div>
-    <div class="team-colomn col-lg-3 col-md-6 col-sm-6" style="border: rgba(256, 256, 256,0.01) solid 5px;">
-        <div class="team-main-6"style="border-bottom: 30px;">
-            <div class="right-team-9">
-                <a href="#page"><img class="img-responsive" src="https://vpurify.s3.us-east-2.amazonaws.com/<%= user.lastBackImage %>" alt=" "></a>
-                
-                <a href="https://vpurify.s3.us-east-2.amazonaws.com/<%= user.lastBackImage %>"><p  class="sm-text-32">Download</p></a>
-            </div>
-        </div>
-    </div>
+<% } %> 

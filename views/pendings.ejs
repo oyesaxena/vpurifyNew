@@ -112,6 +112,10 @@
 											<td class="text-left">Vehicle Number</td>
 											<td class="text-left"><%= employee.pendings[i].vehicleNo%></td>
 										</tr>
+										<tr>
+											<td class="text-left">Vehicle Make</td>
+											<td class="text-left"><%= employee.pendings[i].model%></td>
+										</tr>
 									</tbody>
 								</table>
 								<br>
@@ -119,7 +123,7 @@
 								<form method="post" enctype="multipart/form-data">
 									<h2 class="editContent"> Complete Booking </h2>
 									<input type="hidden" name="id" readonly value="<%= employee._id %>">
-									<input type="hidden" name="_id" readonly value="<%= employee.pendings[i]._id %>">
+									<input type="hidden" name="empid" readonly value="<%= employee.pendings[i]._id %>">
 											
 									<input type="hidden" name="name" readonly value="<%= employee.pendings[i].name %>">
 									<input type="hidden" name="coins" readonly value="<%= employee.pendings[i].coins %>">
@@ -128,6 +132,8 @@
 									<input type="hidden" name="slot" readonly value="<%= employee.pendings[i].slot%>">
 									<input type="hidden" name="date" readonly value="<%= employee.pendings[i].date %>">
 									<input type="hidden" name="vehicleNo" readonly value="<%= employee.pendings[i].vehicleNo%>">
+									<input type="hidden" name="model" readonly value="<%= employee.pendings[i].model%>">
+
 															
 									<div class="form-left-to editContent">
 										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Start Time</span>
@@ -143,7 +149,7 @@
 									</div>
 									<div class="form-left-to editContent">
 										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Firm Name</span>
-										<input type="text" name="serviceName" placeholder="Firm Name" required="">
+										<input type="text" name="serviceName" value="<%= employee.company %>" placeholder="Firm Name" required="">
 				
 										<div class="clear"></div>
 									</div>
@@ -158,18 +164,12 @@
 									</div>
 									<div class="form-left-to editContent">
 										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-										<label style="color: tomato;">Upload car front image</label>
-										<input type="file" name="front" accept="image/*" placeholder="Images" required="">
+										<label style="color: tomato;">Upload image</label>
+										<input type="file" name="files" multiple placeholder="Images" required="">
 								   
 										<div class="clear"></div>
 									</div>
-									<div class="form-left-to editContent">
-										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-										<label style="color: tomato;">Upload car back image</label>
-										<input type="file" name="back" accept="image/*" placeholder="Images" required="">
-								   
-										<div class="clear"></div>
-									</div>
+									
 									
 									<div class="btnn">
 										<button type="submit" class=" btn" style="outline: none; cursor: inherit;">	Complete</button>
