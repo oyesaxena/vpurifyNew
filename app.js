@@ -6,7 +6,7 @@ const express =require("express");
 const ejs = require("ejs");
 const path = require("path");
 const fs = require('fs')
-var stripe=require("stripe")(StripeSecretKey)
+var stripe=require("stripe")('sk_test_51Gs3hQJKmdeuOmy6CoC4pJ2bwnzFAqE95aVk7DOcsNaf041wjgkFlYhp5xYDC4enc0nfjKIQoAZGQE9pvxC2CFI200Rdjol9zY')
 const bodyParser = require("body-parser");
 const mongoose=require("mongoose")
 const app=express();
@@ -16,6 +16,7 @@ var fp = require('lodash/fp');
 var array = require('lodash/array');
 var object = require('lodash/fp/object');
 var at = require('lodash/at');
+var Int32 = require('mongoose-int32');
 var curryN = require('lodash/fp/curryN');
 const encrypt=require("mongoose-encryption");
 var QRCode      =   require('qrcode');
@@ -67,6 +68,7 @@ const userSchema=new mongoose.Schema({
         min:0
         
     },
+    cartCoins:{type:Number,default:0},cartAmount:{type:Number,default:0},
     homeBookings:[{name:{type:String,trim:true},email:{type:String,trim:true},phone:{type:String,trim:true},address:{type:String,trim:true},city:{type:String,trim:true},slot:{type:String,trim:true},date:{type:String,trim:true},coins:Number}],
     officeBookings:[{name:{type:String,trim:true},email:{type:String,trim:true},phone:{type:String,trim:true},address:{type:String,trim:true},city:{type:String,trim:true},slot:{type:String,trim:true},date:{type:String,trim:true},coins:Number}],
     completed:[{date:{type:String,trim:true},startTime:{type:String,trim:true},endTime:{type:String,trim:true},name:{type:String,trim:true},location:{type:String,trim:true},coins:Number}],
@@ -1239,26 +1241,64 @@ app.route("/subscription/:userId")
 //             res.render("bookingFailed", { user });
 //             return;
 
-app.post("/charge", async (req,res)=>{
-    try{
+// app.post("/charge", async (req,res)=>{
+//     try{
         
-        const {id:id, userId:userId}=req.body
-        const coin= await Coin.findOne({_id:id}).lean();
-        const user=await User.findOne({_id:userId}).lean();
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: req.body.amount*10,
-            currency: 'inr',
-            // Verify your integration in this guide by including this parameter
-            metadata: {integration_check: 'accept_a_payment'},
-          });
-        res.render("checkout",{ coin,user,paymentIntent })
-    }
-    catch(err){
-        console.log(err)
-    }
+//         const {id:id, userId:userId}=req.body
+//         const coin= await Coin.findOne({_id:id}).lean();
+//         const user=await User.findOne({_id:userId}).lean();
+//         const paymentIntent = await stripe.paymentIntents.create({
+//             amount: req.body.amount*10,
+//             currency: 'inr',
+//             // Verify your integration in this guide by including this parameter
+//             metadata: {integration_check: 'accept_a_payment'},
+//           });
+//         res.render("checkout",{ coin,user,paymentIntent })
+//     }
+//     catch(err){
+//         console.log(err)
+//     }
+// })
+
+app.post("/cart",function (req,res){
+    const{email:email,coinsRange:coinsRange}=req.body
+    amount=req.body.amount
+    User.updateOne({email:email},{
+        $set:{
+            cartCoins:coinsRange,
+            cartAmount: amount
+        }
+
+    },function(err){
+        if(err){
+            res.redirect("/addCoins")
+            console.log(err)
+        }else{
+            User.findOne({email:email},function(err,user){
+                res.render("cart",{user:user})
+            })
+           
+        }
+    })    
 })
 
+app.post("/charge", async (req, res) => {
+    try{
+        var amount=req.body.amount*100
+        const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "inr"
+      })
+    
+    console.log(paymentIntent.client_secret)
+    
+    res.render("checkout",{ paymentIntent})
+}
+catch(err){
+    console.log(err)
+}
 
+  });
 
 
 

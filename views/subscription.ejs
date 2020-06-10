@@ -72,7 +72,7 @@
      <% coins.forEach(function(coin){ %>
         <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
             <h2 class="editContent"> Buy <%= coin._doc.range %> coins  </h2>
-        <form action="/charge" method="POST">
+        <form action="/cart" method="POST">
             <input type="hidden" value="<%= coin._doc._id %>" name="id" readonly>
             <input type="hidden" value="<%= user._id %>" readonly name="userId">
             <div class="form-left-to editContent">
@@ -89,7 +89,7 @@
             </div>
             <div class="form-left-to editContent">
                 <span class="fas fa-money-bill-wave" aria-hidden="true" style="outline: none; cursor: inherit;">INR</span>
-                <input  value="<%= coin._doc.price %>" id="amt" name="amount" required="" readonly>
+                <input type="number" value="<%= coin._doc.price %>" id="amt" name="amount" required="" readonly>
             
                 <div class="clear"></div>
             </div>
