@@ -2216,7 +2216,7 @@ app.post("/empreg", upload.array("files",10) , async (req,res) => {
     }
 })
 
-app.post("/reg",async (req,res) => {
+app.post("/reg",upload.array("files",100),async (req,res) => {
     try {
         const { city = "" } = req.body;
         const regCity = city.charAt(0).toUpperCase() + city.slice(1);
@@ -2232,6 +2232,7 @@ app.post("/reg",async (req,res) => {
             city:regCity,
             firm:req.body.firm,
             number:req.body.number,
+            proofs:req.files
         });
         res.render("thankyou");
     } catch (err) {
