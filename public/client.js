@@ -1,15 +1,14 @@
 var stripe = Stripe("pk_test_51Gs3hQJKmdeuOmy6Fb95zIULIl9ELcKhXBD5igPSmtZYlvu9naw4HqjAEhQY2inVarsRALNc57eLMApJvpCJfvvy00CLvkeIEr")
 
-
 var orderData = {
-    items: [{ id: "photo-subscription" }],
+    
     currency: "inr"
   };
   
   // Disable the button until we have Stripe set up on the page
   document.querySelector("button").disabled = true;
   
-  fetch("/charge", {
+  fetch("/cart/:userId/:cartAmount", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -93,10 +92,20 @@ var orderData = {
   /* ------- Post-payment helpers ------- */
   
   /* Shows a success / error message when the payment is complete */
-  var orderComplete = function(clientSecret) {
+  var orderComplete = async (clientSecret)=> {
+
     // Just for the purpose of the sample, show the PaymentIntent response object
-    stripe.retrievePaymentIntent(clientSecret).then(function(result) {
+     stripe.retrievePaymentIntent(clientSecret).then(function(result) {
       var paymentIntent = result.paymentIntent;
+      console.log("paymentIntent--", paymentIntent);
+
+      if (paymentIntent.status === "succeeded") {
+        const email = document.getElementById("email").innerHTML;
+        const amount = document.getElementById("cartAmount").innerHTML;
+        const coins = document.getElementById("cartCoins").innerHTML;
+        
+      }
+
       var paymentIntentJson = JSON.stringify(paymentIntent, null, 2);
   
       document.querySelector(".sr-payment-form").classList.add("hidden");

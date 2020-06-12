@@ -1,6 +1,8 @@
 //jshint esversion:6
 require('dotenv').config()
 const StripeSecretKey = process.env.STRIPE_SECRET_KEY
+const AWSSecretKey=process.env.AWS_SECRET_KEY
+const AWSAccessKey=process.env.AWS_ACCESS_KEY
 
 const express =require("express");
 const ejs = require("ejs");
@@ -11,6 +13,8 @@ const bodyParser = require("body-parser");
 const mongoose=require("mongoose")
 const app=express();
 const _ = require("lodash");
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 var __ = require('lodash/core');
 var fp = require('lodash/fp');
 var array = require('lodash/array');
@@ -23,6 +27,9 @@ var QRCode      =   require('qrcode');
 var multer  = require('multer')
 multerS3 = require('multer-s3')
 aws = require('aws-sdk')
+var Insta = require('instamojo-nodejs');
+const { isArray } = require('lodash');
+Insta.setKeys('0fb25e803cc49feab974241b72b917f2', '41512bff3ce3147476da293e6843f8fd');
 
 
 app.use(express.static("public"));
@@ -33,8 +40,8 @@ app.use(bodyParser.urlencoded({extended:true}));
 mongoose.connect('mongodb+srv://vpurify:vpurify@vpurify-267xm.mongodb.net/vpurify?retryWrites=true',{useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:true });
 
 aws.config.update({
-    secretAccessKey: 'W1XlSdF0UC3cvmpS10Tc1z/2RcdnBMiwfk+aY4zJ',
-    accessKeyId: 'AKIAWKOAX5BSNGPH7DWP',
+    secretAccessKey: AWSSecretKey,
+    accessKeyId: AWSAccessKey,
     region: 'us-east-2'
 });
 s3 = new aws.S3();
@@ -1263,6 +1270,7 @@ app.route("/subscription/:userId")
 app.post("/cart",function (req,res){
     const{email:email,coinsRange:coinsRange}=req.body
     amount=req.body.amount
+    
     User.updateOne({email:email},{
         $set:{
             cartCoins:coinsRange,
@@ -1275,30 +1283,60 @@ app.post("/cart",function (req,res){
             console.log(err)
         }else{
             User.findOne({email:email},function(err,user){
-                res.render("cart",{user:user})
+                res.render("search",{user:user})
             })
            
         }
     })    
 })
 
-app.post("/charge", async (req, res) => {
+
+app.get("/cart/:userId/:cartAmount",function(req,res){
+    User.findOne({_id:req.params.userId},function(err,user){
+        res.render("cart",{user:user})
+    })
+})
+
+
+
+app.post("/cart/:userId/:cartAmount", async (req, res) => {
     try{
-        var amount=req.body.amount*100
+        const user=User.findOne({_id:req.params.userId})
+        console.log(typeof(user),isArray(user))
+        var amount = user.cartAmount
+        console.log("amount:",amount)
         const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount,
-        currency: "inr"
+        amount,
+        currency: "inr",
       })
-    
     console.log(paymentIntent.client_secret)
-    
-    res.render("checkout",{ paymentIntent})
+
+    res.json({ clientSecret: paymentIntent.client_secret, publishableKey: 'pk_test_51Gs3hQJKmdeuOmy6Fb95zIULIl9ELcKhXBD5igPSmtZYlvu9naw4HqjAEhQY2inVarsRALNc57eLMApJvpCJfvvy00CLvkeIEr'})
+   
 }
 catch(err){
     console.log(err)
-}
+} })
 
-  });
+
+app.post("/add-coins",function(req,res){
+    email=req.body.email,
+    coins=req.body.cartCoins
+    User.findOneAndUpdate({email:email},{
+        $inc:{
+            coins:coins
+        }
+    })
+    res.json({email:email,coins:coins})
+    
+})
+
+
+
+  
+
+
+
 
 
 
@@ -1800,6 +1838,15 @@ app.post("/empLogin",function(req,res){
     
 })
 
+app.get("/serviceSlots/:id",function(req,res){
+    Service.findOne({_id:req.params.id},function(err,service){
+        res.render("serviceSlots",{
+            service:service
+        
+        })
+    })
+})
+
 
 
 app.route("/pendings/:empId")
@@ -1826,7 +1873,7 @@ app.route("/pendings/:empId")
         //         console.log(err)
         //     }
         // })
-        if(location=="Home"){
+        if(location==="Home"){
             await User.updateOne({email:email},{
                 $push:{
                     completed:{
@@ -1904,7 +1951,7 @@ app.route("/pendings/:empId")
          Employee.findOne({_id:id},function(err,employee){
             res.render("pendings",{ employee:employee })
          })
-        }else if(location=="On Site"){
+        }else if(location==="On Site"){
             await User.updateOne({email:email},{
                 $push:{
                     completed:{

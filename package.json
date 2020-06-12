@@ -17,6 +17,8 @@
     "dotenv": "^8.2.0",
     "ejs": "^3.1.2",
     "express": "^4.17.1",
+    "instamojo-nodejs": "0.0.5",
+    "jsdom": "^16.2.2",
     "loadash": "^1.0.0",
     "lodash": "^4.17.15",
     "messagebird": "^3.5.0",
