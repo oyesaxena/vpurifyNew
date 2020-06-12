@@ -9,17 +9,46 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="/css/normalize.css" />
     <link rel="stylesheet" href="/css/global.css" />
+    
     <script src="https://js.stripe.com/v3/"></script>
     <script src="/client.js" defer></script>
   </head>
 
   <body>
+    
+    <img src="/images/logo_t.png" alt="red" 
+		style="max-width: 33%; top: 0px; 
+		margin-right:auto;  margin-left: auto; 
+		display: block;position: relative;
+		min-width:30%;z-index: 1;">
+	<img src="/images/blue.png" alt="blue" 
+		style="position: fixed; bottom: 0px;
+    	left: 0px;z-index: -1;
+        padding: 0px;margin: 0px;">
+	<img src="/images/red_car.png" alt="red" 
+		style="position: fixed;top: 0px;
+    	right: 0px;max-width: 90%;
+    	max-height: 90%;z-index: -1;
+      padding: 0px;margin: 0px;">
+      <div class="topnav" style="position:static; z-index:2;">
+        <div class="topnav-right" style="text-align: left; margin-left: 5rem;">  
+          <b><a style="color: black;" href="/userDashboard/<%= user._id %>">Dashboard</a></b>
+        </div>
+      </div>
     <div class="sr-root">
       <div class="sr-main"> 
         <form id="payment-form" class="sr-payment-form">
-          <span id="email"><%= user.email %></span>
-          <span id="cartAmount"><%- user.cartAmount %></span>
-          <span id="cartCoins"><%= user.cartCoins %></span>
+          <b><label>YOUR EMAIL</label></b>
+          <span style="color: tomato;" id="email"><%= user.email %></span>
+          <br>
+          <br>
+          <b><label>CART AMOUNT(INR)</label></b>
+          <span style="color: tomato;" id="cartAmount"><%- user.cartAmount %></span>
+          <br>
+          <br>
+          <b><label>NUMBER OF COINS</label></b>
+          <span style="color: tomato;" id="cartCoins"><%= user.cartCoins %></span>
+          <br>
           <div class="sr-combo-inputs-row">
             <div class="sr-input sr-card-element" id="card-element"></div>
           </div>

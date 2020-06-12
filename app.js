@@ -3,12 +3,12 @@ require('dotenv').config()
 const StripeSecretKey = process.env.STRIPE_SECRET_KEY
 const AWSSecretKey=process.env.AWS_SECRET_KEY
 const AWSAccessKey=process.env.AWS_ACCESS_KEY
-
+const StripePublicKey = process.env.STRIPE_PUBLIC_KEY
 const express =require("express");
 const ejs = require("ejs");
 const path = require("path");
 const fs = require('fs')
-var stripe=require("stripe")('sk_test_51Gs3hQJKmdeuOmy6CoC4pJ2bwnzFAqE95aVk7DOcsNaf041wjgkFlYhp5xYDC4enc0nfjKIQoAZGQE9pvxC2CFI200Rdjol9zY')
+var stripe=require("stripe")(StripeSecretKey)
 const bodyParser = require("body-parser");
 const mongoose=require("mongoose")
 const app=express();
@@ -1271,7 +1271,7 @@ app.post("/cart",function (req,res){
     amount=req.body.amount
     
     User.updateOne({email:email},{
-        $set:{
+        $inc:{
             cartCoins:coinsRange,
             cartAmount: amount
         }
@@ -1312,10 +1312,9 @@ app.post("/credit/:email", async (req, res) => {
         );
 
     console.log(user);
-    User.findOne({email:email},function(err,user){
-        res.render("userDashboard",{user:user})
-    })
+    
     res.json({ cartCoins, email });   
+    
     } catch(err) {
         console.log(err);
     }
@@ -1335,7 +1334,7 @@ app.post("/charge/:email", async (req, res) => {
       })
     console.log(paymentIntent.client_secret)
 
-    res.json({ clientSecret: paymentIntent.client_secret, publishableKey: 'pk_test_51Gs3hQJKmdeuOmy6Fb95zIULIl9ELcKhXBD5igPSmtZYlvu9naw4HqjAEhQY2inVarsRALNc57eLMApJvpCJfvvy00CLvkeIEr'})
+    res.json({ clientSecret: paymentIntent.client_secret, publishableKey: StripePublicKey})
    
     } catch(err) {
         console.log(err)
@@ -1862,14 +1861,17 @@ app.post("/empLogin",function(req,res){
     
 })
 
-app.get("/serviceSlots/:id",function(req,res){
-    Service.findOne({_id:req.params.id},function(err,service){
-        res.render("serviceSlots",{
-            service:service
-        
+app.get("/serviceSlots/:serviceId", (req,res)=>{
+    requestedService=req.params.serviceId
+        Service.findOne({ _id:requestedService },function(err,service){
+            res.render("stationSlots",{
+                service:service
+            })
         })
-    })
+        
 })
+    
+    
 
 
 

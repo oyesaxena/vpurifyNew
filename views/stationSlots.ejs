@@ -22,6 +22,7 @@
     
 
     <body>
+        
         <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/sidebar.css">
             <div class="w3-sidebar w3-bar-block" style="display:none" id="mySidebar">
@@ -62,43 +63,44 @@
 	<div class="recent-work ">
 		<div class="container">
 
-			<!-- Time Slot Head -->
+	
 			<div class="main-titles-head">
 					<h3 class="header-name">Rates
 					</h3>			  
 			</div>
-			<!-- /Time Slot Head -->
+	
 
 
 
 			<div class="row about-about">
-				<!-- Time Slot1 -->	
+				
 				
 				<div class="col-lg-4 col-md-6"style="border: rgba(256, 256, 256,0.01) solid 5.5px;">
 					<div class="about-grids">
 						
 						<div class="mt-3 about-list">
-                            <h3>Home Slotes</h3>
+                            <h3>Home Slots</h3>
+                             
 							<table class="table-fill">
-								<% for(var i=0;i<=service.homeSlots.length;i++){ %> 
+								<% for(var i=0;i<service.homeSlots.length;i++){ %>
 								<thead>
 									<tr>
 										<th class="text-left"><%= service.homeSlots[i].date %> </th>
-										
 									</tr>
                                 </thead>
-                                <% var time_array= service.homeSlots[i].time %>
-                                <% for(var j=0;j<=time_array.length;j++){ %>  
+                                <% time_array=service.homeSlots[i].time %>
+                                
 								<tbody class="table-hover">
+                                    <% for(var j=0;j<=time_array.length;j++){ %> 
                                     <tr>
 										
-										<th class="text-left"><%= time_array[j] %> Coins</th>
-                                    </tr>
-								</tbody>
+										<th class="text-left"><%= time_array[j] %></th>
+									</tr>
                                 <% } %> 
-                                <% } %>
-							</table> 
-									
+                                </tbody>
+                                <% } %> 
+                            </table>
+                      
 							
 							
 							
@@ -111,25 +113,27 @@
 						
 						<div class="mt-3 about-list">
                             <h3>Station Slots</h3>
+                            <% for(var i=0;i<service.officeSlots.length;i++){ %> 
 							<table class="table-fill">
-								<% for(var a=0;a<= service.officeSlots.length;a++){ %> 
+								
 								<thead>
 									<tr>
-										<th class="text-left"><%= service.officeSlots[a].date %> </th>
-										
+										<th class="text-left"><%= service.officeSlots[i].date %> </th>
 									</tr>
                                 </thead>
-                                <% let time_array= service.officeSlots[a].time %>
-                                <% for(var b=0;b<=time_array.length;b++){ %>  
+                                <% time_array=service.officeSlots[i].time %>
+                                
 								<tbody class="table-hover">
+                                    <% for(var j=0;j<=time_array.length;j++){ %> 
                                     <tr>
 										
-										<th class="text-left"><%= time_array[b] %> Coins</th>
-                                    </tr>
-								</tbody>
+										<th class="text-left"><%= time_array[j] %></th>
+									</tr>
                                 <% } %> 
-                                <% } %>
-							</table> 
+                                </tbody>
+                                
+                            </table>
+                        <% } %> 
 							
 							
 				
