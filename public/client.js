@@ -1,19 +1,15 @@
 var stripe = Stripe("pk_test_51Gs3hQJKmdeuOmy6Fb95zIULIl9ELcKhXBD5igPSmtZYlvu9naw4HqjAEhQY2inVarsRALNc57eLMApJvpCJfvvy00CLvkeIEr")
 
-var orderData = {
-    
-    currency: "inr"
-  };
   
   // Disable the button until we have Stripe set up on the page
   document.querySelector("button").disabled = true;
-  
-  fetch("/cart/:userId/:cartAmount", {
+  const email = document.getElementById("email").innerHTML;
+  console.log("email--", email);
+  fetch(`/charge/${email}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(orderData)
   })
     .then(function(result) {
       return result.json();
@@ -100,10 +96,18 @@ var orderData = {
       console.log("paymentIntent--", paymentIntent);
 
       if (paymentIntent.status === "succeeded") {
-        const email = document.getElementById("email").innerHTML;
-        const amount = document.getElementById("cartAmount").innerHTML;
-        const coins = document.getElementById("cartCoins").innerHTML;
-        
+        fetch(`/credit/${email}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+        })
+          .then(function(result) {
+            console.log("result--", result);
+          })
+          .catch(err => {
+            console.log("err--", err);
+          })
       }
 
       var paymentIntentJson = JSON.stringify(paymentIntent, null, 2);

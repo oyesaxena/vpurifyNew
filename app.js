@@ -29,7 +29,6 @@ multerS3 = require('multer-s3')
 aws = require('aws-sdk')
 var Insta = require('instamojo-nodejs');
 const { isArray } = require('lodash');
-Insta.setKeys('0fb25e803cc49feab974241b72b917f2', '41512bff3ce3147476da293e6843f8fd');
 
 
 app.use(express.static("public"));
@@ -1297,13 +1296,38 @@ app.get("/cart/:userId/:cartAmount",function(req,res){
     })
 })
 
-
-
-app.post("/cart/:userId/:cartAmount", async (req, res) => {
+app.post("/credit/:email", async (req, res) => {
     try{
-        const user=User.findOne({_id:req.params.userId})
+        const { email = "" } = req.params;
+        const { cartCoins = 0 }=await User.findOne({ email }).lean() || {};
+        const user=await User.findOneAndUpdate(
+            { email },
+            {
+                $inc: { coins: parseInt(cartCoins, 10) },
+                $set: {
+                    cartCoins: 0,
+                    cartAmount: 0,
+                }
+            },
+        );
+
+    console.log(user);
+    User.findOne({email:email},function(err,user){
+        res.render("userDashboard",{user:user})
+    })
+    res.json({ cartCoins, email });   
+    } catch(err) {
+        console.log(err);
+    }
+})
+
+app.post("/charge/:email", async (req, res) => {
+    try{
+        const { email = "" } = req.params;
+        console.log("email ---", email);
+        const user=await User.findOne({ email }).lean();
         console.log(typeof(user),isArray(user))
-        var amount = user.cartAmount
+        var amount = parseFloat(user.cartAmount || 0) * 100;
         console.log("amount:",amount)
         const paymentIntent = await stripe.paymentIntents.create({
         amount,
@@ -1313,10 +1337,10 @@ app.post("/cart/:userId/:cartAmount", async (req, res) => {
 
     res.json({ clientSecret: paymentIntent.client_secret, publishableKey: 'pk_test_51Gs3hQJKmdeuOmy6Fb95zIULIl9ELcKhXBD5igPSmtZYlvu9naw4HqjAEhQY2inVarsRALNc57eLMApJvpCJfvvy00CLvkeIEr'})
    
-}
-catch(err){
-    console.log(err)
-} })
+    } catch(err) {
+        console.log(err)
+    }
+})
 
 
 app.post("/add-coins",function(req,res){
@@ -1862,20 +1886,23 @@ app.route("/pendings/:empId")
 // completedWork:[{date:String,startTime:String,endTime:String,phone:String,customer:String}]
 
 .post(upload.array("files",2),async (req,res)=>{
-        const{email:email,id:id,empid:empid,model:model,name:name,coins:coins,phone:phone,slot:slot,date:date,vehicleNo:vehicleNo,startTime:startTime,endTime:endTime,serviceName:serviceName,location:location}=req.body
-        // await User.findOneAndUpdate({email:email},{
-            
-        // },{
-        //     upsert:true,
-        //     new:true
-        // },function(err){
-        //     if(err){
-        //         console.log(err)
-        //     }
-        // })
-        if(location==="Home"){
+        try{
+            const{email:email,id:id,empid:empid,model:model,name:name,coins:coins,phone:phone,slot:slot,date:date,vehicleNo:vehicleNo,startTime:startTime,endTime:endTime,serviceName:serviceName,location:location}=req.body
+            let userKey = "";
+            let serviceKey = "";
+            switch(location){
+                case "Home":
+                    userKey="homeBookings"
+                    serviceKey="homePendings"
+                    break;
+                case "On Site":
+                    userKey="officeBookings"
+                    serviceKey="officePendings"
+                    break;
+                default: 
+            }
             await User.updateOne({email:email},{
-                $push:{
+                $addToSet:{
                     completed:{
                         name:serviceName,
                         startTime:startTime,
@@ -1884,7 +1911,6 @@ app.route("/pendings/:empId")
                         location:location,
                         coins:coins
                     }
-        
                 },
                 $set:{
                     lastDate:date,
@@ -1893,21 +1919,17 @@ app.route("/pendings/:empId")
                     lastImages:req.files
                 },
                 $pull:{
-                    homeBookings:{
+                    [userKey]:{
                         slot:slot
                     }
                 }
                 
-            },{
-                overwrite:false,
-                multi:false,
-                new:true,
-                upsert:true
             },function(err){
                 if(err){
                     console.log(err)
                 }
             })
+            
         await Service.updateOne({firm:serviceName},{
             $push:{
                 completedBookings:{
@@ -1924,7 +1946,7 @@ app.route("/pendings/:empId")
     
             },
             $pull:{
-                homePendings:{
+                [serviceKey]:{
                     slot:slot
                 }
             }
@@ -1949,81 +1971,96 @@ app.route("/pendings/:empId")
             } 
          })
          Employee.findOne({_id:id},function(err,employee){
-            res.render("pendings",{ employee:employee })
+             res.render("pendings",{
+                 employee:employee
+             })
          })
-        }else if(location==="On Site"){
-            await User.updateOne({email:email},{
-                $push:{
-                    completed:{
-                        name:serviceName,
-                        startTime:startTime,
-                        endTime:endTime,
-                        date:date,
-                        location:location,
-                        coins:coins
-                    }
-        
-                },
-                $set:{
-                    lastDate:date,
-                    lastStartTime:startTime,
-                    lastEndTime:endTime,
-                    lastImages:req.files
-                },
-                $pull:{
-                    officeBookings:{
-                        slot:slot
-                    }
-                }
-                
-            },{
-                overwrite:true
-            })
-        await Service.updateOne({firm:serviceName},{
-            $push:{
-                completedBookings:{
-                    date:date,
-                    startTime:startTime,
-                    endTime:endTime,
-                    vehicleNo:vehicleNo,
-                    customer:name,
-                    location:location,
-                    coins:coins,
-                    model:model
-    
-                }
-    
-            },
-            $pull:{
-                officePendings:{
-                    slot:slot
-                }
-            }
-            
-        })
-        await Employee.updateOne({_id:id},{
-            $push:{
-                completedWork:{
-                    customer:name,
-                    phone:phone,
-                    startTime:startTime,
-                    endTime:endTime,
-                    date:date,
-                    coins:coins
-                    
-                }
-            },
-            $pull:{
-                pendings:{
-                    _id:empid
-                }
-            } 
-         })
-         Employee.findOne({_id:id},function(err,employee){
-            res.render("pendings",{ employee:employee })
-         })
-        
         }
+        catch(err){
+            console.log("error")
+        }
+
+
+
+
+        // if(location==="Home"){
+            
+        //  Employee.findOne({_id:id},function(err,employee){
+        //     res.render("pendings",{ employee:employee })
+        //  })
+        // }else if(location==="On Site"){
+        //     await User.updateOne({email:email},{
+        //         $push:{
+        //             completed:{
+        //                 name:serviceName,
+        //                 startTime:startTime,
+        //                 endTime:endTime,
+        //                 date:date,
+        //                 location:location,
+        //                 coins:coins
+        //             }
+        
+        //         },
+        //         $set:{
+        //             lastDate:date,
+        //             lastStartTime:startTime,
+        //             lastEndTime:endTime,
+        //             lastImages:req.files
+        //         },
+        //         $pull:{
+        //             officeBookings:{
+        //                 slot:slot
+        //             }
+        //         }
+                
+        //     },{
+        //         overwrite:true
+        //     })
+        // await Service.updateOne({firm:serviceName},{
+        //     $push:{
+        //         completedBookings:{
+        //             date:date,
+        //             startTime:startTime,
+        //             endTime:endTime,
+        //             vehicleNo:vehicleNo,
+        //             customer:name,
+        //             location:location,
+        //             coins:coins,
+        //             model:model
+    
+        //         }
+    
+        //     },
+        //     $pull:{
+        //         officePendings:{
+        //             slot:slot
+        //         }
+        //     }
+            
+        // })
+        // await Employee.updateOne({_id:id},{
+        //     $push:{
+        //         completedWork:{
+        //             customer:name,
+        //             phone:phone,
+        //             startTime:startTime,
+        //             endTime:endTime,
+        //             date:date,
+        //             coins:coins
+                    
+        //         }
+        //     },
+        //     $pull:{
+        //         pendings:{
+        //             _id:empid
+        //         }
+        //     } 
+        //  })
+        //  Employee.findOne({_id:id},function(err,employee){
+        //     res.render("pendings",{ employee:employee })
+        //  })
+        
+        // }
         
     
 }
@@ -2091,7 +2128,7 @@ app.route("/homeUpcomingBookings/:serviceId")
         else{
             console.log("done")
             Service.findOne({_id:requestedService},function(err,service){
-                res.render("upcomingBookings",{
+                res.render("homeEmployeeAssigned",{
                     service:service
                 })
             })
@@ -2129,7 +2166,8 @@ app.route("/officeUpcomingBookings/:serviceId")
                 slot:req.body.slot,
                 date:req.body.date,
                 vehicleNo:req.body.vehicleNo,
-                coins:req.body.coins
+                coins:req.body.coins,
+                model:req.body.model 
             }
         }
         
@@ -2144,7 +2182,7 @@ app.route("/officeUpcomingBookings/:serviceId")
         else{
             console.log("done")
             Service.findOne({_id:requestedService},function(err,service){
-                res.render("officeUpcomingBookings",{
+                res.render("officeEmployeeAssigned",{
                     service:service
                 })
             })
