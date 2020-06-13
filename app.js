@@ -1271,7 +1271,7 @@ app.post("/cart",function (req,res){
     amount=req.body.amount
     
     User.updateOne({email:email},{
-        $set:{
+        $inc:{
             cartCoins:coinsRange,
             cartAmount: amount
         }
