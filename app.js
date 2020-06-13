@@ -2240,7 +2240,7 @@ app.post("/search",function(req,res){
 
 app.post("/citySearch",function(req,res){
     var enteredCity=req.body.city
-    var searchCity=enteredCity.charAt(0).toUpperCase()+enteredCity.slice(1)
+    var searchCity=enteredCity.toUpperCase() ;
     Service.find({city:searchCity},function(err,stations){
         if(err){
             console.log(err)
@@ -2324,7 +2324,7 @@ app.post("/removeCoin",function(req,res){
 app.post("/empreg", upload.array("files",10) , async (req,res) => {
     try {
         const { city = "" } = req.body;
-        const regCity = city.charAt(0).toUpperCase() + city.slice(1);
+        const regCity = city.toUpperCase() ; 
         await regEmployee.create({
             email:req.body.username,
             name:req.body.name,
@@ -2346,7 +2346,7 @@ app.post("/empreg", upload.array("files",10) , async (req,res) => {
 app.post("/reg",upload.array("files",100),async (req,res) => {
     try {
         const { city = "" } = req.body;
-        const regCity = city.charAt(0).toUpperCase() + city.slice(1);
+        const regCity = city.toUpperCase() ;
         await regService.create({
             email:req.body.username,
             name:req.body.name,
