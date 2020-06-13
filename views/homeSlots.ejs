@@ -51,11 +51,12 @@
             <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
                 
 
+                <h2 class="editContent"><%= a %></h2>
                 <% for(var i=0; i< slots.length;i++){ %>  
                     <% var slots_array=slots[i]; %> 
                     <br>
                      <% if(slots_array.date===a){ %> 
-                    <h2 class="editContent"><%=  slots_array.date %></h2>
+                    
                     <% for(var j=0;j<slots_array.time.length;j++){ %> 
                     <div class="btnn">
                         <a href="/homeBooking/<%= service.name %>/<%= slots_array.date %>/<%= slots_array.time[j] %>"> <%=  slots_array.time[j] %> </a>
