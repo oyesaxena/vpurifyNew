@@ -1,4 +1,4 @@
-var stripe = Stripe("pk_live_7t7nq5ov8ULDjf1yxRBJzLoD003Axchtpb")
+var stripe = Stripe("pk_live_m77SclzYs4dKtrWNmmNj4M6r00clwCpbbT")
 
   
   // Disable the button until we have Stripe set up on the page
