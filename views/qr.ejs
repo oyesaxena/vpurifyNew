@@ -1,4 +1,26 @@
-<%if(data){%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your QR Code</title>
+    <link rel = "icon" href ="/images/logo.png" type = "image/x-icon">
 
-<img src="<%=data%>" alt="" style="width:200px; height:200px;">
-<% } %> 
+</head>
+<body>
+    <%if(data){%>
+
+        <img src="<%=data%>" alt="" style="width:200px; height:200px;">
+        <% } %>
+
+        <footer class="example-class">
+			<p>
+				 Copyright &copy;
+				<a href="http://www.vpurify.in" target="_blank">V-Purify</a>
+				2020
+			</p>
+		</footer>
+</body>
+</html>
+
+ 

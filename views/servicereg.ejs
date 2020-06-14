@@ -5,12 +5,13 @@
         
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Title Here</title>
+	<title>Register</title>
+    <link rel = "icon" href ="/images/logo.png" type = "image/x-icon">
 
     <link href="/css/font-awesome.min.css" rel="stylesheet">
 
     <link href="/css/styles.css" rel="stylesheet" type="text/css" media="all">
-
+    <script src="https://kit.fontawesome.com/42e954c897.js" crossorigin="anonymous"></script>
     <link href="//fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap" rel="stylesheet">
@@ -47,70 +48,80 @@
             <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
                 <h2 class="editContent"> Sign Up Here </h2>
                 <form action="/reg" enctype="multipart/form-data" method="POST">
+                    <b><label style="color: tomato;">Email</label></b>
                     <div class="form-left-to editContent">
                         <span class="fa fa-user-o" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                         <input type="email" name="username" placeholder="Email" required="">
 
                         <div class="clear"></div>
                     </div>
-                    <div class="form-left-to editContent">
-                        <span class="fa fa-phone" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                    <b><label style="color: tomato;">Name</label></b>
+                    <div class="form-left-to editContent" >
+                        <span class="fa fa-user-o" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                         <input type="text" name="name" placeholder="Name" required="">
 
                         <div class="clear"></div>
                     </div>
+                    <b><label style="color: tomato;">Contact Number</label></b>
                     <div class="form-left-to editContent">
-                        <span class="fa fa-envelope-o" aria-hidden="true"></span>
+                        <span class="fa fa-phone" aria-hidden="true"></span>
                         <input type="text" name="phone" placeholder="Contact Number" required="">
 
                         <div class="clear"></div>
                     </div>
+                    <b><label style="color: tomato;">Password</label></b>
                     <div class="form-left-to editContent">
 
                         <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                         <input type="password" name="password" placeholder="Password" required="">
                         <div class="clear"></div>
                     </div>
+                    <b><label style="color: tomato;">Firm Name</label></b>
                     <div class="form-left-to editContent">
 
-                      <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                      <span class="fa fa-user-o" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                       <input type="text" name="firm" placeholder="Firm Name" required="">
                       <div class="clear"></div>
                   </div> 
+                  <b><label style="color: tomato;">Address<label></b>
                   <div class="form-left-to editContent">
 
-                    <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                    <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                     <input type="text" name="address" placeholder="Address" required="">
                     <div class="clear"></div>
                 </div>
-                   
+                <b><label style="color: tomato;">Vehicle Number</label></b>
                     <div class="form-left-to editContent">
 
-                      <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                      <span class="fas fa-car" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                       <input type="text" name="number" placeholder="Vehicle Number" required="">
                       <div class="clear"></div>
                   </div>
+                  <b><label style="color: tomato;">GST Number</label></b>
                   <div class="form-left-to editContent">
 
                     <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                     <input type="text" name="gst" placeholder="Gst Number" required="">
                     <div class="clear"></div>
                 </div>
+                <b><label style="color: tomato;">City</label></b>
                 <div class="form-left-to editContent">
 
-                  <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                  <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                   <input type="text" name="city" placeholder="City" required="">
                   <div class="clear"></div>
               </div> 
+              <b><label style="color: tomato;">Pin Code</label></b>
               <div class="form-left-to editContent">
 
-                <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+                <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                 <input type="text" name="pin" placeholder="Tunnel Area Pin Code" required="">
                 <div class="clear"></div>
             </div>
+            <b><label style="color: tomato;">State</label></b>
             <div class="form-left-to editContent">
 
-              <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
+              <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
               <input type="text" name="state" placeholder="State" required="">
               <div class="clear"></div>
           </div>
@@ -123,20 +134,24 @@
             </div>
             <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
                 <h2 class="editContent">Following documents required</h2>
-                <h4><b>Please submit as images or document files</b></h4>
+                <h4 style="color: tomato;"><b>Please submit as images or document files</b></h4>
+                <br>
                 <h2 class="editContent">Your Photo</h2>
                 <h2 class="editContent">Pan Card</h2>
                 <h2 class="editContent">Aadhar Card</h2>
                 <h2 class="editContent">GST Certificate</h2>
                 <h2 class="editContent">Cheque/Passbook</h2>
                 <h2 class="editContent">Agreement</h2>
+                
                 <div class="form-left-to editContent">
                     <span style="margin-right: 10%;"  aria-hidden="true" style="outline: none; cursor: inherit;">Photo</span>
                     
                     <input type="file" name="files" placeholder="Photo" required="" multiple>
 
                     <div class="clear"></div>
+                    
                 </div>
+                <b><label style="color: tomato;">Please select all the files together and submit</label></b>
                 <div class="btnn">
                     <button type="submit" class=" btn" style="outline: none; cursor: inherit;">Sign Up </button>
                 </div>
@@ -150,12 +165,13 @@
         </div>
         </div>
     
-    <footer class="example-class">
-        <p>
-            Sample Reg Form for 
-            <a href="http://www.vpurify.in" target="_blank">V-Purify</a>
-        </p>
-    </footer>
+        <footer class="example-class">
+			<p>
+				 Copyright &copy;
+				<a href="http://www.vpurify.in" target="_blank">V-Purify</a>
+				2020
+			</p>
+		</footer>
 	  </div></div>
 
 

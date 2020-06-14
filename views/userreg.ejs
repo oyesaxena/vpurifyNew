@@ -5,7 +5,8 @@
         
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Title Here</title>
+	<title>Register</title>
+    <link rel = "icon" href ="/images/logo.png" type = "image/x-icon">
 
     <link href="/css/font-awesome.min.css" rel="stylesheet">
 
@@ -48,31 +49,36 @@
             <div class="txt-left-side editContent" style="border-radius: 40px ;color: rgb(0, 0, 0); font-size: 16px; background-color: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, sans-serif;">
                 <h2 class="editContent"> Sign Up Here </h2>
                 <form action="/register" method="POST" enctype="multipart/form-data">
+                    <b><label style="color: tomato;">Email</label></b>
                     <div class="form-left-to editContent">
                         <span class="fa fa-user-o" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                         <input type="email" name="username" placeholder="Email" required="">
 
                         <div class="clear"></div>
                     </div>
+                    <b><label style="color: tomato;">Name</label></b>
                     <div class="form-left-to editContent">
                         <span class="fa fa-user-o" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                         <input type="text" name="name" placeholder="Name" required="">
 
                         <div class="clear"></div>
                     </div>
+                    <b><label style="color: tomato;">Phone Number</label></b>
                     <div class="form-left-to editContent">
                         <span class="fa fa-phone" aria-hidden="true"></span>
-                        <input type="text" name="phone" placeholder="Contact Number" required="">
+                        <input type="text" name="phone" placeholder="Contact" required="">
 
                         <div class="clear"></div>
                     </div>
+                    <b><label style="color: tomato;">Profile Pic</label></b>
                     <div class="form-left-to editContent">
-                        <span class="fas fa-camera">Profile</span>
+                        <span class="fas fa-camera"></span>
                         
                         <input type="file" name="img" accept="image/*" placeholder="Profile" capture="camera">
 
                         <div class="clear"></div>
                     </div>
+                    <b><label style="color: tomato;">Password</label></b>
                     <div class="form-left-to editContent">
 
                         <span class="fa fa-lock" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
@@ -80,14 +86,16 @@
                         <input type="password" name="password" placeholder="Password" required="">
                         <div class="clear"></div>
                     </div>
+                    <b><label style="color: tomato;">Address</label></b>
                     <div class="form-left-to editContent">
 
                       <span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                       <input type="text" name="address" placeholder="Address" required="">
                       <div class="clear"></div>
                   </div>
+                  <b><label style="color: tomato;">Vehicle Make</label></b>
                   <div class="form-left-to editContent">
-                    <span class="fas fa-car" aria-hidden="true" style="outline: none; cursor: inherit;">Vehicle</span>
+                    <span class="fas fa-car" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                     <select style="margin: 2%;" name="vehicleType"  class="form-control">
                       <option value="Two Wheeler">Two Wheeler</option>
                       <option value="Auto Rikshaw">Auto Rikshaw</option>
@@ -102,24 +110,28 @@
                     </select>
                     <div class="clear"></div>
                 </div>
+                <b><label style="color: tomato;">Vehicle Company</label></b>
                 <div class="form-left-to editContent">
 
                   <span class="fas fa-car" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                   <input type="text" name="company" placeholder="Vehicle Company" required="">
                   <div class="clear"></div>
               </div>
+              <b><label style="color: tomato;">Model Name</label></b>
               <div class="form-left-to editContent">
 
                 <span class="fas fa-car" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
                 <input type="text" name="model" placeholder="Vehicle Model" required="">
                 <div class="clear"></div>
             </div>
+            <b><label style="color: tomato;">Vehicle Number</label></b>
             <div class="form-left-to editContent">
 
               <span class="fas fa-car" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
               <input type="text" name="vehicleNo" placeholder="Vehicle Number" required="">
               <div class="clear"></div>
           </div>
+          <b><label style="color: tomato;">Passing Year</label></b>
           <div class="form-left-to editContent">
 
             <span class="fas fa-car" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
@@ -141,12 +153,13 @@
             </div>
         </div>
     
-    <footer class="example-class">
-        <p>
-            Sample Reg Form for 
-            <a href="http://www.vpurify.in" target="_blank">V-Purify</a>
-        </p>
-    </footer>
+        <footer class="example-class">
+			<p>
+				 Copyright &copy;
+				<a href="http://www.vpurify.in" target="_blank">V-Purify</a>
+				2020
+			</p>
+		</footer>
 	  </div></div>
 
 
