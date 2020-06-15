@@ -210,17 +210,6 @@ const Service=new mongoose.model("Service",ServiceSchema);
 const Coin=new mongoose.model("Coin",coinsSchema);
 
 app.get("/",function(req,res){
-	 mongoose.connect('mongodb+srv://vpurify:vpurify@vpurify-267xm.mongodb.net/vpurify?retryWrites=true',{useNewUrlParser:true, useUnifiedTopology:true, useFindAndModify:true },function(err,db){
-        if (err) next  
-    db  
-      .collection("users")  
-      .find()  
-      .toArray(function(err, result) {  
-        if (err) throw err;  
-
-        res.json(result)  
-      });
-    });
     res.render("home")
 })
 
