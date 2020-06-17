@@ -1830,6 +1830,9 @@ app.post("/userLogin",function(req,res){
 
                     })
                 }
+                else{
+                    res.send("Wrong Password!!.. Please go back and try again")
+                }
             }
         }
     })
@@ -1853,6 +1856,8 @@ app.post("/empLogin",function(req,res){
                     res.render("empDashboard",{
                         employee:foundEmployee
                     })
+                }else{
+                    res.send("Wrong Password!!.. Please go back and try again")
                 }
                 
             }
@@ -2208,6 +2213,8 @@ app.post("/serviceLogin",function(req,res){
                         service:foundService
 
                     })
+                }else{
+                    res.send("Wrong Password!!.. Please go back and try again")
                 }
             }
         }

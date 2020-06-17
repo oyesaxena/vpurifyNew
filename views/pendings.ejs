@@ -136,27 +136,30 @@
 									<input type="hidden" name="vehicleNo" readonly value="<%= employee.pendings[i].vehicleNo%>">
 									<input type="hidden" name="model" readonly value="<%= employee.pendings[i].model%>">
 
-															
+									<label style="color: tomato;">Start Time</label>						
 									<div class="form-left-to editContent">
-										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Start Time</span>
+										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
 										<input type="time" name="startTime" placeholder="Start Time" required="">
 				
 										<div class="clear"></div>
 									</div>
+									<label style="color: tomato;">End Time</label>
 									<div class="form-left-to editContent">
-										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">End Time</span>
+										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
 										<input type="time" name="endTime" placeholder="End Time" required="">
 				
 										<div class="clear"></div>
 									</div>
+									<label style="color: tomato;">Firm Name</label>
 									<div class="form-left-to editContent">
-										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Firm Name</span>
+										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
 										<input type="text" name="serviceName" value="<%= employee.company %>" placeholder="Firm Name" required="">
 				
 										<div class="clear"></div>
 									</div>
+									<label style="color: tomato;">Location</label>
 									<div class="form-left-to editContent">
-										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;">Location</span>
+										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
 										<select name="location">
 											<option value="Home">Home</option>
 											<option value="On Site">On Site</option>
@@ -164,14 +167,16 @@
 				
 										<div class="clear"></div>
 									</div>
+									<label style="color: tomato;">Submit photos of front and back of vehicle after sanitization</label>
 									<div class="form-left-to editContent">
 										<span class="fas fa-map-marker-alt" aria-hidden="true" style="outline: none; cursor: inherit;"></span>
-										<label style="color: tomato;">Upload image</label>
+										
 										<input type="file" name="files" multiple placeholder="Images" required="">
 								   
 										<div class="clear"></div>
 									</div>
-									
+									<b><label style="color: tomato;">*Two images necessary here</label></b>
+
 									
 									<div class="btnn">
 										<button type="submit" class=" btn" style="outline: none; cursor: inherit;">	Complete</button>
