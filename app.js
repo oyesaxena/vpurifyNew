@@ -28,7 +28,7 @@ var multer  = require('multer')
 multerS3 = require('multer-s3')
 aws = require('aws-sdk')
 var Insta = require('instamojo-nodejs');
-const { isArray } = require('lodash');
+const { isArray, create } = require('lodash');
 
 
 app.use(express.static("public"));
@@ -55,6 +55,12 @@ s3 = new aws.S3();
         }
     })
 });
+
+const adminSchema= new mongoose.Schema({
+    username:{type:String,trim:true},
+    password:{type:String}
+})
+
 
 const userSchema=new mongoose.Schema({
     email: {type:String,trim:true},
@@ -90,7 +96,7 @@ const coinsSchema =new mongoose.Schema({
 
 const secret="Thisisourlittlesecret."
 userSchema.plugin(encrypt, { secret: secret , encryptedFields:['password']});
-
+adminSchema.plugin(encrypt, { secret: secret , encryptedFields:['password']});
 
 const registeredServiceSchema= new mongoose.Schema({
     email: {type:String,trim:true},
@@ -204,6 +210,7 @@ const regEmployee=new mongoose.model("regEmployee",registeredEmployeeSchema);
 const Employee=new mongoose.model("Employee",EmployeeSchema);
 const rejectedEmployee=new mongoose.model("rejectedEmployee",rejectedEmployeeSchema);
 const User= new mongoose.model("User",userSchema);
+const Admin= new mongoose.model("Admin",adminSchema);
 const rejectedService=new mongoose.model("rejectedService",rejectedServiceSchema);
 const regService=new mongoose.model("regService",registeredServiceSchema);
 const Service=new mongoose.model("Service",ServiceSchema);
@@ -1809,7 +1816,26 @@ app.get("/userDashboard/:userId",function(req,res){
     
 })
 
-
+app.get("/adminLogin",function(req,res){
+    res.render("adminLogin")
+})
+app.post("/adminLogin",function(req,res){
+    Admin.findOne({username:req.body.username},function(err,foundAdmin){
+        if(err){
+            console.log(err)
+        }
+        else{
+            if(foundAdmin){
+                if(foundAdmin.password===req.body.password){
+                    res.redirect("/admin")
+                }
+                else{
+                    res.send("Wrong password!!! please try again")
+                }
+            }
+        }
+    })
+})
 
 app.get("/userlogin",function(req,res){
     res.render("userLogin")
@@ -2349,6 +2375,26 @@ app.post("/empreg", upload.array("files",10) , async (req,res) => {
         console.log(err);
     }
 })
+// const adminSchema= new mongoose.Schema({
+//     username:{type:String,trim:true},
+//     password:{type:String}
+// })
+app.post("/adminReg",async (req,res)=>{
+    username=req.body.username
+    password=req.body.password
+    const newAdmin= new Admin({
+        username:username,
+        password:password
+    })
+    newAdmin.save(function(err){
+        if(err){
+            res.send("please try again")
+        }
+        else{
+            res.send("registered")
+        }
+    })
+})
 
 app.post("/reg",upload.array("files",100),async (req,res) => {
     try {
@@ -2373,6 +2419,15 @@ app.post("/reg",upload.array("files",100),async (req,res) => {
         console.log(err);
     }
 })
+
+
+app.get("/adminRegister",function(req,res){
+
+    res.render("adminReg")
+}
+)
+
+
 
 app.route("/proof")
 
